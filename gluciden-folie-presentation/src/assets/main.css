@@ -1,0 +1,49 @@
+@import './main.css';
+
+.title {
+  font-family: "Julius Sans One", sans-serif;
+  font-style: bold;
+  font-weight: 400;
+}
+
+body {
+    font-family: "Laila", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1 {
+  color:#F29EB0 !important;
+  text-align: center;
+  font-family: "Julius Sans One", sans-serif;
+  font-style: bold;
+  text-align: center;
+}
+
+/* Css généric header*/
+.v-toolbar__content {
+    height: 115px !important;
+}
+
+.v-toolbar-title__placeholder {
+    overflow: visible!important;
+}
+
+.v-ripple__container {
+  display: none !important;
+}
+
+
+/* Désactiver l'effet de survol */
+.v-btn:hover .v-btn__overlay {
+  background-color: transparent;
+  opacity: 1;
+} 
+
+/* Désactiver l'effet d'activation 
+.v-btn:active .v-btn__underlay {
+  box-shadow: none;
+  border: none;
+} */
+
+
