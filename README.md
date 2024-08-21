@@ -61,7 +61,7 @@ zsh
 ```
 npm run dev
 ```
-- Ouvrez votre navigateur et accédez à http://localhost:8080
+- Ouvrez votre navigateur et accédez à http://localhost:5173
 
 ## 5) Utilisation
 Ajouter une recette : Naviguez vers "Ajouter une recette" via la barre de navigation, remplissez les informations nécessaires, puis enregistrez.
