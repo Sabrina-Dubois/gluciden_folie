@@ -42,7 +42,7 @@ Vue CLI
 - Clonez le dépôt GitHub sur votre machine locale :
 zsh
 ```
-git clone https://github.com/votre_nom_utilisateur/gluciden-folie.git
+git clone https://github.com/Sabrina-Dubois/gluciden_folie.git
 ```
 
 - Accédez au répertoire du projet :
