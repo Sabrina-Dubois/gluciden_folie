@@ -2,39 +2,52 @@
 	<v-app-bar class="custom-app-bar">
 		<v-app-bar-nav-icon></v-app-bar-nav-icon>
 		<img alt="Vue logo" class="logo" src="@/assets/images/logo.png" />
-		<router-link to="/test">TEST</router-link>
-		<br/>
-		<router-link to="/createRecipe">Ajouter une recette</router-link>
-		<router-link to="/updateRecipe">Modifier une recette</router-link>
-		<router-link to="/recipesList">Liste des recettes</router-link>
+
+		<!-- Conteneur pour les boutons en colonne -->
+		<v-col class="d-flex flex-column align-center">
+			<v-btn class="mb-2"><router-link to="/test">TEST</router-link></v-btn>
+			<v-btn class="mb-2">
+				<router-link :to="{name:'recipesList'}">Liste des recettes</router-link>
+			</v-btn>
+			<v-btn class="mb-2">
+				<router-link :to="{name:'createRecipe'}">Ajouter une recette</router-link>
+			</v-btn>
+			<v-btn class="mb-2">
+				<router-link to="/updateRecipe">Modifier une recette</router-link>
+			</v-btn>
+		</v-col>
+
 		<v-app-bar-title class="title">Glucid'en Folie</v-app-bar-title>
 		<v-btn icon="mdi-heart"></v-btn>
 		<v-text-field
 			class="custom-text-field"
 			append-inner-icon="mdi-magnify"
 			density="compact"
-			label="Je cherche : un ingrèdient, une recette..."
+			label="Je cherche : un ingrédient, une recette..."
 			variant="underlined"
 			hide-details
 			single-line
 		></v-text-field>
-		<v-btn @click="goToConnection" class="custom-btn" ml-5 rounded="" prepend-icon="mdi-account"
+		<v-btn
+			@click="goToConnection"
+			class="custom-btn"
+			ml-5
+			rounded=""
+			prepend-icon="mdi-account"
 		>
 			Connexion
 		</v-btn>
-		<spacer></spacer>
 	</v-app-bar>
 </template>
 
 <script>
 export default {
 	name: "Header",
-	//attribut
 	methods: {
-		goToConnection(){
-			this.$router.push('/connection')
-		}
-	}
+		goToConnection() {
+			this.$router.push("/connection");
+		},
+	},
 };
 </script>
 
@@ -63,7 +76,7 @@ export default {
 }
 
 .v-btn {
-	margin: 0px 20px;
+	margin: 5px 0; /* Espacement entre les boutons */
 	background-color: #f5ede8;
 	color: #5d827f;
 }
@@ -75,6 +88,7 @@ export default {
 	font-weight: bold !important;
 	color: #5d827f;
 }
+
 .v-btn:hover,
 .v-btn--active {
 	background-color: #5d827f;

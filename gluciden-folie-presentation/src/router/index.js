@@ -27,27 +27,27 @@ const router = createRouter({
       component: TestView,
     },
     {
-      path: "/connection", // a faire en francais
+      path: "/connexion", 
       name: "connection",
       component: ConnectionView,
     },
     {
-      path: "/recipes", // a faire en francais
+      path: "/recettes", // a faire en francais
       name: "recipes",
       component: RecipesView,
     },
     {
-      path: "/createRecipe", // a faire en francais
+      path: "/creer-recette",
       name: "createRecipe",
       component: CreateRecipeView,
     },
     {
-      path: "/updateRecipe/:id", // a faire en francais
+      path: "/modifier-recette/:id", // a faire en francais
       name: "updateRecipe",
       component: UpdateRecipeView,
     },
     {
-      path: "/recipesList", // a faire en francais
+      path: "/liste-recettes", 
       name: "recipesList",
       component: RecipesList,
     },

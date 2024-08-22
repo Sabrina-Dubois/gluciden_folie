@@ -2,7 +2,7 @@
 	<div class="main-content custom-bg">
 		<h1>Créer une nouvelle recette</h1>
 		<v-card class="recipeForm d-flex align-center">
-			<v-form @submit.prevent="createRecipe">
+			<v-form @submit.prevent="submitForm">
 				<!--subitForm ->method valider données saisies / gérer mgs erreurs
 				//v-model -> form la valeur saisie màj auto //v-model créer un lien
 				bidirectionnel entre l'interface utilisateur et les données du composant-->
@@ -14,7 +14,7 @@
 					variant="underlined"
 				></v-text-field>
 
-				<h3>Type de desserts & Régime alimentaire</h3>
+				<!-- <h3>Type de desserts & Régime alimentaire</h3>
 				<v-container class="pa-0" fluid>
 					<v-row class="d-flex">
 						<v-col
@@ -36,9 +36,9 @@
 							</v-card>
 						</v-col>
 					</v-row>
-				</v-container>
+				</v-container> -->
 
-				<h3>Nombre de portion</h3>
+				<!-- <h3>Nombre de portion</h3>
 				<h3>Temps de préparation</h3>
 
 				<h3>Ustensiles</h3>
@@ -121,7 +121,7 @@
 							</span>
 						</template>
 					</v-rating>
-				</div>
+				</div> -->
 
 				<h3>Photo</h3>
 				<v-file-input
@@ -133,17 +133,17 @@
 				>
 				</v-file-input>
 
-				<h3>Choix des ingrédients</h3>
+				<!-- <h3>Choix des ingrédients</h3>
 
 				<h3>Commentaires</h3>
 				<v-textarea
 					label="Ecrit ton commentaire"
 					variant="underlined"
-				></v-textarea>
+				></v-textarea>-->
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit"
 					>Enregistrer</v-btn
-				>
+				> 
 			</v-form>
 		</v-card>
 	</div>
@@ -180,11 +180,11 @@ export default {
 			colors: ["red", "orange", "grey", "cyan"],
 			labelsDifficulty: ["Très facile", "Facile", "Moyen", "Difficile"],
 			labelsCost: ["Bon marché", "Coût moyen", "Assez chere"],
-			recipePicture: null,
+			
 		};
 	},
 	methods: {
-		createRecipe() {
+		submitForm() {
 			console.log("Nom de la recette:", this.recipeName);
 			console.log("Photo de la recette:", this.recipePicture);
 
@@ -246,7 +246,7 @@ h3 {
 	margin: 0 auto;
 	padding: 20px;
 }
-.timeCook {
+. {
 	max-width: 120px;
 }
 .v-form {

@@ -4,6 +4,7 @@
 			<h1>LISTE DES RECETTES</h1>
 			<v-container fluid>
 				<v-row dense>
+					{{ recipes }}
 					<!-- Card image & boutons -->
 					<v-col
 						v-for="recipe in recipes"
@@ -14,7 +15,7 @@
 					>
 						<v-card class="recip-card d-flex flex-column align-center" flat>
 							<v-img
-								:src="recipe.picture"
+								:src="'/images/' + recipe.picture"
 								class="recipe-picture"
 								height="200px"
 								cover
@@ -61,7 +62,7 @@ export default {
 	methods: {
 		async initRecipes() {
 			// pour les fichiers via HTTP -> gestion de l'encodage
-			// Json ests ok pour les données textuelles mais pas pour transmettre des données binaires
+			// Json est ok pour les données textuelles mais pas pour transmettre des données binaires
 			// objet qui prends les options du fetch par defaut fetch est un GET
 			try {
 				const response = await fetch("http://localhost:8080/recipes");
