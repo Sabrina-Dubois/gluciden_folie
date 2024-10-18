@@ -6,7 +6,7 @@
 import RecipesList from "@/components/RecipesList.vue";
 
 export default {
-	name: "RecipesView",
+	name: "Recipes",
 	components: {
 		RecipesList,
 	},

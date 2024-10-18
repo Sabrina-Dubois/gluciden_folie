@@ -1,19 +1,23 @@
 <template>
 	<v-app-bar class="custom-app-bar">
 		<v-app-bar-nav-icon></v-app-bar-nav-icon>
-		<img alt="Vue logo" class="logo" src="@/assets/images/logo.png" />
-
+		<router-link to="/" exact>
+			<img alt="Vue logo" class="logo" src="@/assets/images/logo.png" />
+		</router-link>
 		<!-- Conteneur pour les boutons en colonne -->
 		<v-col class="d-flex flex-column align-center">
-			<v-btn class="mb-2"><router-link to="/test">TEST</router-link></v-btn>
 			<v-btn class="mb-2">
-				<router-link :to="{name:'recipesList'}">Liste des recettes</router-link>
+				<router-link to="/test">{{ $t("header.link_test") }}</router-link>
 			</v-btn>
 			<v-btn class="mb-2">
-				<router-link :to="{name:'createRecipe'}">Ajouter une recette</router-link>
+				<router-link :to="{ name: 'recipesList' }">{{
+					$t("header.link_list")
+				}}</router-link>
 			</v-btn>
 			<v-btn class="mb-2">
-				<router-link to="/updateRecipe">Modifier une recette</router-link>
+				<router-link :to="{ name: 'createRecipe' }">{{
+					$t("header.link_create")
+				}}</router-link>
 			</v-btn>
 		</v-col>
 
@@ -35,7 +39,7 @@
 			rounded=""
 			prepend-icon="mdi-account"
 		>
-			Connexion
+			{{ $t("header.button") }}
 		</v-btn>
 	</v-app-bar>
 </template>

@@ -14,7 +14,7 @@ import CategoriesTabs from "@/components/CategoriesTabs.vue";
 import RecipesList from "@/components/RecipesList.vue";
 
 export default {
-	name: "HomeView",
+	name: "Home",
 	components: {
 		CategoriesTabs,
 		HomeComp,
@@ -25,7 +25,7 @@ export default {
 		return {
 			items: [
 				{
-					name: "gâteaux",
+					name: "Sans Lactose",
 					recipes: [
 						{
 							name: "Carrot cake",

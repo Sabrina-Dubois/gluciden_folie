@@ -8,7 +8,7 @@ import CategoriesTabs from "@/components/CategoriesTabs.vue";
 
 
 export default {
-	name: "CategoriesView",
+	name: "CreateCategorie",
 	components: {
 		CategoriesTabs
 	},

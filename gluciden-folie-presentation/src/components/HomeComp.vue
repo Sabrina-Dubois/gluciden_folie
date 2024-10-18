@@ -1,6 +1,6 @@
 <template>
 	<v-container class="home-comp-container" fluid>
-		<h1>Bienvenue sur GLUCID'EN FOLIE</h1>
+		<h1>{{ $t('home.title')}}</h1>
 
 		<v-card class="d-flex mb-4">
 			<v-container fluid>
@@ -8,9 +8,7 @@
 					<!-- Description -->
 					<v-col cols-6 class="d-flex align-center">
 						<p class="description">
-							Voyagez en Angleterre avec notre recette du jour : un authentique
-							"<u>Carrot cake</u>". <br />Moelleux et épicé, il sera parfait
-							pour une pause gourmande, saine et typiquement britannique!
+							{{ $t('home.description') }}
 						</p>
 					</v-col>
 

@@ -1,12 +1,13 @@
+//Without LAZY LOADING
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import CategoriesView from "../views/CategoriesView.vue";
-import TestView from "../views/TestView.vue";
-import ConnectionView from "../views/ConnectionView.vue";
-import RecipesView from "../views/RecipesView.vue";
-import CreateRecipeView from "../views/CreateRecipeView.vue";
+import Home from "../views/Home.vue";
+import Categories from "@/views/CreateCategorie.vue";
+import Test from "../views/Test.vue";
+import Connection from "../views/Connection.vue";
+import Recipes from "../views/Recipes.vue";
+import CreateRecipe from "../views/CreateRecipe.vue";
 import RecipesList from "@/components/RecipesList.vue";
-import UpdateRecipeView from "@/views/UpdateRecipeView.vue";
+import UpdateRecipe from "@/views/UpdateRecipe.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,37 +15,37 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: Home,
     },
     {
       path: "/categories",
       name: "categories",
-      component: CategoriesView,
+      component: Categories,
     },
     {
       path: "/test",
       name: "test",
-      component: TestView,
+      component: Test,
     },
     {
       path: "/connexion", 
       name: "connection",
-      component: ConnectionView,
+      component: Connection,
     },
     {
       path: "/recettes", // a faire en francais
       name: "recipes",
-      component: RecipesView,
+      component: Recipes,
     },
     {
       path: "/creer-recette",
       name: "createRecipe",
-      component: CreateRecipeView,
+      component: CreateRecipe,
     },
     {
       path: "/modifier-recette/:id", // a faire en francais
       name: "updateRecipe",
-      component: UpdateRecipeView,
+      component: UpdateRecipe,
     },
     {
       path: "/liste-recettes", 
@@ -53,5 +54,56 @@ const router = createRouter({
     },
   ],
 });
-
 export default router;
+
+
+// LAZY LOADING -> Import()
+// import { createRouter, createWebHistory } from "vue-router";
+
+// const router = createRouter({
+//   history: createWebHistory(import.meta.env.BASE_URL),
+//   routes: [
+//     {
+//       path: "/",
+//       name: "home",
+//       component: () => import("../views/Home.vue"),
+//     },
+//     {
+//       path: "/categories",
+//       name: "categories",
+//       component: () => import("@/views/Categories.vue"),
+//     },
+//     {
+//       path: "/test",
+//       name: "test",
+//       component: () => import("../views/Test.vue"),
+//     },
+//     {
+//       path: "/connexion",
+//       name: "connection",
+//       component: () => import("../views/Connection.vue"),
+//     },
+//     {
+//       path: "/recettes", // a faire en francais
+//       name: "recipes",
+//       component: () => import("../views/Recipes.vue"),
+//     },
+//     {
+//       path: "/creer-recette",
+//       name: "createRecipe",
+//       component: () => import("../views/CreateRecipe.vue"),
+//     },
+//     {
+//       path: "/modifier-recette/:id", // a faire en francais
+//       name: "updateRecipe",
+//       component: () => import("@/views/UpdateRecipe.vue"),
+//     },
+//     {
+//       path: "/liste-recettes",
+//       name: "recipesList",
+//       component: () => import("@/components/RecipesList.vue"),
+//     },
+//   ],
+// });
+
+// export default router;
