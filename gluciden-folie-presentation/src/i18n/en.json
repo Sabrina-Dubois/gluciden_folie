@@ -1,0 +1,81 @@
+{
+  "header": {
+    "link_test": "Test",
+    "link_list": "Recipe list",
+    "link_create": "Create recipe",
+    "link_update": "Update recipe",
+    "button": "Connection"
+  },
+  "//general": {
+    "//welcome": "Welcome",
+    "//search": "Search for recipes",
+    "//favorites": "Favorite recipes",
+    "//add_recipe": "Add a recipe",
+    "//logout": "Logout"
+  },
+  "home": {
+    "title": "Welcome to GLUCID'EN FOLIE",
+    "description": "Travel to England with our recipe of the day: an authentic 'Carrot cake'.Moist and spicy, it will be perfect for a gourmet, healthy and typically British break!"
+  },
+  "create_recipe": {
+    "page": {
+      "title": "Create a new recipe",
+      "recipe_title": {
+        "recipe_title": "Recipe title",
+        "//label": "Recipe name"
+      },
+      "picture": {
+        "picture": "Picture",
+        "//label": "Download picture"
+      },
+      "button": "Save"
+    }
+  },
+  "recipe_list": {
+    "title": "Recipe List",
+    "//no_recipes": "No recipes available",
+    "//view_details": "View details"
+  },
+  "//recipe_details": {
+    "//title": "Recipe Details",
+    "//ingredients": "Ingredients",
+    "//instructions": "Instructions",
+    "//rating": "Rating",
+    "//comments": "Comments",
+    "//add_comment": "Add a comment"
+  },
+  "update_recipe": {
+    "page": {
+      "title": "Update recipe",
+      "recipe_title": {
+        "recipe_title": "Recipe title",
+        "label": "Recipe name"
+      },
+      "picture": {
+        "picture": "Picture",
+        "label": "Download picture"
+      },
+      "button": "Save"
+    }
+  },
+  "// favorites": {
+    "//title": "Your Favorite Recipes",
+    "//no_favorites": "You don't have any favorite recipes yet."
+  },
+  "//search": {
+    "//title": "Search for Recipes by Ingredients",
+    "//placeholder": "Enter ingredients...",
+    "//no_results": "No recipes found for your search."
+  },
+  "// errors //": {
+    "// not_found //": "Page not found",
+    "// server_error //": "An error occurred. Please try again later."
+  },
+  "test_page": {
+    "title": "Test Page",
+    "text": "You are on the test page. You can navigate to other pages via the navigation bar."
+  },
+  "footer": {
+    "text": "GLUCID'EN FOLIE.All rights reserved."
+  }
+}

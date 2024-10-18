@@ -1,9 +1,8 @@
 <template>
 	<div class="test-view">
-		<h1>Page de Test</h1>
+		<h1>{{ $t('test_page.title') }}</h1>
 		<p>
-			Vous êtes sur la page de test. Vous pouvez naviguer vers d'autres pages
-			via la barre de navigation.
+			{{ $t('test_page.text') }}
 		</p>
 		<router-link to="/"><img alt="Vue logo" class="logo" src="@/assets/images/logo.png" />
 		</router-link>
@@ -12,7 +11,7 @@
 
 <script>
 export default {
-	name: "TestView",
+	name: "Test",
 };
 </script>
 

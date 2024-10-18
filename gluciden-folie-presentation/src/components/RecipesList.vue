@@ -1,10 +1,10 @@
 <template>
 	<v-container class="Recip-List-container" fluid>
 		<v-card class="d-flex mx-auto my-auto">
-			<h1>LISTE DES RECETTES</h1>
+			<h1>{{ $t('recipe_list.title') }}</h1>
 			<v-container fluid>
 				<v-row dense>
-					{{ recipes }}
+					<!-- {{ recipes }} -->
 					<!-- Card image & boutons -->
 					<v-col
 						v-for="recipe in recipes"

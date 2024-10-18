@@ -1,7 +1,7 @@
 <template>
  <v-footer>
   <v-container class="footer text-center">
-      <p>&copy; {{ currentYear }} GLUCID'EN FOLIE. Tous droits rèservès.</p>
+      <p>&copy; {{ currentYear }} {{ $t('footer.text') }}</p>
     </v-container>
   </v-footer>
 

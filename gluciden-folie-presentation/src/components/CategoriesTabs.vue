@@ -14,7 +14,6 @@
 				:elevation="8"
 				@click="$emit('updateActiveItemC', item)"
 			>
-				<!--active la fonction active item -> homeView-->
 
 				<!-- Affiche le nom de l'élément dans l'onglet -->
 				{{ item.name }}
