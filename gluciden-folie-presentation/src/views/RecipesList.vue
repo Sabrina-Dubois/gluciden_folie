@@ -1,5 +1,5 @@
 <template>
-	<v-container class="Recip-List-container" fluid>
+	<v-container class="Recip-list-container" fluid>
 		<v-card class="d-flex mx-auto my-auto">
 			<h1>{{ $t('recipe_list.title') }}</h1>
 			<v-container fluid>
@@ -26,8 +26,12 @@
 								</v-card-title>
 							</v-img>
 							<v-card-actions class="button d-flex">
-								<v-btn icon="mdi-heart"> </v-btn>
-								<v-btn icon="mdi-share-variant"></v-btn>
+								<v-btn 
+								icon="mdi-heart"
+								></v-btn>
+								<v-btn 
+								icon="mdi-share-variant"
+								></v-btn>
 								<v-btn
 									icon="mdi-pencil"
 									@click="updateRecipe(recipe.id)"
@@ -101,14 +105,13 @@ export default {
 </script>
 
 <style scoped>
-.Recip-List-container {
+.recip-list-container {
 	max-width: 900px;
 }
 
 .ml-4 {
 	margin-left: 50px;
 }
-/* Day recipe */
 
 .v-card-actions {
 	height: 10px;

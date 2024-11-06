@@ -77,7 +77,7 @@ public class RecipeService {
 		recipes.deleteById(id);
 	}
 
-	// Modifier uen recette
+	// Modifier une recette
 	public void updateOne(long id, RecipeUpdateDto inputs) {
 		Recipe entity = recipes.findById(id).orElseThrow();
 		entity.setName(inputs.name());

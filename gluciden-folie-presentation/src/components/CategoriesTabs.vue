@@ -20,11 +20,15 @@
 <script>
 export default {
 	name: "CategoriesTabs",
-	data() {},
+	data() {
+		return {
+			tab: null, // Ajoute la propriété 'tab' avec une valeur par défaut
+		};
+	},
 	props: {
 		categories: {
 			type: Array,
-			default:() => [],
+			default: () => [],
 		},
 	},
 	// récuperer évenement
@@ -35,7 +39,7 @@ export default {
 	},
 	created() {
 		//ecouter event 'categoryCreated' composant enfant
-		this.$emit("categoryCreated", this.addCategory)
+		this.$emit("categoryCreated", this.addCategory);
 	},
 	// Ajouter la nouvelle catégorie à la liste des catégories après création réussie
 	createCategory() {

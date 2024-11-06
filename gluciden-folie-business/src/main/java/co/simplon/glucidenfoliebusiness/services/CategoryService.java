@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.simplon.glucidenfoliebusiness.dtos.CategoryCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.CategoryUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.CategoryViewDto;
 import co.simplon.glucidenfoliebusiness.entities.Category;
 import co.simplon.glucidenfoliebusiness.repositories.CategoryRepository;
@@ -43,6 +44,14 @@ public class CategoryService {
 	// Suprimer une catégorie
 	public void deleteOne(Long id) {
 		categories.deleteById(id);
+	}
+
+	// Modifier une catégorie
+	public void updateOne(long id, CategoryUpdateDto inputs) {
+		Category entity = categories.findById(id).orElseThrow();
+		entity.setName(inputs.name());
+
+		categories.save(entity);
 	}
 
 	// Récupère une catégorie

@@ -7,13 +7,6 @@
     "link_list_categories": "Liste des catégories",
     "button": "Connexion"
   },
-  "//general": {
-    "//welcome": "Bienvenue",
-    "//search": "Rechercher des recettes",
-    "//favorites": "Recettes favorites",
-    "//add_recipe": "Ajouter une recette",
-    "//logout": "Se déconnecter"
-  },
   "home": {
     "title": "Bienvenue sur GLUCID'EN FOLIE",
     "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot cake'.Moelleux et épicé, il sera parfait pour une pause gourmande, saine et typiquement britannique!"
@@ -33,17 +26,7 @@
     }
   },
   "recipe_list": {
-    "title": "Liste des recettes",
-    "//no_recipes": "Aucune recette disponible",
-    "//view_details": "Voir les détails"
-  },
-  "//recipe_details": {
-    "//title": "Détails de la recette",
-    "/:ingredients": "Ingrédients",
-    "//instructions": "Instructions",
-    "//rating": "Note",
-    "//comments": "Commentaires",
-    "//add_comment": "Ajouter un commentaire"
+    "title": "Liste des recettes"
   },
   "update_recipe": {
     "page": {
@@ -72,14 +55,15 @@
   "category_list": {
     "title": "Liste des catégories"
   },
-  "//favorites": {
-    "//title": "Vos recettes favorites",
-    "//no_favorites": "Vous n'avez pas encore ajouté de recettes favorites."
-  },
-  "search": {
-    "title": "Rechercher des recettes par ingrédients",
-    "placeholder": "Entrez des ingrédients...",
-    "no_results": "Aucune recette trouvée pour votre recherche."
+  "update_category": {
+    "page": {
+      "title": "Modifier une nouvelle catégorie",
+      "category_title": {
+        "category_title": "Titre de la catégorie",
+        "label": "Nom de la catégorie"
+      },
+      "button": "Enregistrer"
+    }
   },
   "errors": {
     "not_found": "Page non trouvée",
