@@ -1,28 +1,23 @@
 <template>
-	<CategoriesTabs :categories="items" @updateActiveItemC="updateActiveItemP" />
-	<!-- si le nombre de clé de l'objet > 0  prendre toutes les clé pour en faire un array-->
-	<RecipesList
-		:category="activeItem"
-		v-if="Object.keys(activeItem).length !== 0"
-	/>
-	<HomeComp v-else />
+	<CategoriesLayout :showCreateCategory="false" />
+	<HomeComp />
 </template>
 
 <script>
+import apiClient from "@/api/axiosConfig";
 import HomeComp from "../components/HomeComp.vue";
-import CategoriesTabs from "@/components/CategoriesTabs.vue";
-import RecipesList from "@/components/RecipesList.vue";
+import CategoriesLayout from "../components/CategoriesLayout.vue";
 
 export default {
 	name: "Home",
 	components: {
-		CategoriesTabs,
 		HomeComp,
-		RecipesList,
+		CategoriesLayout
 	},
 	data() {
 		//initialiser des données mais pas de manipulation des données
 		return {
+			categories: [],
 			items: [
 				{
 					name: "Sans Lactose",
@@ -127,12 +122,23 @@ export default {
 			],
 			activeItem: {},
 		};
-	},
+	}, 
 	//mettre a jour la valeur activeItemP POUR PRENDRE la valeur de item (arg)
 	methods: {
-		updateActiveItemP(item) {
-			this.activeItem = item;
+		async fetchCategories() {
+			try {
+				const response = await apiClient.get("/categories");
+				this.items = response.data
+			} catch(error) {
+				console.error("Erreur lors de la récupératio des catégories:", error)
+			}
 		},
+	},
+	mounted() {
+		// Charger les catégories à l'initialisation du composant
+		this.fetchCategories();
+		//const layout = new CategoriesLayout();
+		//this.categories = layout.categories;
 	},
 };
 </script>

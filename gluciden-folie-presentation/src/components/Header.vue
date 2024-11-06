@@ -11,13 +11,19 @@
 			</v-btn>
 			<v-btn class="mb-2">
 				<router-link :to="{ name: 'recipesList' }">{{
-					$t("header.link_list")
+					$t("header.link_list_recipes")
 				}}</router-link>
 			</v-btn>
 			<v-btn class="mb-2">
 				<router-link :to="{ name: 'createRecipe' }">{{
 					$t("header.link_create")
 				}}</router-link>
+			</v-btn>
+			<v-btn class="mb-2">
+				<router-link :to="{ name: 'createCategory' }">Catégorie</router-link>
+			</v-btn>
+			<v-btn class="mb-2">
+				<router-link :to="{ name: 'categoriesList' }">{{ $t("header.link_list_categories") }}</router-link>
 			</v-btn>
 		</v-col>
 
