@@ -24,7 +24,7 @@ const router = createRouter({
       component: () => import("../views/CreateRecipe.vue"),
     },
     {
-      path: "/modifier-recette/:id", // a faire en francais
+      path: "/modifier-recette/:id",
       name: "updateRecipe",
       component: () => import("@/views/UpdateRecipe.vue"),
     },
@@ -42,6 +42,11 @@ const router = createRouter({
       path: "/liste-catégories",
       name: "categoriesList",
       component: () => import("../views/CategoriesList.vue"),
+    },
+    {
+      path: "/modifier-catégorie/:id",
+      name: "updateCategory",
+      component: () => import("@/views/UpdateCategory.vue"),
     },
   ],
 });

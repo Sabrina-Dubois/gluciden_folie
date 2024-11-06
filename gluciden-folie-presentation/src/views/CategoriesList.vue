@@ -1,10 +1,9 @@
 <template>
-	<v-container class="category-List-container" fluid>
+	<v-container class="category-list-container" fluid>
 		<v-card class="d-flex mx-auto my-auto">
 			<h1>{{ $t('category_list.title') }}</h1>
 			<v-container fluid>
 				<v-row dense>
-					<!-- Card & boutons -->
 					<v-col
 						v-for="category in categories"
 						:key="category.name"
@@ -18,10 +17,10 @@
 								</v-card-title>
 							
 							<v-card-actions class="button d-flex">
-								<!-- <v-btn
+								<v-btn
 									icon="mdi-pencil"
-									@click="updateRecipe(category.id)"
-								></v-btn> -->
+									@click="updateCategory(category.id)"
+								></v-btn> 
 								<v-btn 
 									icon="mdi-delete" 
 									@click="deleteCategory(category.id)">
@@ -50,6 +49,12 @@ export default {
 	beforeMount() {
 		this.initCategories();
 	},
+	beforeRouteEnter(to, from, next) {
+        // Appel de la méthode `initRecipes` après la création du composant
+        next(vm => {
+            vm.initCategories(); // Ici on appelle la méthode pour récupérer les recettes
+        });
+	},
 
 	methods: {
 		async initCategories() {
@@ -75,19 +80,22 @@ export default {
 				}
 			}
 		},
+		//renvoyer vers la page update
+		updateCategory(categoryId) {
+			this.$router.push({ name: "updateCategory", params: { id: categoryId } });
+		},
 	},
 };
 </script>
 
 <style scoped>
-.Recip-List-container {
+.category-list-container {
 	max-width: 900px;
 }
 
 .ml-4 {
 	margin-left: 50px;
 }
-/* Day recipe */
 
 .v-card-actions {
 	height: 10px;

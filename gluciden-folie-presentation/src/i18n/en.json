@@ -7,13 +7,6 @@
     "link_list_categories": "Categories list",
     "button": "Connection"
   },
-  "//general": {
-    "//welcome": "Welcome",
-    "//search": "Search for recipes",
-    "//favorites": "Favorite recipes",
-    "//add_recipe": "Add a recipe",
-    "//logout": "Logout"
-  },
   "home": {
     "title": "Welcome to GLUCID'EN FOLIE",
     "description": "Travel to England with our recipe of the day: an authentic 'Carrot cake'.Moist and spicy, it will be perfect for a gourmet, healthy and typically British break!"
@@ -33,17 +26,7 @@
     }
   },
   "recipe_list": {
-    "title": "Recipe List",
-    "//no_recipes": "No recipes available",
-    "//view_details": "View details"
-  },
-  "//recipe_details": {
-    "//title": "Recipe Details",
-    "//ingredients": "Ingredients",
-    "//instructions": "Instructions",
-    "//rating": "Rating",
-    "//comments": "Comments",
-    "//add_comment": "Add a comment"
+    "title": "Recipe List"
   },
   "update_recipe": {
     "page": {
@@ -72,18 +55,19 @@
   "category_list": {
     "title": "Category List"
   },
-  "// favorites": {
-    "//title": "Your Favorite Recipes",
-    "//no_favorites": "You don't have any favorite recipes yet."
-  },
-  "//search": {
-    "//title": "Search for Recipes by Ingredients",
-    "//placeholder": "Enter ingredients...",
-    "//no_results": "No recipes found for your search."
-  },
-  "// errors //": {
-    "// not_found //": "Page not found",
-    "// server_error //": "An error occurred. Please try again later."
+  "update_category": {
+    "page": {
+      "title": "Update category",
+      "category_title": {
+        "category_title": "Category title",
+        "label": "Category name"
+      },
+      "picture": {
+        "picture": "Picture",
+        "label": "Download picture"
+      },
+      "button": "Save"
+    }
   },
   "test_page": {
     "title": "Test Page",

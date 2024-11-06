@@ -25,6 +25,7 @@
 			<v-btn class="mb-2">
 				<router-link :to="{ name: 'categoriesList' }">{{ $t("header.link_list_categories") }}</router-link>
 			</v-btn>
+			
 		</v-col>
 
 		<v-app-bar-title class="title">Glucid'en Folie</v-app-bar-title>
