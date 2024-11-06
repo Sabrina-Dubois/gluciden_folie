@@ -46,6 +46,8 @@
 </template>
 
 <script scoped>
+import apiClient from '@/api/axiosConfig';
+
 export default {
 	name: "recipesList",
 	data() {
@@ -58,16 +60,18 @@ export default {
 	beforeMount() {
 		this.initRecipes();
 	},
+	beforeRouteEnter(to, from, next) {
+        // Appel de la méthode `initRecipes` après la création du composant
+        next(vm => {
+            vm.initRecipes(); // Ici on appelle la méthode pour récupérer les recettes
+        });
+    },
 
 	methods: {
 		async initRecipes() {
-			// pour les fichiers via HTTP -> gestion de l'encodage
-			// Json est ok pour les données textuelles mais pas pour transmettre des données binaires
-			// objet qui prends les options du fetch par defaut fetch est un GET
 			try {
-				const response = await fetch("http://localhost:8080/recipes");
-				const json = await response.json();
-				this.recipes = json;
+				const response = await apiClient.get("/recipes");
+				this.recipes = response.data;
 			} catch (error) {
 				console.error(error);
 			}
@@ -75,21 +79,10 @@ export default {
 		async deleteRecipe(recipeId) {
 			if (confirm("Veux-tu supprimer cette recette ?")) {
 				try {
-					const response = await fetch(
-						`http://localhost:8080/recipes/${recipeId}`,
-						{
-							method: "DELETE",
-						}
+					const response = await apiClient.delete(`/recipes/${recipeId}`,
 					);
-					if (response.ok) {
-						// Supprimer la recette de la liste affichée
-						//this.recipes = this.recipes.filter(
-						//(recipe) => recipe.id !== recipeId
-						//);
-
-						//avantage -> ne pas mettre de logique métier dans le front
-						//inconvéniant -> 1 appel htpp en +
-						await this.initRecipes();
+					if (response.status === 204 || response.status === 200 ) {
+						this.initRecipes();
 						alert("Recette supprimée");
 					} else {
 						alert("Erreur lors de la suppression de la recette");

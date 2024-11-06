@@ -1,9 +1,10 @@
 {
   "header": {
     "link_test": "Test",
-    "link_list": "Recipe list",
+    "link_list_recipes": "Recipes list",
     "link_create": "Create recipe",
     "link_update": "Update recipe",
+    "link_list_categories": "Categories list",
     "button": "Connection"
   },
   "//general": {
@@ -22,11 +23,11 @@
       "title": "Create a new recipe",
       "recipe_title": {
         "recipe_title": "Recipe title",
-        "//label": "Recipe name"
+        "label": "Recipe name"
       },
       "picture": {
         "picture": "Picture",
-        "//label": "Download picture"
+        "label": "Download picture"
       },
       "button": "Save"
     }
@@ -57,6 +58,19 @@
       },
       "button": "Save"
     }
+  },
+  "create_category": {
+    "page": {
+      "title": "Create a new category",
+      "category_title": {
+        "category_title": "Category title",
+        "label": "New category"
+      },
+      "button": "Add"
+    }
+  },
+  "category_list": {
+    "title": "Category List"
   },
   "// favorites": {
     "//title": "Your Favorite Recipes",

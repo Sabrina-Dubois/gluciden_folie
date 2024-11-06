@@ -1,22 +1,17 @@
 <template>
 	<v-card>
 		<!-- Création des onglets -->
-		<v-tabs 
-            v-model="tab"
-            class="tab"
-            :value="tab">
+		<v-tabs v-model="tab" class="tab" :value="tab">
 			<!-- Contenu des onglets -->
 			<v-tab
-				v-for="item in categories"
-				:key="item"
-				:value="item"
+				v-for="category in categories"
+				:key="category.name"
+				:value="category.name"
 				class="tab"
 				:elevation="8"
-				@click="$emit('updateActiveItemC', item)"
 			>
-
 				<!-- Affiche le nom de l'élément dans l'onglet -->
-				{{ item.name }}
+				{{ category.name }}
 			</v-tab>
 		</v-tabs>
 	</v-card>
@@ -29,14 +24,43 @@ export default {
 	props: {
 		categories: {
 			type: Array,
-			default: [],
+			default:() => [],
 		},
 	},
 	// récuperer évenement
 	methods: {
-		temp(item) {
-			console.log(item);
+		addCategory(newCategory) {
+			this.categories.push(newCategory);
 		},
+	},
+	created() {
+		//ecouter event 'categoryCreated' composant enfant
+		this.$emit("categoryCreated", this.addCategory)
+	},
+	// Ajouter la nouvelle catégorie à la liste des catégories après création réussie
+	createCategory() {
+		console.log("Nom de la catégorie:", this.newCategory);
+		const formData = new FormData();
+		formData.append("name", this.newCategory);
+		const options = { method: "POST", body: formData };
+
+		try {
+			fetch("http://localhost:8080/categories", options)
+				.then((response) => {
+					if (response.ok) {
+						console.log("Catégorie créée avec succès !");
+						this.$emit("categoryCreated", this.newCategory);
+						this.newCategory = ""; // Réinitialiser après succès
+					} else {
+						console.error("Erreur lors de la création de la catégorie");
+					}
+				})
+				.catch((error) => {
+					console.error("Erreur lors de la requête API :", error);
+				});
+		} catch (error) {
+			console.error("Erreur inattendue :", error);
+		}
 	},
 };
 </script>
@@ -45,9 +69,9 @@ export default {
 .v-card {
 	width: 1000px;
 	margin: auto;
-    background-color: #5d827f !important;
-    display: flex;
-    justify-content:center;
+	background-color: #5d827f !important;
+	display: flex;
+	justify-content: center;
 }
 
 .tab {
@@ -61,5 +85,4 @@ export default {
 	color: #5d827f !important;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 </style>

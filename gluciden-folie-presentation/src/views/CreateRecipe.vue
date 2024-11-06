@@ -1,15 +1,12 @@
 <template>
 	<div class="main-content custom-bg">
-		<h1>{{ $t('create_recipe.page.title') }}</h1>
+		<h1>{{ $t("create_recipe.page.title") }}</h1>
 		<v-card class="recipeForm d-flex align-center">
-			<v-form @submit.prevent="submitForm">
-				<!--subitForm ->method valider données saisies / gérer mgs erreurs
-				//v-model -> form la valeur saisie màj auto //v-model créer un lien
-				bidirectionnel entre l'interface utilisateur et les données du composant-->
-				<h3>{{ $t('create_recipe.page.recipe_title.recipe_title') }}</h3>
+			<v-form @submit.prevent="newRecipe">
+				<h3>{{ $t("create_recipe.page.recipe_title.recipe_title") }}</h3>
 				<v-text-field
 					v-model="recipeName"
-					label="Titre de la recette"
+					:label="$t(`create_recipe.page.recipe_title.label`)"
 					hide-details
 					variant="underlined"
 				></v-text-field>
@@ -121,27 +118,26 @@
 					</v-rating>
 				</div> -->
 
-				<h3>{{ $t('create_recipe.page.picture.picture') }}</h3>
+				<h3>{{ $t("create_recipe.page.picture.picture") }}</h3>
 				<v-img
-                    v-if="imagePreview"
-                    :src="imagePreview"
-                    class="recipe-picture"
-                    height="200px"
-                    cover
-                    rounded=""
-                ></v-img>
-				
+					v-if="imagePreview"
+					:src="imagePreview"
+					class="recipe-picture"
+					height="200px"
+					cover
+					rounded=""
+				></v-img>
+
 				<v-file-input
 					v-model="recipePicture"
 					accept="image/png, image/jpeg"
-					label="Télécharger la photo de la recette"
+					:label="$t(`create_recipe.page.picture.label`)"
 					chips
-				prepend-icon="mdi-camera"
+					prepend-icon="mdi-camera"
 					variant="underlined"
 					@change="handleFileUpload"
 				>
 				</v-file-input>
-				
 
 				<!-- <h3>Choix des ingrédients</h3>
 
@@ -151,87 +147,56 @@
 					variant="underlined"
 				></v-textarea> -->
 
-				<v-btn class="custom-btn" ml-5 rounded="" type="submit"
-					>{{ $t('create_recipe.page.button') }}</v-btn
-				>
+				<v-btn class="custom-btn" ml-5 rounded="" type="submit">{{
+					$t("create_recipe.page.button")
+				}}</v-btn>
 			</v-form>
 		</v-card>
 	</div>
 </template>
 
 <script>
+import apiClient from "../api/axiosConfig";
+
 export default {
 	name: "createRecipe",
 	//data -> retourne obj qui contient les données réctives du composant
 	data() {
 		return {
 			recipeName: "", // modèle nom initialise et utiliser le v-model dans le template
-			// selectedType: null,
-			// types: [
-			// 	{ name: "Gâteaux", icon: " mdi-cake" },
-			// 	{ name: "Minis", icon: "mdi-cupcake" },
-			// 	{ name: "Verrines", icon: "mdi-cup-outline" },
-			// 	{ name: "Crêpes", icon: "mdi-database" },
-			// 	{ name: "Boissons", icon: "mdi-coffee" },
-			// 	{ name: "Sans Gluten", icon: "mdi-barley-off" },
-			// 	{ name: "Sans Lactose", icon: "mdi-cup-off-outline" },
-			// 	{ name: "Hyper protéiné", icon: "mdi-dumbbell" },
-			// 	{ name: "Hypo glucide", icon: "mdi-spoon-sugar" },
-			// ],
-			// selectedCook: null,
-			// cooks: [
-			// 	{ name: "Plaque de cuisson", icon: "mdi-gas-burner" },
-			// 	{ name: "Four", icon: "mdi-stove" },
-			// 	{ name: "Pas de cuisson", icon: "mdi-microwave-off" },
-			// 	{ name: "Micro-onde", icon: "mdi-microwave" },
-			// 	{ name: "Autres", icon: "mdi-dots-horizontal" },
-			// ],
-			// rating: 0,
-			// colors: ["red", "orange", "grey", "cyan"],
-			// labelsDifficulty: ["Très facile", "Facile", "Moyen", "Difficile"],
-			// labelsCost: ["Bon marché", "Coût moyen", "Assez chere"],
 			recipePicture: null,
-        imagePreview: null,
+			imagePreview: null,
 		};
 	},
 	methods: {
 		handleFileUpload(event) {
-        const file = event.target.files[0]; // Récupérez le fichier sélectionné
-        if (file) {
-            this.recipePicture = file; // Mettez à jour la propriété de l'image
-            this.imagePreview = URL.createObjectURL(file); // Créez une URL de prévisualisation
-        }
-    },
-		submitForm() {
-			console.log("Nom de la recette:", this.recipeName);
-			console.log("Photo de la recette:", this.recipePicture);
-
+			const file = event.target.files[0]; // Récupérez le fichier sélectionné
+			if (file) {
+				this.recipePicture = file; // Mettez à jour la propriété de l'image
+				this.imagePreview = URL.createObjectURL(file); // Créez une URL de prévisualisation
+			}
+		},
+		async newRecipe() {
 			//pour les fichiers via HTTP -> gestion de l'encodage
 			//Json est ok pour les données textuelles mais pas pour transmettre des données binaires
 			const formData = new FormData();
 			formData.append("name", this.recipeName);
 			formData.append("picture", this.recipePicture); // image du formulaire
 
-			//objet qui prends les options du fetch par defaut fetch est un GET
-			const options = {
-				method: "POST",
-				body: formData,
-			};
 			try {
-				const response = fetch("http://localhost:8080/recipes", options)
-				//pour réinitialiser les variables lorsque le validation est OK
-					.then(() => {
-						this.recipeName = "";
-						this.recipePicture = null;
-					})
-					this.$router.push({ name: 'recipesList' });
-	
-					if (response.ok) {
-                    console.log("Recette crée avec succès !");
-					this.$router.push({ name: 'recipesList' });
-                } else {
-                    console.error("Erreur lors de la création de la recette");
-                }
+				const response = await apiClient.post("/recipes", formData)
+
+				if (response.status === 200) {
+					//pour réinitialiser les variables lorsque le validation est OK
+					this.recipeName = "";
+					this.recipePicture = null;
+
+					console.log("Recette crée avec succès !");
+					//Renvoi liste de recettes
+					this.$router.push({ name: "recipesList" });
+				} else {
+					console.error("Erreur lors de la création de la recette");
+				}
 			} catch (error) {
 				console.error(error);
 			}
