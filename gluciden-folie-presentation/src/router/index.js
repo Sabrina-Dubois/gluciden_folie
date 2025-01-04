@@ -14,9 +14,9 @@ const router = createRouter({
       component: () => import("../views/Test.vue"),
     },
     {
-      path: "/connexion",
-      name: "connection",
-      component: () => import("../views/Connection.vue"),
+      path: "/:action",
+      name: "authentification",
+      component: () => import("../views/Authentification.vue"),
     },
     {
       path: "/creer-recette",

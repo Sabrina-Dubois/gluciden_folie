@@ -9,61 +9,80 @@
   },
   "home": {
     "title": "Bienvenue sur GLUCID'EN FOLIE",
-    "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot cake'.Moelleux et épicé, il sera parfait pour une pause gourmande, saine et typiquement britannique!"
+    "recipeOfTheDay": {
+      "title": "Recette du jour",
+      "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot Cake'. Moelleux et épicé, parfait pour une pause gourmande, saine et typiquement britannique !"
+    },
+    "foodieFavorite": {
+      "title": "Coup de cœur des gourmands"
+    }
+  },
+  "auth": {
+    "toggleToRegister": "Pas encore inscrit ? Inscrivez-vous",
+    "toggleToLogin": "Déjà inscrit ? Connectez-vous",
+    "button-auth": "Créer un compte",
+    "button-connexion": "Se connecter",
+    "email": {
+      "label-mail": "Email",
+      "placeholder-mail": "Enter your email "
+    },
+    "password": {
+      "label-pass": "Mot de passe",
+      "placeholder-pass": "Entrez votre mot de passe"
+    }
   },
   "create_recipe": {
-    "page": {
-      "title": "Créer une nouvelle recette",
-      "recipe_title": {
-        "recipe_title": "Titre de la recette",
-        "label": "Nom de la recette"
-      },
-      "picture": {
-        "picture": "Photo",
-        "label": "Télécharger la photo"
-      },
-      "button": "Enregistrer"
-    }
+    "title": "Créer une nouvelle recette",
+    "recipe": {
+      "name": "Titre de la recette",
+      "label": "Nom de la recette"
+    },
+    "picture": "Photo",
+    "label": "Télécharger la photo",
+    "button": "Créer"
   },
   "recipe_list": {
     "title": "Liste des recettes"
   },
   "update_recipe": {
-    "page": {
-      "title": "Modifier une nouvelle recette",
-      "recipe_title": {
-        "recipe_title": "Titre de la recette",
-        "label": "Nom de la recette"
-      },
-      "picture": {
-        "picture": "Photo",
-        "label": "Télécharger la photo"
-      },
-      "button": "Enregistrer"
-    }
+    "title": "Modifier une nouvelle recette",
+    "recipe": {
+      "name": "Titre de la recette",
+      "label": "Nom de la recette"
+    },
+    "picture": {
+      "picture": "Photo",
+      "label": "Télécharger la photo"
+    },
+    "button": "Enregistrer"
   },
   "create_category": {
+    "title": "Créer une nouvelle catégorie",
+    "category": {
+      "name": "Nom de la catégorie",
+      "label": "Nouvelle catégorie"
+    },
+    "button": "Ajouter"
+  },
+  "create_sub_category": {
     "page": {
-      "title": "Créer une nouvelle catégorie",
-      "category_title": {
-        "category_title": "Nom de la catégorie",
-        "label": "Nouvelle catégorie"
-      },
-      "button": "Ajouter"
+      "title": "Ajouter une sous-catégorie",
+      "button": "Ajouter sous-catégorie"
     }
   },
   "category_list": {
     "title": "Liste des catégories"
   },
   "update_category": {
-    "page": {
-      "title": "Modifier une nouvelle catégorie",
-      "category_title": {
-        "category_title": "Titre de la catégorie",
-        "label": "Nom de la catégorie"
-      },
-      "button": "Enregistrer"
-    }
+    "title": "Modifier une nouvelle catégorie",
+    "category": {
+      "name": "Titre de la catégorie",
+      "label": "Nom de la catégorie"
+    },
+    "picture": "Photo",
+    "label": "Tèlèchager la photo",
+
+    "button": "Enregistrer"
   },
   "errors": {
     "not_found": "Page non trouvée",

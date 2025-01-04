@@ -1,19 +1,22 @@
 <template>
 	<div class="main-content custom-bg">
-		<h1>{{ $t("update_recipe.page.title") }}</h1>
+		<h1>{{ $t("update_recipe.title") }}</h1>
 		<v-card class="recipeForm d-flex align-center">
+			<!-- Formulaire pour modifier une recette -->
 			<v-form @submit.prevent="updateRecipe">
-				<h3>{{ $t("update_recipe.page.recipe_title.recipe_title") }}</h3>
+				<h3>{{ $t("update_recipe.title") }}</h3>
 				<v-text-field
 					v-model="recipeName"
-					label="Nom de la recette"
-					hide-details
+					:label="$t(`update_recipe.recipe.label`) + ' *'"
+					:error="v$.recipeName.$error"
+					:error-messages="getRecipeNameErrorMessages()"
+					hide-details="auto"
 					variant="underlined"
 				></v-text-field>
 
-				<h3>{{ $t("update_recipe.page.picture.picture") }}</h3>
+				<h3>{{ $t("update_recipe.picture.picture") }}</h3>
 
-				<!-- Afficher l'image existante ou nouvellement téléchargée -->
+				<!-- Afficher l'image existante ou nouvelle -->
 				<v-img
 					v-if="imagePreview"
 					:src="imagePreview"
@@ -23,11 +26,13 @@
 					rounded=""
 				></v-img>
 
-				<!-- Champ pour télécharger une nouvelle image -->
+				<!-- Champs nouvelle image -->
 				<v-file-input
 					@change="handleFileUpload"
 					accept="image/*"
-					label="Télécharger la photo de la recette"
+					:label="$t(`update_recipe.label`) + ' *'"
+					:error="v$.recipePicture.$error"
+					:error-messages="getRecipePictureErrorMessages()"
 					chips
 					variant="underlined"
 				></v-file-input>
@@ -38,7 +43,7 @@
 					rounded=""
 					@click="updateRecipe"
 					type="submit"
-					>{{ $t("update_recipe.page.button") }}</v-btn
+					>{{ $t("update_recipe.button") }}</v-btn
 				>
 			</v-form>
 		</v-card>
@@ -47,6 +52,9 @@
 
 <script>
 import apiClient from "../api/axiosConfig";
+import { recipeValidation } from "../utils/validationRules.js";
+import useVuelidate from "@vuelidate/core";
+import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "updateRecipe",
@@ -54,11 +62,22 @@ export default {
 		return {
 			id: this.$route.params.id, // Récupération de l'ID de la recette
 			recipeName: "",
-			recipePicture: null,
-			imagePreview: null,
+			recipePicture: "",
+			imagePreview: "",
+			v$: null,
+			submitted: false,
 		};
 	},
 	beforeMount() {
+		this.initRecipe();
+	},
+	validations() {
+		return recipeValidation;
+	},
+	created() {
+		this.v$ = useVuelidate(); // Initialisation de Vuelidate
+	},
+	mounted() {
 		this.initRecipe();
 	},
 	methods: {
@@ -81,20 +100,30 @@ export default {
 		},
 		// Mise à jour de la recette
 		async updateRecipe() {
+			this.submitted = true; // formulaire soumis
+			this.v$.$touch(); // Marque tous les champs comme touchés
+			if (this.v$.$invalid) {
+				console.log("Formulaire invalide");
+				return; // Si le formulaire est invalide, arrête la soumission
+			}
 			const formData = new FormData();
 			formData.append("name", this.recipeName);
 
 			if (this.recipePicture) {
-				formData.append("picture", this.recipePicture); // Ajouter la nouvelle image si elle est modifiée
+				formData.append("picture", this.recipePicture);
 			}
 
 			try {
-				const response = await apiClient.put(`/recipes/${this.id}`, formData);
+				const response = await apiClient.put(`/recipes/${this.id}`, formData, {
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				});
 
 				if (response.status === 200) {
+					this.submitted = false;
 					console.log("Recette mise à jour avec succès !");
 					this.$router.push({ name: "recipesList" });
-
 
 					if (this.recipePicture) {
 						this.imagePreview = URL.createObjectURL(this.recipePicture);
@@ -113,6 +142,39 @@ export default {
 				}
 			}
 		},
+		getRecipeNameErrorMessages() {
+			const errors = [];
+			console.log("Validation status:", this.v$.recipeName);
+
+			if (this.v$.recipeName.$error) {
+				if (this.v$.recipeName.required.$invalid) {
+					errors.push(messages.required);
+				}
+				if (this.v$.recipeName.minLength.$invalid) {
+					errors.push(messages.minLength(4));
+				}
+				if (this.v$.recipeName.maxLength.$invalid) {
+					errors.push(messages.maxLength(100));
+				}
+			}
+			return errors;
+		},
+		getRecipePictureErrorMessages() {
+			const errors = [];
+
+			if (this.v$.recipePicture.$error) {
+				if (this.v$.recipePicture.required.$invalid) {
+					errors.push(messages.required);
+				}
+				if (this.v$.recipePicture.validImageType.$invalid) {
+					errors.push(messages.validImageType);
+				}
+				if (this.v$.recipePicture.validImageSize.$invalid) {
+					errors.push(messages.validImageSize);
+				}
+			}
+			return errors;
+		},
 	},
 };
 </script>
@@ -127,25 +189,9 @@ export default {
 	justify-content: center;
 }
 
-h1 {
-	text-align: center;
-	margin: 20px;
-}
-
-h3 {
-	color: #5d827f;
-}
-
 .recipeForm {
 	max-width: 900px;
 	margin: auto;
-}
-
-.v-card {
-	background-color: white;
-	text-align: center;
-	margin: 0 auto;
-	padding: 20px;
 }
 
 .v-text-field,

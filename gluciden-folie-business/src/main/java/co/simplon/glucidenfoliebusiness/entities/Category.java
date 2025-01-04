@@ -1,31 +1,22 @@
 package co.simplon.glucidenfoliebusiness.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "t_categories")
-public class Category {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_category")
-	private Long id;
+public class Category extends AbstractEntity {
 
 	@Column(name = "category_name")
 	private String name;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@ManyToMany(mappedBy = "categories") // Relation inverse vers Recipe
+	private Set<Recipe> recipes = new HashSet<>();
 
 	public String getName() {
 		return name;

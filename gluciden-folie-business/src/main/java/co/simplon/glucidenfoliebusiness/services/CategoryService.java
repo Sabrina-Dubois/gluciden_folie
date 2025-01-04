@@ -1,6 +1,7 @@
 package co.simplon.glucidenfoliebusiness.services;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +37,13 @@ public class CategoryService {
 		categories.save(entity);
 	}
 
-	// Lire toutes les catégories
-	public Collection<CategoryViewDto> getAll() {
-		return categories.findAllProjectedBy();
+	// Récupérer toutes les catégories et les convertir en CategoryViewDto
+	public List<CategoryViewDto> getAll() {
+		List<Category> categoryEntities = categories.findAll();
+
+		// Convertir chaque entité Category en CategoryViewDto
+		return categoryEntities.stream().map(category -> new CategoryViewDto(category.getId(), category.getName()))
+				.collect(Collectors.toList());
 	}
 
 	// Suprimer une catégorie
@@ -54,8 +59,9 @@ public class CategoryService {
 		categories.save(entity);
 	}
 
-	// Récupère une catégorie
+	// Récupérer une catégorie par son ID
 	public CategoryViewDto getOne(Long id) {
-		return categories.findOneProjectedById(id);
+		Category category = categories.findById(id).orElseThrow();
+		return new CategoryViewDto(category.getId(), category.getName());
 	}
 }

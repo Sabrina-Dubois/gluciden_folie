@@ -1,7 +1,7 @@
 <template>
 	<v-container class="Recip-list-container" fluid>
+		<h1>{{ $t("recipe_list.title") }}</h1>
 		<v-card class="d-flex mx-auto my-auto">
-			<h1>{{ $t('recipe_list.title') }}</h1>
 			<v-container fluid>
 				<v-row dense>
 					<!-- {{ recipes }} -->
@@ -15,7 +15,10 @@
 					>
 						<v-card class="recip-card d-flex flex-column align-center" flat>
 							<v-img
-								:src="'/images/' + recipe.picture"
+								:key="recipe.picture + recipe.id"
+								:src="
+									'/images/' + recipe.picture + '?t=' + new Date().getTime()
+								"
 								class="recipe-picture"
 								height="200px"
 								cover
@@ -26,19 +29,13 @@
 								</v-card-title>
 							</v-img>
 							<v-card-actions class="button d-flex">
-								<v-btn 
-								icon="mdi-heart"
-								></v-btn>
-								<v-btn 
-								icon="mdi-share-variant"
-								></v-btn>
+								<v-btn icon="mdi-heart"></v-btn>
+								<v-btn icon="mdi-share-variant"></v-btn>
 								<v-btn
 									icon="mdi-pencil"
 									@click="updateRecipe(recipe.id)"
 								></v-btn>
-								<v-btn 
-									icon="mdi-delete" 
-									@click="deleteRecipe(recipe.id)">
+								<v-btn icon="mdi-delete" @click="deleteRecipe(recipe.id)">
 								</v-btn>
 							</v-card-actions>
 						</v-card>
@@ -50,7 +47,7 @@
 </template>
 
 <script scoped>
-import apiClient from '@/api/axiosConfig';
+import apiClient from "@/api/axiosConfig";
 
 export default {
 	name: "recipesList",
@@ -65,11 +62,11 @@ export default {
 		this.initRecipes();
 	},
 	beforeRouteEnter(to, from, next) {
-        // Appel de la méthode `initRecipes` après la création du composant
-        next(vm => {
-            vm.initRecipes(); // Ici on appelle la méthode pour récupérer les recettes
-        });
-    },
+		// Appel de la méthode `initRecipes` après la création du composant
+		next((vm) => {
+			vm.initRecipes(); // Ici on appelle la méthode pour récupérer les recettes
+		});
+	},
 
 	methods: {
 		async initRecipes() {
@@ -83,9 +80,8 @@ export default {
 		async deleteRecipe(recipeId) {
 			if (confirm("Veux-tu supprimer cette recette ?")) {
 				try {
-					const response = await apiClient.delete(`/recipes/${recipeId}`,
-					);
-					if (response.status === 204 || response.status === 200 ) {
+					const response = await apiClient.delete(`/recipes/${recipeId}`);
+					if (response.status === 204 || response.status === 200) {
 						this.initRecipes();
 						alert("Recette supprimée");
 					} else {

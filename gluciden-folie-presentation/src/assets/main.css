@@ -1,26 +1,56 @@
 @import './main.css';
 
-.title {
-  font-family: "Julius Sans One", sans-serif;
-  font-style: bold;
-  font-weight: 400;
-}
-
 body {
     font-family: "Laila", serif;
     font-weight: 400;
     font-style: normal;
 }
-
+/* *** Titres *** */
 h1 {
   color:#F29EB0 !important;
   text-align: center;
   font-family: "Julius Sans One", sans-serif;
   font-style: bold;
   text-align: center;
+  margin: 20px;
+}
+h2,
+h3 {
+	color: #5d827f;
+  text-align: center;
+  font-size: 25px;
+	margin: 20px;
 }
 
-/* Css généric header*/
+.title {
+  font-family: "Julius Sans One", sans-serif;
+  font-style: bold;
+  font-weight: 400;
+}
+/* *** Cards *** */
+.v-card {
+	background-color: white;
+	text-align: center;
+	
+	padding: 20px;
+    display: flex;
+    flex-direction: column; /* Les enfants sont empilés verticalement */
+    align-items: center; /* Aligne les enfants au centre */
+    
+}
+
+.v-card > * {
+    margin-bottom: 20px; /* Ajoute un espace de 20px sous chaque élément */
+}
+
+/* *** Boutons *** */
+.v-btn {
+	justify-items: center;
+	background-color: #5d827f;
+	color: #d3beb1;
+}
+
+/* *** Css généric header *** */
 .v-toolbar__content {
     height: 115px !important;
 }
@@ -33,17 +63,21 @@ h1 {
   display: none !important;
 }
 
-
 /* Désactiver l'effet de survol */
 .v-btn:hover .v-btn__overlay {
   background-color: transparent;
   opacity: 1;
 } 
 
-/* Désactiver l'effet d'activation 
-.v-btn:active .v-btn__underlay {
-  box-shadow: none;
-  border: none;
-} */
+:root {
+    --v-activated-opacity: 0 !important;
+    --v-theme-overlay-multiplier: 0 !important;
+}
+
+
+
+
+
+
 
 

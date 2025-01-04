@@ -7,9 +7,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
+public class CorsConfig {
 
-	@Value("${gluciden-folie-business.cors}")
+	@Value("${gluciden-folie-business.cors.allowedOrigins}")
 	private String origins;
 
 	@Bean
@@ -18,8 +18,9 @@ public class WebConfig {
 
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS")
-						.allowedOrigins(origins);
+				registry.addMapping("/**").allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
+						.allowedOrigins(origins).allowedHeaders("*").allowCredentials(true);
+				;
 			}
 		};
 	}

@@ -4,11 +4,16 @@ import fr from './i18n/fr.json';
 
 const i18n = createI18n({
     locale: 'en',
-    fallbackLocale: 'en',
+    fallbackLocale: 'fr',
     messages: {
         en,
         fr,
     }
 });
+
+// const userLang = navigator.language || navigator.userLanguage;
+//     if (!userLang.startsWith('fr')) {
+//         i18n.global.locale = 'en' ;
+//     }
 
 export default i18n;

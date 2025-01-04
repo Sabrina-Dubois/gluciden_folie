@@ -9,65 +9,74 @@
   },
   "home": {
     "title": "Welcome to GLUCID'EN FOLIE",
-    "description": "Travel to England with our recipe of the day: an authentic 'Carrot cake'.Moist and spicy, it will be perfect for a gourmet, healthy and typically British break!"
+    "recipeOfTheDay": {
+      "title": "Recipe of the Day",
+      "description": "Travel to England with our recipe of the day: an authentic 'Carrot Cake'. Moist and spiced, it’s perfect for a delicious, healthy, and typically British treat!"
+    },
+    "foodieFavorite": {
+      "title": "Foodie's Favorite"
+    }
+  },
+  "auth": {
+    "toggleToRegister": "Not registered yet? Register now",
+    "toggleToLogin": "Already registered? Login",
+    "button-auth": "Create an account",
+    "button-connexion": "Connect",
+    "email": {
+      "label-mail": "Email",
+      "placeholder-mail": "Enter your email "
+    },
+    "password": {
+      "label-pass": "Password",
+      "placeholder-pass": "Enter your password"
+    }
   },
   "create_recipe": {
-    "page": {
-      "title": "Create a new recipe",
-      "recipe_title": {
-        "recipe_title": "Recipe title",
-        "label": "Recipe name"
-      },
-      "picture": {
-        "picture": "Picture",
-        "label": "Download picture"
-      },
-      "button": "Save"
-    }
+    "title": "Create a new recipe",
+    "recipe": {
+      "name": "Recipe title",
+      "label": "Recipe name"
+    },
+    "picture": "Picture",
+    "label": "Download picture",
+    "button": "Create"
   },
   "recipe_list": {
     "title": "Recipe List"
   },
   "update_recipe": {
-    "page": {
-      "title": "Update recipe",
-      "recipe_title": {
-        "recipe_title": "Recipe title",
-        "label": "Recipe name"
-      },
-      "picture": {
-        "picture": "Picture",
-        "label": "Download picture"
-      },
-      "button": "Save"
-    }
+    "title": "Update recipe",
+    "recipe": {
+      "name": "Recipe title",
+      "label": "Recipe name"
+    },
+    "picture": "Picture",
+    "label": "Download picture",
+    "button": "Save"
   },
   "create_category": {
-    "page": {
-      "title": "Create a new category",
-      "category_title": {
-        "category_title": "Category title",
-        "label": "New category"
-      },
-      "button": "Add"
-    }
+    "title": "Create a new category",
+    "category": {
+      "name": "Category title",
+      "label": "New category"
+    },
+    "button": "Add"
   },
+
   "category_list": {
     "title": "Category List"
   },
   "update_category": {
-    "page": {
-      "title": "Update category",
-      "category_title": {
-        "category_title": "Category title",
-        "label": "Category name"
-      },
-      "picture": {
-        "picture": "Picture",
-        "label": "Download picture"
-      },
-      "button": "Save"
-    }
+    "title": "Update category",
+    "category": {
+      "name": "Category title",
+      "label": "Category name"
+    },
+
+    "picture": "Picture",
+    "label": "Download picture",
+
+    "button": "Save"
   },
   "test_page": {
     "title": "Test Page",

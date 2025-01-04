@@ -1,14 +1,15 @@
 <template>
 	<v-container class="home-comp-container" fluid>
-		<h1>{{ $t('home.title')}}</h1>
-
+		<h1>{{ $t("home.title") }}</h1>
+		
 		<v-card class="d-flex mb-4">
+			<h3>{{ $t("home.recipeOfTheDay.title") }}</h3>
 			<v-container fluid>
 				<v-row>
 					<!-- Description -->
 					<v-col cols-6 class="d-flex align-center">
 						<p class="description">
-							{{ $t('home.description') }}
+							{{ $t("home.recipeOfTheDay.description") }}
 						</p>
 					</v-col>
 
@@ -41,6 +42,8 @@
 		</v-card>
 
 		<!-- Carroussel -->
+		<v-card>
+		<h3> {{ $t("home.foodieFavorite.title") }}</h3>
 		<v-card class="carroussel">
 			<v-carousel hide-delimiters>
 				<v-carousel-item
@@ -52,6 +55,7 @@
 					<div class="text">Mousse au chocolat</div>
 				</v-carousel-item>
 			</v-carousel>
+		</v-card>
 		</v-card>
 	</v-container>
 </template>
@@ -82,11 +86,10 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-	font-family: "Laila", serif;
+/* h3 {
+	font-family: "Julius Sans One", sans-serif;
 	color: #5d827f !important;
-	text-align: center;
-}
+}  */
 
 .home-comp-container {
 	max-width: 900px;

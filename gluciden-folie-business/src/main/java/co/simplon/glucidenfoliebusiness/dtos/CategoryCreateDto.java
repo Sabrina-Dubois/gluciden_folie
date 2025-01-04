@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @CategoryCreateUnique
-public record CategoryCreateDto(@NotBlank @Size(max = 200) String name) {
+public record CategoryCreateDto(@NotBlank @Size(max = 50) String name) {
 
 }

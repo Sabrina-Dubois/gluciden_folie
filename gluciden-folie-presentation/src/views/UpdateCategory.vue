@@ -1,13 +1,16 @@
 <template>
 	<div class="main-content custom-bg">
-		<h1>{{ $t("update_category.page.title") }}</h1>
+		<h1>{{ $t("update_category.title") }}</h1>
 		<v-card class="categoryForm d-flex align-center">
+			<!-- Formulaire pour modifier une catégorie -->
 			<v-form @submit.prevent="updateCategory">
-				<h3>{{ $t("update_category.page.category_title.category_title") }}</h3>
+				<h3>{{ $t("update_category.category.name") }}</h3>
 				<v-text-field
 					v-model="categoryName"
-					label="Nom de la catégorie"
-					hide-details
+					:label="$t(`update_category.category.label`) + ' *'"
+					:error="v$.categoryName.$error"
+					:error-messages="getCategoryNameErrorMessages()"
+					hide-details="auto"
 					variant="underlined"
 				></v-text-field>
 				<v-btn
@@ -16,7 +19,7 @@
 					rounded=""
 					@click="updateCategory"
 					type="submit"
-					>{{ $t("update_category.page.button") }}</v-btn
+					>{{ $t("update_category.button") }}</v-btn
 				>
 			</v-form>
 		</v-card>
@@ -24,7 +27,11 @@
 </template>
 
 <script>
+import { useCategoriesStore } from "@/stores/categoriesStore.js";
 import apiClient from "../api/axiosConfig";
+import { categoryValidation } from "../utils/validationRules.js";
+import useVuelidate from "@vuelidate/core";
+import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "updateCategory",
@@ -32,10 +39,19 @@ export default {
 		return {
 			id: this.$route.params.id, // Récupération de l'ID de la catégorie
 			categoryName: "",
+			v$: null,
+			submitted: false,
 		};
 	},
-	beforeMount() {
-		this.initCategory();
+	created() {
+    this.v$ = useVuelidate(); // Initialisation de Vuelidate
+    this.initCategory(); // Récupère la catégorie à modifier
+  },
+	// beforeMount() {
+	// 	this.initCategory();
+	// },
+	validations() {
+		return categoryValidation;
 	},
 	methods: {
 		async initCategory() {
@@ -49,31 +65,70 @@ export default {
 
 		// Mise à jour de la catégorie
 		async updateCategory() {
-			const formData = new FormData();
-			formData.append("name", this.categoryName);
-
+			this.submitted = true;
+			this.v$.$touch();
+			if (this.v$.$invalid) return;
 			try {
-				const response = await apiClient.put(
-					`/categories/${this.id}`,
-					formData
-				);
-
-				if (response.status === 200) {
-					console.log("Catégorie mise à jour avec succès !");
-					this.$router.push({ name: "categoriesList" });
-				} else {
-					console.error("Erreur lors de la mise à jour de la catégorie");
-				}
+				await useCategoriesStore().updateCategory(this.id, this.categoryName);
+				this.$router.push({ name: "categoriesList" });
 			} catch (error) {
-				if (error.response) {
-					console.error(
-						"Erreur réseau lors de la mise à jour:",
-						error.response.data
-					);
-				} else {
-					console.error("Erreur réseau lors de la mise à jour:", error.message);
+				console.error("Erreur lors de la mise à jour de la catégorie:", error);
+			}
+		},
+		// async updateCategory() {
+		// 	this.submitted = true; // formulaire soumis
+		// 	this.v$.$touch(); // Marque tous les champs comme touchés
+		// 	if (this.v$.$invalid) {
+		// 		console.log("Formulaire invalide");
+		// 		return; // Si le formulaire est invalide, arrête la soumission }
+		// 	}
+		// 	const formData = new FormData();
+		// 	formData.append("name", this.categoryName);
+
+		// 	try {
+		// 		const response = await apiClient.put(
+		// 			`/categories/${this.id}`,
+		// 			formData,
+		// 			{
+		// 				headers: {
+		// 					"Content-Type": "multipart/form-data", // Spécifie que l'on envoie du multipart/form-data
+		// 				},
+		// 			}
+		// 		);
+
+		// 		if (response.status === 200) {
+		// 			console.log("Catégorie mise à jour avec succès !");
+		// 			this.$router.push({ name: "categoriesList" });
+		// 		} else {
+		// 			console.error("Erreur lors de la mise à jour de la catégorie");
+		// 		}
+		// 	} catch (error) {
+		// 		if (error.response) {
+		// 			console.error(
+		// 				"Erreur réseau lors de la mise à jour:",
+		// 				error.response.data
+		// 			);
+		// 		} else {
+		// 			console.error("Erreur réseau lors de la mise à jour:", error.message);
+		// 		}
+		// 	}
+		// },
+		getCategoryNameErrorMessages() {
+			const errors = [];
+			console.log("Validation status:", this.v$.categoryName);
+
+			if (this.v$.categoryName.$error) {
+				if (this.v$.categoryName.required.$invalid) {
+					errors.push(messages.required);
+				}
+				if (this.v$.categoryName.minLength.$invalid) {
+					errors.push(messages.minLength(4));
+				}
+				if (this.v$.categoryName.maxLength.$invalid) {
+					errors.push(messages.maxLength(50));
 				}
 			}
+			return errors;
 		},
 	},
 };
@@ -89,25 +144,9 @@ export default {
 	justify-content: center;
 }
 
-h1 {
-	text-align: center;
-	margin: 20px;
-}
-
-h3 {
-	color: #5d827f;
-}
-
 .categoryForm {
 	max-width: 900px;
 	margin: auto;
-}
-
-.v-card {
-	background-color: white;
-	text-align: center;
-	margin: 0 auto;
-	padding: 20px;
 }
 
 .v-text-field {
@@ -115,8 +154,28 @@ h3 {
 	color: #5d827f;
 }
 
+/* *** Boutons *** */
 .v-btn {
+	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
+}
+
+/* *** Validation *** */
+.v-text-field--error .v-input__control,
+.v-file-input--error .v-input__control {
+	border-color: #ff5252;
+}
+.v-text-field--error .v-input__label,
+.v-file-input--error .v-input__label {
+	color: #ff5252;
+}
+.v-text-field--error .v-input__icon,
+.v-file-input--error .v-input__icon {
+	color: #ff5252;
+}
+.v-messages__message {
+	color: red !important;
+	font-weight: bold;
 }
 </style>

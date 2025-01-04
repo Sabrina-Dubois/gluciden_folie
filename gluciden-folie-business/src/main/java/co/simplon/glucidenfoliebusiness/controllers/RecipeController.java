@@ -10,13 +10,14 @@ import java.util.Collection;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import co.simplon.glucidenfoliebusiness.dtos.RecipeCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.RecipeUpdateDto;
@@ -38,10 +39,10 @@ public class RecipeController {
 		this.service = service;
 	}
 
-	@PostMapping // post vient dire que c'est pour créer
-	void create(@Valid @ModelAttribute RecipeCreateDto inputs) {
-		service.create(inputs);
-
+	@PostMapping
+	void create(@Valid @RequestParam("name") String name, @RequestParam("picture") MultipartFile picture) {
+		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture);
+		service.create(recipeCreateDto);
 	}
 
 	@GetMapping
@@ -57,8 +58,11 @@ public class RecipeController {
 	}
 
 	@PutMapping("/{id}")
-	void updateOne(@PathVariable("id") Long id, @Valid @ModelAttribute RecipeUpdateDto inputs) {
-		service.updateOne(id, inputs);
+	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
+			@RequestParam(value = "picture", required = false) MultipartFile picture) {
+		// Créez un DTO avec les données reçues
+		RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture);
+		service.updateOne(id, recipeUpdateDto);
 	}
 
 	@GetMapping("/{id}")

@@ -9,7 +9,6 @@ import * as directives from "vuetify/directives";
 import "@mdi/font/css/materialdesignicons.css";
 import "@mdi/font/css/materialdesignicons.min.css";
 
-
 import App from "./App.vue";
 import router from "./router";
 
@@ -18,10 +17,11 @@ const vuetify = createVuetify({
   directives,
 });
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia());
 app.use(router);
 app.use(vuetify);
-app.use(i18n)
+app.use(i18n);
+app.use(pinia);
 
 app.mount("#app");

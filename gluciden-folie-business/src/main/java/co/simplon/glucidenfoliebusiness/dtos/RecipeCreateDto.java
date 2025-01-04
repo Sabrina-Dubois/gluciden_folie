@@ -9,11 +9,11 @@ import co.simplon.glucidenfoliebusiness.validations.FileSize;
 import co.simplon.glucidenfoliebusiness.validations.FileType;
 import co.simplon.glucidenfoliebusiness.validations.RecipeCreateUnique;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @RecipeCreateUnique
-public record RecipeCreateDto(@NotBlank @Size(max = 200) String name,
-		@FileType(types = {
-			MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE })
-		@FileSize(max = FileSize.TWO_MB) MultipartFile picture ){
-	}
+public record RecipeCreateDto(@NotBlank @Size(max = 100) String name, @FileType(types = {
+		MediaType.IMAGE_JPEG_VALUE,
+		MediaType.IMAGE_PNG_VALUE }) @NotNull @FileSize(max = FileSize.TWO_MB) MultipartFile picture){
+}

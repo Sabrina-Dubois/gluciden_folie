@@ -1,47 +1,119 @@
 <template>
 	<v-app-bar class="custom-app-bar">
-		<v-app-bar-nav-icon></v-app-bar-nav-icon>
+		<!-- Menu principal -->
+		<v-menu
+			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory "
+			v-model="menuOpen"
+			offset-y
+			class="text-center"
+		>
+			<template v-slot:activator="{ props }">
+				<v-btn icon v-bind="props">
+					<v-icon>mdi-menu</v-icon>
+				</v-btn>
+			</template>
+
+
+			<v-list>
+				<!-- Accueil -->
+				<v-list-item>
+					<v-list-item-title>Accueil</v-list-item-title>
+				</v-list-item>
+
+				<!-- Favoris -->
+				<v-list-item>
+					<v-list-item-title>Favoris</v-list-item-title>
+				</v-list-item>
+
+				<!-- Création de recettes -->
+				<v-list-item>
+					<router-link :to="{ name: 'createRecipe' }">{{
+						$t("header.link_create")
+					}}</router-link>
+				</v-list-item>
+
+				<!-- Liste des recettes -->
+				<v-list-item>
+					<router-link :to="{ name: 'recipesList' }">{{
+						$t("header.link_list_recipes")
+					}}</router-link>
+				</v-list-item>
+
+				<!-- Création des catégories -->
+				<v-list-item>
+					<router-link :to="{ name: 'createCategory' }">Catégorie</router-link>
+				</v-list-item>
+
+				<!-- Liste des catégories -->
+				<v-list-item>
+					<router-link :to="{ name: 'categoriesList' }">{{
+						$t("header.link_list_categories")
+					}}</router-link>
+				</v-list-item>
+
+				<!-- Test -->
+				<v-list-item>
+					<router-link to="/test">{{ $t("header.link_test") }}</router-link>
+				</v-list-item>
+
+
+				<!-- Langue -->
+				<v-menu
+					:open-on-focus="false"
+					v-model="languageMenuOpen"
+					offset-y
+					variant
+					submenu
+				>
+					<template v-slot:activator="{ props }">
+						<v-list-item
+							v-bind="props"
+							class="d-flex justify-space-between"
+							variant="text"
+						>
+							<v-list-item-title class="langue">Langues</v-list-item-title>
+							<template v-slot:append>
+								<v-icon icon="mdi-menu-right" size="x-small"></v-icon>
+							</template>
+						</v-list-item>
+					</template>
+
+					<!-- Sous-parties : Français et Anglais -->
+					<v-list-item @click="setLanguage('fr')">
+						<span class="flag-icon">🇫🇷</span>
+					</v-list-item>
+					<v-list-item @click="setLanguage('en')">
+						<span class="flag-icon">🇺🇸</span>
+					</v-list-item>
+				</v-menu>
+			</v-list>
+		</v-menu>
+
+		<!-- Logo -->
 		<router-link to="/" exact>
 			<img alt="Vue logo" class="logo" src="@/assets/images/logo.png" />
 		</router-link>
-		<!-- Conteneur pour les boutons en colonne -->
-		<v-col class="d-flex flex-column align-center">
-			<v-btn class="mb-2">
-				<router-link to="/test">{{ $t("header.link_test") }}</router-link>
-			</v-btn>
-			<v-btn class="mb-2">
-				<router-link :to="{ name: 'recipesList' }">{{
-					$t("header.link_list_recipes")
-				}}</router-link>
-			</v-btn>
-			<v-btn class="mb-2">
-				<router-link :to="{ name: 'createRecipe' }">{{
-					$t("header.link_create")
-				}}</router-link>
-			</v-btn>
-			<v-btn class="mb-2">
-				<router-link :to="{ name: 'createCategory' }">Catégorie</router-link>
-			</v-btn>
-			<v-btn class="mb-2">
-				<router-link :to="{ name: 'categoriesList' }">{{ $t("header.link_list_categories") }}</router-link>
-			</v-btn>
-			
-		</v-col>
 
+		<!-- Titre -->
 		<v-app-bar-title class="title">Glucid'en Folie</v-app-bar-title>
-		<v-btn icon="mdi-heart"></v-btn>
+
 		<v-text-field
+			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory"
 			class="custom-text-field"
 			append-inner-icon="mdi-magnify"
 			density="compact"
 			label="Je cherche : un ingrédient, une recette..."
-			variant="underlined"
+			variant="solo"
 			hide-details
 			single-line
 		></v-text-field>
+
+		<v-spacer></v-spacer>
+
 		<v-btn
+			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory "
 			@click="goToConnection"
-			class="custom-btn"
+			class="connexion"
 			ml-5
 			rounded=""
 			prepend-icon="mdi-account"
@@ -54,9 +126,35 @@
 <script>
 export default {
 	name: "Header",
+	data() {
+		return {
+			menuOpen: false,
+			languageMenuOpen: false,
+		};
+	},
+	computed: {
+		isAuthentification() {
+			return this.$route.name === "authentification";
+		},
+		// Verif page Création recettes et cat
+		isCreateRecipe() {
+			return this.$route.name === "createRecipe";
+		},
+		isCreateCategory() {
+			return this.$route.name === "createCategory";
+		},
+
+	},
 	methods: {
 		goToConnection() {
-			this.$router.push("/connection");
+			this.$router.push({
+				name: "authentification",
+				params: { action: "login" },
+			});
+		},
+		setLanguage(lang) {
+			this.$i18n.locale = lang;
+			alert(`Langue changée en ${lang === "fr" ? "Français" : "Anglais"}`);
 		},
 	},
 };
@@ -73,12 +171,7 @@ export default {
 	justify-content: center;
 	padding: 0 20px;
 	min-height: 100px;
-}
-
-.custom-text-field {
-	width: auto;
-	background-color: white;
-	color: #5d827f;
+	justify-content: space-between;
 }
 
 .logo {
@@ -90,6 +183,10 @@ export default {
 	margin: 5px 0; /* Espacement entre les boutons */
 	background-color: #f5ede8;
 	color: #5d827f;
+}
+.connexion {
+	position: absolute;
+	right: 30px;
 }
 
 .v-app-bar-title {
@@ -106,4 +203,21 @@ export default {
 	color: #f5ede8 !important;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+/* *** Liste *** */
+.v-list-item {
+	background-color: white;
+	color: #5d827f;
+}
+.v-list-item:hover {
+	background-color: #f5ede8 !important;
+	color: #d3beb1 !important; /* Assurer que la couleur du texte au survol reste héritée */
+}
+
+.flag-icon {
+	justify-content: center;
+	padding-left: 10px;
+	font-size: 32px;
+}
 </style>
+
+

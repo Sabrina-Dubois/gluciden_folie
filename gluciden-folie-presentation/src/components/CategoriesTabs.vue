@@ -18,28 +18,38 @@
 </template>
 
 <script>
+import { useCategoriesStore } from "@/stores/categoriesStore.js";
+
 export default {
 	name: "CategoriesTabs",
+	// props: {
+	// 	categories: {
+	// 		type: Array,
+	// 		required: true,
+	// 	},
+	// },
 	data() {
 		return {
-			tab: null, // Ajoute la propriété 'tab' avec une valeur par défaut
+			tab: null,
 		};
 	},
-	props: {
-		categories: {
-			type: Array,
-			default: () => [],
+
+	computed: {
+		categories() {
+			return useCategoriesStore().categories;
 		},
 	},
 	// récuperer évenement
-	methods: {
-		addCategory(newCategory) {
-			this.categories.push(newCategory);
-		},
-	},
+	// methods: {
+	// 	addCategory(newCategory) {
+	// 		this.categories.push(newCategory);
+	// 		this.tab = newCategory.name; // Définit la nouvelle catégorie comme onglet actif
+	// 	},
+	// },
 	created() {
 		//ecouter event 'categoryCreated' composant enfant
-		this.$emit("categoryCreated", this.addCategory);
+		//this.$emit("categoryCreated", this.addCategory);
+		useCategoriesStore().fetchCategories();
 	},
 	// Ajouter la nouvelle catégorie à la liste des catégories après création réussie
 	createCategory() {
@@ -72,6 +82,7 @@ export default {
 <style scoped>
 .v-card {
 	width: 1000px;
+	max-height: 70px;
 	margin: auto;
 	background-color: #5d827f !important;
 	display: flex;
