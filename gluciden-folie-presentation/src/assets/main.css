@@ -72,6 +72,23 @@ h3 {
 :root {
     --v-activated-opacity: 0 !important;
     --v-theme-overlay-multiplier: 0 !important;
+
+/* *** Validation *** */
+.v-text-field--error .v-input__control,
+.v-file-input--error .v-input__control {
+	border-color: #b00020
+}
+.v-text-field--error .v-input__label,
+.v-file-input--error .v-input__label {
+	color: #b00020;
+}
+.v-text-field--error .v-input__icon,
+.v-file-input--error .v-input__icon {
+	color: #b00020;
+}
+.v-messages__message {
+	color: #b00020 !important;
+}
 }
 
 

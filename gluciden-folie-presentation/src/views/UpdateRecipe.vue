@@ -200,11 +200,6 @@ export default {
 	color: #5d827f;
 }
 
-.v-btn {
-	background-color: #5d827f;
-	color: #d3beb1;
-}
-
 .recipe-picture {
 	margin-top: 20px;
 }

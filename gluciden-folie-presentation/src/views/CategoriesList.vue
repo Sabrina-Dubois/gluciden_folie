@@ -46,36 +46,9 @@ export default {
 		},
 	},
 	methods: {
-		// async initCategories() {
-		// 	try {
-		// 		const response = await apiClient.get("/categories");
-		// 		this.categories = response.data;
-		// 	} catch (error) {
-		// 		console.error(error);
-		// 	}
-		// },
 		deleteCategory(categoryId) {
 			useCategoriesStore().deleteCategory(categoryId); //store
 		},
-		// async deleteCategory(categoryId) {
-		// 	if (confirm("Veux-tu supprimer cette catégorie ?")) {
-		// 		try {
-		// 			const response = await apiClient.delete(`/categories/${categoryId}`);
-
-		// 			if (response.status === 204 || response.status === 200) {
-		// 				//this.initCategories();
-		// 				alert("Catégorie supprimée");
-		// 				this.categories = this.categories.filter(
-		// 					(category) => category.id !== categoryId
-		// 				);
-		// 			} else {
-		// 				alert("Erreur lors de la suppression de la catégorie");
-		// 			}
-		// 		} catch (error) {
-		// 			console.error("Erreur:", error);
-		// 		}
-		// 	}
-		// },
 		//renvoyer vers la page update
 		updateCategory(categoryId) {
 			this.$router.push({ name: "updateCategory", params: { id: categoryId } });
@@ -94,10 +67,6 @@ export default {
 
 .ml-4 {
 	margin-left: 50px;
-}
-
-.v-card-actions {
-	height: 10px;
 }
 
 .button {

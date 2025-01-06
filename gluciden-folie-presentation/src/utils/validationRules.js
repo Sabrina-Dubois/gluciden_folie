@@ -26,8 +26,7 @@ const validImageType = helpers.withMessage(
 );
 
 // Validation adresse email 
-const validUsername = helpers.withMessage(messages.validUsername,
-    (value) =>
+const validEmail = helpers.withMessage(messages.validEmail, (value) =>
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(value)
 );
 
@@ -61,7 +60,7 @@ export const categoryValidation = {
 export const accountValidation = {
   username: {
     required: requiredField,
-    validUsername,
+    validEmail,
     ...lengthRules(4, 50),
   },
   password: {

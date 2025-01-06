@@ -75,44 +75,6 @@ export default {
 				console.error("Erreur lors de la mise à jour de la catégorie:", error);
 			}
 		},
-		// async updateCategory() {
-		// 	this.submitted = true; // formulaire soumis
-		// 	this.v$.$touch(); // Marque tous les champs comme touchés
-		// 	if (this.v$.$invalid) {
-		// 		console.log("Formulaire invalide");
-		// 		return; // Si le formulaire est invalide, arrête la soumission }
-		// 	}
-		// 	const formData = new FormData();
-		// 	formData.append("name", this.categoryName);
-
-		// 	try {
-		// 		const response = await apiClient.put(
-		// 			`/categories/${this.id}`,
-		// 			formData,
-		// 			{
-		// 				headers: {
-		// 					"Content-Type": "multipart/form-data", // Spécifie que l'on envoie du multipart/form-data
-		// 				},
-		// 			}
-		// 		);
-
-		// 		if (response.status === 200) {
-		// 			console.log("Catégorie mise à jour avec succès !");
-		// 			this.$router.push({ name: "categoriesList" });
-		// 		} else {
-		// 			console.error("Erreur lors de la mise à jour de la catégorie");
-		// 		}
-		// 	} catch (error) {
-		// 		if (error.response) {
-		// 			console.error(
-		// 				"Erreur réseau lors de la mise à jour:",
-		// 				error.response.data
-		// 			);
-		// 		} else {
-		// 			console.error("Erreur réseau lors de la mise à jour:", error.message);
-		// 		}
-		// 	}
-		// },
 		getCategoryNameErrorMessages() {
 			const errors = [];
 			console.log("Validation status:", this.v$.categoryName);
@@ -161,21 +123,4 @@ export default {
 	color: #d3beb1;
 }
 
-/* *** Validation *** */
-.v-text-field--error .v-input__control,
-.v-file-input--error .v-input__control {
-	border-color: #ff5252;
-}
-.v-text-field--error .v-input__label,
-.v-file-input--error .v-input__label {
-	color: #ff5252;
-}
-.v-text-field--error .v-input__icon,
-.v-file-input--error .v-input__icon {
-	color: #ff5252;
-}
-.v-messages__message {
-	color: red !important;
-	font-weight: bold;
-}
 </style>

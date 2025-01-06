@@ -11,7 +11,7 @@
 					v-model="categoryName"
 					:label="$t(`create_category.category.label`) + ' *'"
 					:error="v$.categoryName.$error"
-					:error-messages="getCategoryNameErrorMessages()"
+					:error-messages="categoryNameErrors"
 					hide-details="auto"
 					variant="underlined"
 				></v-text-field>
@@ -44,21 +44,23 @@ export default {
 	created() {
 		this.v$ = useVuelidate(); // Initialisation de Vuelidate ,
 	},
+
+	computed: {
+		categoryNameErrors() {
+			if (!this.v$.categoryName.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.categoryName;
+			if (rules.required.$invalid) errors.push(messages.required);
+			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
+			if (rules.maxLength.$invalid) errors.push(messages.maxLength((50)));
+			return errors;
+		},
+	},
+
 	methods: {
-		// submitForm() {
-		// 	const categoryStore = useCategoriesStore();
-		// 	categoryStore.addCategory(this.categoryName);
-		// 	this.categoryName = ""; // Réinitialiser le champ de saisie
-		// },
-		// async fetchCategories() {
-		// 	try {
-		// 		const response = await apiClient.get("/categories");
-		// 		//console.log(response.data);
-		// 		this.categories = response.data;
-		// 	} catch (error) {
-		// 		console.error("Erreur lors du chargement des catégories :", error);
-		// 	}
-		// },
+		
 		async createCategory() {
 			this.submitted = true; // formulaire soumis
 			this.v$.$touch(); // Marque tous les champs comme touchés
@@ -78,23 +80,6 @@ export default {
 					console.error("Erreur lors de la création de la catégorie :", error);
 				}
 			}
-		},
-		getCategoryNameErrorMessages() {
-			const errors = [];
-			console.log("Validation status:", this.v$.categoryName);
-
-			if (this.v$.categoryName.$error) {
-				if (this.v$.categoryName.required.$invalid) {
-					errors.push(messages.required);
-				}
-				if (this.v$.categoryName.minLength.$invalid) {
-					errors.push(messages.minLength(4));
-				}
-				if (this.v$.categoryName.maxLength.$invalid) {
-					errors.push(messages.maxLength(50));
-				}
-			}
-			return errors;
 		},
 	},
 };
@@ -137,24 +122,6 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
-}
-
-/* *** Validation *** */
-.v-text-field--error .v-input__control,
-.v-file-input--error .v-input__control {
-	border-color: #ff5252;
-}
-.v-text-field--error .v-input__label,
-.v-file-input--error .v-input__label {
-	color: #ff5252;
-}
-.v-text-field--error .v-input__icon,
-.v-file-input--error .v-input__icon {
-	color: #ff5252;
-}
-.v-messages__message {
-	color: red !important;
-	font-weight: bold;
 }
 
 /* Wrapper pour espacer les éléments de v-rating */

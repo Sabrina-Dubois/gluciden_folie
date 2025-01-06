@@ -18,7 +18,7 @@
 						variant="solo"
 						prepend-inner-icon="mdi-email"
 						:error="v$.username.$error"
-						:error-messages="getUsernameErrorMessages()"
+						:error-messages="usernameErrors"
 						hide-details="auto"
 					></v-text-field>
 				</div>
@@ -38,7 +38,7 @@
 						:append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
 						@click:append-inner="togglePasswordVisibility"
 						:error="v$.password.$error"
-						:error-messages="getPasswordErrorMessages()"
+						:error-messages="passwordErrors"
 						density="compact"
 					></v-text-field>
 				</div>
@@ -90,6 +90,37 @@ export default {
 			// Sinon, rester sur la page de connexion
 			this.$router.push({ name: "authentification" });
 		}
+	},
+
+	computed: {
+		usernameErrors() {
+			const errors = [];
+			const rules = this.v$.username;
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+				if (this.v$.username.validEmail.$invalid)
+					errors.push(messages.validEmail);
+				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
+				if (rules.maxLength.$invalid) errors.push(messages.maxLength(50));
+			}
+
+			return errors;
+		},
+
+		passwordErrors() {
+			const errors = [];
+			const rules = this.v$.password;
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.validPassword.$invalid) errors.push(messages.validPassword);
+				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
+				if (rules.maxLength.$invalid) errors.push(messages.maxLength(72));
+			}
+
+			return errors;
+		},
 	},
 
 	methods: {
@@ -153,43 +184,6 @@ export default {
 				console.error(error);
 			}
 		},
-
-		getUsernameErrorMessages() {
-			const errors = [];
-			if (this.v$.username.$error) {
-				if (this.v$.username.required.$invalid) {
-					errors.push(messages.required);
-				}
-				if (this.v$.username.validUsername.$invalid) {
-					errors.push(messages.validEmail);
-				}
-				if (this.v$.username.minLength.$invalid) {
-					errors.push(messages.minLength(8));
-				}
-				if (this.v$.username.maxLength.$invalid) {
-					errors.push(messages.maxLength(50));
-				}
-			}
-			return errors;
-		},
-		getPasswordErrorMessages() {
-			const errors = [];
-			if (this.v$.password.$error) {
-				if (this.v$.password.required.$invalid) {
-					errors.push(messages.required);
-				}
-				if (this.v$.password.validPassword.$invalid) {
-					errors.push(messages.validPassword);
-				}
-				if (this.v$.password.minLength.$invalid) {
-					errors.push(messages.minLength(8));
-				}
-				if (this.v$.password.maxLength.$invalid) {
-					errors.push(messages.maxLength(72));
-				}
-			}
-			return errors;
-		},
 	},
 };
 </script>
@@ -222,7 +216,7 @@ export default {
 .v-btn {
 	margin-top: 10px;
 	background-color: #5d827f;
-	color: white;
+	color: #d3beb1;
 }
 
 .v-btn:hover {
@@ -231,12 +225,9 @@ export default {
 
 p {
 	margin-top: 15px;
+	color: #5d827f;
 }
-</style>
 
-
-
-<style scoped>
 .connection {
 	max-width: 800px;
 	margin: auto;
@@ -247,11 +238,8 @@ h2 {
 	font-family: "Laila", serif;
 	font-weight: 400;
 	font-style: normal;
-	color: #5d827f;
 }
-p {
-	color: #5d827f;
-}
+
 .v-card {
 	background-color: #d3beb1;
 }
@@ -274,29 +262,5 @@ p {
 	padding-bottom: 0px;
 	text-align: left; /* Le label est aligné à gauche */
 	width: 100%; /* Prendre toute la largeur disponible */
-}
-
-/* *** Validation *** */
-.v-text-field--error .v-input__control,
-.v-file-input--error .v-input__control {
-	border-color: #ff5252;
-}
-.v-text-field--error .v-input__label,
-.v-file-input--error .v-input__label {
-	color: #ff5252;
-}
-.v-text-field--error .v-input__icon,
-.v-file-input--error .v-input__icon {
-	color: #ff5252;
-}
-.v-messages__message {
-	color: red !important;
-	font-weight: bold;
-}
-/* *** Boutons *** */
-.v-btn {
-	justify-items: center;
-	background-color: #5d827f;
-	color: #d3beb1;
 }
 </style>

@@ -86,11 +86,6 @@ export default {
 </script>
 
 <style scoped>
-/* h3 {
-	font-family: "Julius Sans One", sans-serif;
-	color: #5d827f !important;
-}  */
-
 .home-comp-container {
 	max-width: 900px;
 	margin: auto;
@@ -111,10 +106,6 @@ export default {
 .card-title {
 	color: #5d827f;
 	font-size: 25px;
-}
-
-.v-card-actions {
-	height: 10px;
 }
 
 .v-btn {

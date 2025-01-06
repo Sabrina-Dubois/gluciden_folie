@@ -22,12 +22,6 @@ import { useCategoriesStore } from "@/stores/categoriesStore.js";
 
 export default {
 	name: "CategoriesTabs",
-	// props: {
-	// 	categories: {
-	// 		type: Array,
-	// 		required: true,
-	// 	},
-	// },
 	data() {
 		return {
 			tab: null,
@@ -39,16 +33,7 @@ export default {
 			return useCategoriesStore().categories;
 		},
 	},
-	// récuperer évenement
-	// methods: {
-	// 	addCategory(newCategory) {
-	// 		this.categories.push(newCategory);
-	// 		this.tab = newCategory.name; // Définit la nouvelle catégorie comme onglet actif
-	// 	},
-	// },
 	created() {
-		//ecouter event 'categoryCreated' composant enfant
-		//this.$emit("categoryCreated", this.addCategory);
 		useCategoriesStore().fetchCategories();
 	},
 	// Ajouter la nouvelle catégorie à la liste des catégories après création réussie

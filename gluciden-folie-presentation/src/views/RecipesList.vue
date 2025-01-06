@@ -7,18 +7,26 @@
 					<!-- {{ recipes }} -->
 					<!-- Card image & boutons -->
 					<v-col
-						v-for="recipe in recipes"
+						v-for="recipe in sortedRecipes"
 						:key="recipe.name"
 						cols="12"
 						md="3"
 						class="d-flex justify-center ml-4"
 					>
-						<v-card class="recip-card d-flex flex-column align-center" flat>
+						<v-card
+							class="recip-card d-flex flex-column align-center"
+							@click="
+								$router.push({
+									name: 'recipeDetails',
+									params: { id: recipe.id },
+								})
+							"
+							flat
+						>
 							<v-img
 								:key="recipe.picture + recipe.id"
-								:src="
-									'/images/' + recipe.picture + '?t=' + new Date().getTime()
-								"
+								:src="imageUrl(recipe)"
+								click.stop="goToRecipeDetails(recipe.id)"
 								class="recipe-picture"
 								height="200px"
 								cover
@@ -30,12 +38,12 @@
 							</v-img>
 							<v-card-actions class="button d-flex">
 								<v-btn icon="mdi-heart"></v-btn>
-								<v-btn icon="mdi-share-variant"></v-btn>
+								<!--<v-btn icon="mdi-share-variant"></v-btn>-->
 								<v-btn
 									icon="mdi-pencil"
-									@click="updateRecipe(recipe.id)"
+									@click.stop="updateRecipe(recipe.id)"
 								></v-btn>
-								<v-btn icon="mdi-delete" @click="deleteRecipe(recipe.id)">
+								<v-btn icon="mdi-delete" @click.stop="deleteRecipe(recipe.id)">
 								</v-btn>
 							</v-card-actions>
 						</v-card>
@@ -48,9 +56,11 @@
 
 <script scoped>
 import apiClient from "@/api/axiosConfig";
+import RecipeDetails from "./RecipeDetails.vue";
 
 export default {
 	name: "recipesList",
+	components: RecipeDetails,
 	data() {
 		//fonction qui retourne un objet contenant les données réactives du composant->retourne un array items qui contient les src des images à afficher dans le carrousel.
 		return {
@@ -59,17 +69,29 @@ export default {
 	},
 	//regarder
 	beforeMount() {
-		this.initRecipes();
+		this.createRecipes();
 	},
 	beforeRouteEnter(to, from, next) {
-		// Appel de la méthode `initRecipes` après la création du composant
+		// Appel de la méthode `createRecipes` après la création du composant
 		next((vm) => {
-			vm.initRecipes(); // Ici on appelle la méthode pour récupérer les recettes
+			vm.createRecipes(); // Ici on appelle la méthode pour récupérer les recettes
 		});
 	},
 
+	computed: {
+		sortedRecipes() {
+			return this.recipes.sort((a, b) => {
+				return a.name.localeCompare(b.name);
+			});
+		},
+		imageUrl() {
+			return (recipe) =>
+				"/images/" + recipe.picture + "?t=" + new Date().getTime();
+		},
+	},
+
 	methods: {
-		async initRecipes() {
+		async createRecipes() {
 			try {
 				const response = await apiClient.get("/recipes");
 				this.recipes = response.data;
@@ -82,8 +104,12 @@ export default {
 				try {
 					const response = await apiClient.delete(`/recipes/${recipeId}`);
 					if (response.status === 204 || response.status === 200) {
-						this.initRecipes();
+						// Supprimer la recette du tableau localement
+						this.recipes = this.recipes.filter(
+							(recipe) => recipe.id !== recipeId
+						);
 						alert("Recette supprimée");
+						this.$router.push({ name: "recipesList" }); // Redirige vers la liste des recettes
 					} else {
 						alert("Erreur lors de la suppression de la recette");
 					}
@@ -96,6 +122,10 @@ export default {
 		updateRecipe(recipeId) {
 			this.$router.push({ name: "updateRecipe", params: { id: recipeId } });
 		},
+		// Rediriger vers la page des détails de la recette lorsque l'image est cliquée
+		goToRecipeDetails(recipeId) {
+			this.$router.push({ name: "recipeDetails", params: { id: recipeId } });
+		},
 	},
 };
 </script>
@@ -107,10 +137,6 @@ export default {
 
 .ml-4 {
 	margin-left: 50px;
-}
-
-.v-card-actions {
-	height: 10px;
 }
 
 .button {

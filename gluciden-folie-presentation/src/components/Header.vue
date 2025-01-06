@@ -2,7 +2,7 @@
 	<v-app-bar class="custom-app-bar">
 		<!-- Menu principal -->
 		<v-menu
-			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory "
+			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
 			v-model="menuOpen"
 			offset-y
 			class="text-center"
@@ -13,10 +13,9 @@
 				</v-btn>
 			</template>
 
-
 			<v-list>
 				<!-- Accueil -->
-				<v-list-item>
+				<v-list-item @click="goToHome">
 					<v-list-item-title>Accueil</v-list-item-title>
 				</v-list-item>
 
@@ -26,36 +25,27 @@
 				</v-list-item>
 
 				<!-- Création de recettes -->
-				<v-list-item>
-					<router-link :to="{ name: 'createRecipe' }">{{
-						$t("header.link_create")
-					}}</router-link>
+				<v-list-item @click="isCreateCategory">
+					{{ $t("header.link_create") }}
 				</v-list-item>
 
 				<!-- Liste des recettes -->
-				<v-list-item>
-					<router-link :to="{ name: 'recipesList' }">{{
-						$t("header.link_list_recipes")
-					}}</router-link>
+				<v-list-item @click="recipesList">
+					{{ $t("header.link_list_recipes") }}
 				</v-list-item>
 
 				<!-- Création des catégories -->
-				<v-list-item>
-					<router-link :to="{ name: 'createCategory' }">Catégorie</router-link>
-				</v-list-item>
+				<v-list-item @click="isCreateCategory"> Catégories </v-list-item>
 
 				<!-- Liste des catégories -->
-				<v-list-item>
-					<router-link :to="{ name: 'categoriesList' }">{{
-						$t("header.link_list_categories")
-					}}</router-link>
+				<v-list-item @click="categoriesList">
+					{{ $t("header.link_list_categories") }}
 				</v-list-item>
 
 				<!-- Test -->
-				<v-list-item>
-					<router-link to="/test">{{ $t("header.link_test") }}</router-link>
+				<v-list-item @click="test">
+					{{ $t("header.link_test") }}
 				</v-list-item>
-
 
 				<!-- Langue -->
 				<v-menu
@@ -97,8 +87,9 @@
 		<!-- Titre -->
 		<v-app-bar-title class="title">Glucid'en Folie</v-app-bar-title>
 
+		<!-- Barre de recherche -->
 		<v-text-field
-			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory"
+			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
 			class="custom-text-field"
 			append-inner-icon="mdi-magnify"
 			density="compact"
@@ -110,15 +101,16 @@
 
 		<v-spacer></v-spacer>
 
+		<!-- Connexion ou déconnexion -->
 		<v-btn
-			v-if="!isAuthentification &&! isCreateRecipe && !isCreateCategory "
+			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
 			@click="goToConnection"
 			class="connexion"
 			ml-5
 			rounded=""
 			prepend-icon="mdi-account"
 		>
-			{{ $t("header.button") }}
+			{{ buttonText }}
 		</v-btn>
 	</v-app-bar>
 </template>
@@ -140,21 +132,50 @@ export default {
 		isCreateRecipe() {
 			return this.$route.name === "createRecipe";
 		},
+		isRecipesList() {
+			return this.$route.name === "recipesList";
+		},
 		isCreateCategory() {
 			return this.$route.name === "createCategory";
 		},
-
+		isCatgoriesList() {
+			return this.$route.name === "categoriesList";
+		},
+		buttonText() {
+			return this.isAuthenticated ? "Se déconnecter" : "Se connecter";
+		},
+		isAuthenticated() {
+			return !!localStorage.getItem("jwt");
+		},
+		isTested() {
+			return this.$route.name === "test";
+		},
 	},
 	methods: {
 		goToConnection() {
-			this.$router.push({
-				name: "authentification",
-				params: { action: "login" },
-			});
+			if (this.isAuthenticated) {
+				this.logout(); // Déconnexion
+			} else {
+				this.$router.push({
+					name: "authentification",
+					params: { action: "login" },
+				});
+			}
+		},
+		goToHome() {
+			this.$router.push({ name: "home" }); // Utilise $router.push pour naviguer vers la page d'accueil
 		},
 		setLanguage(lang) {
 			this.$i18n.locale = lang;
 			alert(`Langue changée en ${lang === "fr" ? "Français" : "Anglais"}`);
+		},
+		logout() {
+			// Supprime le token d'authentification
+			localStorage.removeItem("jwt");
+			// Redirige vers la page d'accueil et recharge la page
+			this.$router.push({ name: "home" }).then(() => {
+				window.location.reload(); // Recharge la page pour mettre à jour l'état d'authentification
+			});
 		},
 	},
 };
