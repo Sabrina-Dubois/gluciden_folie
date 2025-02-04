@@ -1,8 +1,3 @@
-//Gère les requêtes HTTP entrantes
-// traite data user
-// call service
-// renvoie les réponses appropriées.
-
 package co.simplon.glucidenfoliebusiness.controllers;
 
 import java.util.Collection;
@@ -25,36 +20,32 @@ import co.simplon.glucidenfoliebusiness.dtos.RecipeViewDto;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
 
-@RequestMapping("/recipes") // Mapper les requêtes HTTP aux méthodes de contrôleur ->requêtes HTTP à l'URL
-							// /recipes seront gérées par ce contrôleur
-@RestController // classe = contrôleur REST -> méthodes de ce contrôleur renverront des réponses
-				// JSON par défaut.
+@RequestMapping("/recipes")
+@RestController
 public class RecipeController {
 
-	private final RecipeService service; // Champs ->instance du service injectée par Spring
+	private final RecipeService recipeService;
 
-	// Constructeur de la classe RecipeController -> initialise le champ service
-	// avec l'instance de RecipeService injectée par Spring
-	public RecipeController(RecipeService service) {
-		this.service = service;
+	public RecipeController(RecipeService recipeService) {
+		this.recipeService = recipeService;
 	}
 
 	@PostMapping
 	void create(@Valid @RequestParam("name") String name, @RequestParam("picture") MultipartFile picture) {
 		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture);
-		service.create(recipeCreateDto);
+		recipeService.create(recipeCreateDto);
 	}
 
 	@GetMapping
 	Collection<RecipeViewDto> getAll() {
-		return service.getAll();
+		return recipeService.getAll();
 	}
 
 	// Si appel réussi on renvoie un code 204
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	void deleteOne(@PathVariable("id") Long id) {
-		service.deleteOne(id);
+		recipeService.deleteOne(id);
 	}
 
 	@PutMapping("/{id}")
@@ -62,12 +53,12 @@ public class RecipeController {
 			@RequestParam(value = "picture", required = false) MultipartFile picture) {
 		// Créez un DTO avec les données reçues
 		RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture);
-		service.updateOne(id, recipeUpdateDto);
+		recipeService.updateOne(id, recipeUpdateDto);
 	}
 
 	@GetMapping("/{id}")
 	RecipeViewDto getOne(@PathVariable("id") Long id) {
-		return service.getOne(id);
+		return recipeService.getOne(id);
 	}
 
 }

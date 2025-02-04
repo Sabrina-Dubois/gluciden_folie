@@ -1,4 +1,3 @@
-//objets BDD sous forme de classes Java => structure data
 package co.simplon.glucidenfoliebusiness.entities;
 
 import java.util.HashSet;
@@ -9,9 +8,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-@Entity // mapper à une table BDD
+@Entity
 @Table(name = "t_recipes")
 public class Recipe extends AbstractEntity {
 
@@ -25,6 +25,17 @@ public class Recipe extends AbstractEntity {
 	@JoinTable(name = "t_recipes_categories", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_category"))
 	private Set<Category> categories = new HashSet<>();
 
+	@ManyToOne
+	@JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+	private Account account;
+
+	@Override
+	public String toString() {
+		return String.format("Recipe{name='%s', picture='%s', categories=%s, username='%s'}", name, picture, categories,
+				account);
+	}
+
+	// Getters et setters
 	public String getName() {
 		return name;
 	}
@@ -47,6 +58,14 @@ public class Recipe extends AbstractEntity {
 
 	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 }

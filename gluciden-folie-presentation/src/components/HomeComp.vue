@@ -89,6 +89,7 @@ export default {
 .home-comp-container {
 	max-width: 900px;
 	margin: auto;
+	padding: 0 16px;
 }
 
 .mb-4 {

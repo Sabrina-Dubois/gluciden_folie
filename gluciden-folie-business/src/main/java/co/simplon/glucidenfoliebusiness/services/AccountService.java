@@ -1,7 +1,10 @@
 package co.simplon.glucidenfoliebusiness.services;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,25 @@ public class AccountService {
 		this.accounts = accounts;
 		this.encoder = encoder;
 		this.jwtProvider = jwtProvider;
+	}
+
+	// Méthode pour récupérer utilsateur connécté
+	public Account getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		// Vérifie si l'authentification est un JWT
+		if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+			Jwt jwt = (Jwt) authentication.getPrincipal();
+
+			// Le "sub" (subject) est souvent l'identifiant de l'utilisateur dans le JWT
+			String username = jwt.getClaim("sub"); // "sub" est l'identifiant de l'utilisateur dans le JWT
+
+			// Récupère l'utilisateur à partir de la base de données
+			return accounts.findByUsernameIgnoreCase(username)
+					.orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+		} else {
+			throw new IllegalArgumentException("Utilisateur non authentifié");
+		}
 	}
 
 	@Transactional

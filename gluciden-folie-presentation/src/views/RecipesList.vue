@@ -15,12 +15,7 @@
 					>
 						<v-card
 							class="recip-card d-flex flex-column align-center"
-							@click="
-								$router.push({
-									name: 'recipeDetails',
-									params: { id: recipe.id },
-								})
-							"
+							@click="goToRecipeDetails(recipe.id)"
 							flat
 						>
 							<v-img
@@ -55,30 +50,25 @@
 </template>
 
 <script scoped>
-import apiClient from "@/api/axiosConfig";
+import { useRecipesStore } from "@/stores/recipesStore";
 import RecipeDetails from "./RecipeDetails.vue";
 
 export default {
 	name: "recipesList",
 	components: RecipeDetails,
 	data() {
-		//fonction qui retourne un objet contenant les données réactives du composant->retourne un array items qui contient les src des images à afficher dans le carrousel.
 		return {
-			recipes: [],
 		};
 	},
 	//regarder
-	beforeMount() {
-		this.createRecipes();
+	mounted() {
+		this.fetchRecipes();
 	},
-	beforeRouteEnter(to, from, next) {
-		// Appel de la méthode `createRecipes` après la création du composant
-		next((vm) => {
-			vm.createRecipes(); // Ici on appelle la méthode pour récupérer les recettes
-		});
-	},
-
 	computed: {
+		recipes() {
+			const recipesStore = useRecipesStore();
+			return recipesStore.recipes; // Utilise directement les recettes du store
+		},
 		sortedRecipes() {
 			return this.recipes.sort((a, b) => {
 				return a.name.localeCompare(b.name);
@@ -91,32 +81,15 @@ export default {
 	},
 
 	methods: {
-		async createRecipes() {
-			try {
-				const response = await apiClient.get("/recipes");
-				this.recipes = response.data;
-			} catch (error) {
-				console.error(error);
-			}
+		async fetchRecipes() {
+			const recipesStore = useRecipesStore();
+			await recipesStore.fetchRecipes(); // Synchronisation avec le store
 		},
+
 		async deleteRecipe(recipeId) {
-			if (confirm("Veux-tu supprimer cette recette ?")) {
-				try {
-					const response = await apiClient.delete(`/recipes/${recipeId}`);
-					if (response.status === 204 || response.status === 200) {
-						// Supprimer la recette du tableau localement
-						this.recipes = this.recipes.filter(
-							(recipe) => recipe.id !== recipeId
-						);
-						alert("Recette supprimée");
-						this.$router.push({ name: "recipesList" }); // Redirige vers la liste des recettes
-					} else {
-						alert("Erreur lors de la suppression de la recette");
-					}
-				} catch (error) {
-					console.error("Erreur:", error);
-				}
-			}
+			const recipesStore = useRecipesStore();
+			await recipesStore.deleteRecipe(recipeId);
+			this.fetchRecipes();
 		},
 		//renvoyer vers la page update
 		updateRecipe(recipeId) {

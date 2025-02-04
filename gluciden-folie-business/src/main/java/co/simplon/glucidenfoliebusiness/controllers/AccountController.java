@@ -18,10 +18,10 @@ import jakarta.validation.Valid;
 //@CrossOrigin("*")
 public class AccountController {
 
-	private final AccountService service;
+	private final AccountService accountService;
 
-	public AccountController(AccountService service) {
-		this.service = service;
+	public AccountController(AccountService accountService) {
+		this.accountService = accountService;
 	}
 
 	@PostMapping
@@ -29,7 +29,7 @@ public class AccountController {
 	public String create(@Valid @RequestBody AccountCreateDto inputs) {
 		try {
 			// Appel à la méthode service pour créer le compte
-			service.create(inputs);
+			accountService.create(inputs);
 			// Retourne un message de succès une fois que le compte est créé
 			return "Compte créé avec succès !";
 		} catch (Exception exception) {
@@ -41,7 +41,7 @@ public class AccountController {
 	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.OK)
 	LoginResponse authentificated(@RequestBody AccountLogin inputs) {
-		return service.authenticate(inputs);
+		return accountService.authenticate(inputs);
 
 	}
 

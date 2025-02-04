@@ -24,39 +24,39 @@ import jakarta.validation.Valid;
 @RestController
 public class CategoryController {
 
-	private final CategoryService service;
+	private final CategoryService categoryService;
 
 	// Constructeur de la classe CategoryController -> initialise le champ service
 	// avec l'instance de CategoryService injectée par Spring
-	public CategoryController(CategoryService service) {
-		this.service = service;
+	public CategoryController(CategoryService categoryService) {
+		this.categoryService = categoryService;
 	}
 
 	@PostMapping
 	void create(@Valid @RequestBody CategoryCreateDto inputs) {
-		service.create(inputs);
+		categoryService.create(inputs);
 
 	}
 
 	@GetMapping
 	Collection<CategoryViewDto> getAll() {
-		return service.getAll();
+		return categoryService.getAll();
 	}
 
 	// Si appel réussi on renvoie un code 204
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	void deleteOne(@PathVariable("id") Long id) {
-		service.deleteOne(id);
+		categoryService.deleteOne(id);
 	}
 
 	@PutMapping("/{id}")
 	void updateOne(@PathVariable("id") Long id, @Valid @ModelAttribute CategoryUpdateDto inputs) {
-		service.updateOne(id, inputs);
+		categoryService.updateOne(id, inputs);
 	}
 
 	@GetMapping("/{id}")
 	CategoryViewDto getOne(@PathVariable("id") Long id) {
-		return service.getOne(id);
+		return categoryService.getOne(id);
 	}
 }

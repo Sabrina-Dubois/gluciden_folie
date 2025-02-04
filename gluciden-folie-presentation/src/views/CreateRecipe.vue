@@ -3,7 +3,7 @@
 		<h1>{{ $t("create_recipe.title") }}</h1>
 		<v-card class="recipeForm d-flex align-center">
 			<!-- Formulaire pour créer une recette -->
-			<v-form @submit.prevent="newRecipe" :model="v$">
+			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
 					v-model="recipeName"
@@ -40,12 +40,7 @@
 					variant="underlined"
 				></v-file-input>
 
-				<v-btn
-					class="custom-btn"
-					ml-5
-					rounded=""
-					type="submit"
-				>
+				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
 				</v-btn>
 			</v-form>
@@ -54,7 +49,7 @@
 </template>
 
 <script>
-import apiClient from "../api/axiosConfig";
+import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
@@ -76,6 +71,7 @@ export default {
 	created() {
 		this.v$ = useVuelidate();
 	},
+	
 	computed: {
 		recipeNameErrors() {
 			if (!this.v$.recipeName.$error) {
@@ -89,16 +85,15 @@ export default {
 			return errors;
 		},
 		recipePictureErrors() {
-			console.time("getRecipePictureErrorMessages");
-			if (!this.v$.recipePicture.$error) {
-				return [];
-			}
 			const errors = [];
 			const rules = this.v$.recipePicture;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.validImageType.$invalid) errors.push(messages.validImageType);
-			if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
-			console.timeEnd("getRecipePictureErrorMessages");
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.validImageType.$invalid) errors.push(messages.validImageType);
+				if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
+			}
+
 			return errors;
 		},
 	},
@@ -111,36 +106,29 @@ export default {
 				this.imagePreview = URL.createObjectURL(file);
 			}
 		},
-		async newRecipe() {
+		
+		async addRecipe() {
 			this.submitted = true; // formulaire soumis
 			this.v$.$touch(); // Marque tous les champs comme touchés
 			if (this.v$.$invalid) {
 				console.log("Formulaire invalide");
-				return; // Si le formulaire est invalide, arrête la soumission }
+				return;
 			}
-			const formData = new FormData();
-			formData.append("name", this.recipeName);
-			formData.append("picture", this.recipePicture);
-
 			try {
-				const response = await apiClient.post("/recipes", formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				});
+				const recipesStore = useRecipesStore();
+				const response = await recipesStore.addRecipe(this.recipeName, this.recipePicture);
 
-				if (response.status === 200) {
+				if (response) {
 					this.recipeName = "";
 					this.recipePicture = null;
+					this.imagePreview = null;
 					this.submitted = false;
-
-					console.log("Recette créée avec succès !");
 					this.$router.push({ name: "recipesList" });
-				} else {
+					} else {
 					console.error("Erreur lors de la création de la recette");
 				}
 			} catch (error) {
-				console.error(error);
+				console.error("Erreur lors de la création de la recette :", error);
 			}
 		},
 	},

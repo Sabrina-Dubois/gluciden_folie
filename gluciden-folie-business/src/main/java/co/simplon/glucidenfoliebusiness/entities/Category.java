@@ -1,11 +1,9 @@
 package co.simplon.glucidenfoliebusiness.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,8 +13,9 @@ public class Category extends AbstractEntity {
 	@Column(name = "category_name")
 	private String name;
 
-	@ManyToMany(mappedBy = "categories") // Relation inverse vers Recipe
-	private Set<Recipe> recipes = new HashSet<>();
+	@ManyToOne // Chaque catégorie appartient à un utilisateur
+	@JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+	private Account account;
 
 	public String getName() {
 		return name;
@@ -24,6 +23,19 @@ public class Category extends AbstractEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Category{name='%s'}", name);
 	}
 
 }

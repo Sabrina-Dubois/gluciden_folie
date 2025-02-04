@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import co.simplon.glucidenfoliebusiness.dtos.RecipeCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.RecipeUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.RecipeViewDto;
+import co.simplon.glucidenfoliebusiness.entities.Account;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
+import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
 import co.simplon.glucidenfoliebusiness.repositories.RecipeRepository;
 
 @Service
@@ -25,11 +29,14 @@ public class RecipeService {
 
 	// necessary field for communicated with DB
 	private final RecipeRepository recipes;
+	private final AccountRepository accounts;
 
 	// Constructeur de la classe SpotService qui initialise les champs recipes avec
 	// les instances des repositories injectées par Spring.
-	public RecipeService(RecipeRepository recipes) {
+	public RecipeService(RecipeRepository recipes, AccountRepository accounts) {
 		this.recipes = recipes;
+		this.accounts = accounts;
+
 	}
 
 	// Créer la recette
@@ -37,6 +44,18 @@ public class RecipeService {
 	public void create(RecipeCreateDto inputs) {
 		Recipe entity = new Recipe(); // nouveau objet de recette vide
 		entity.setName(inputs.name());// donne un nom à la recette en utilisant le contenu de inputs
+
+		// Récupérer le Jwt de l'utilisateur authentifié
+		Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = jwt.getClaimAsString("sub"); // Assurez-vous que ce champ existe dans le JWT
+
+		// Trouver l'account associé à cet utilisateur
+		Account account = accounts.findByUsernameIgnoreCase(username)
+				.orElseThrow(() -> new RuntimeException("Account not found for username: " + username));
+
+		// Ajoute l'utilisateur à la recette
+		entity.setAccount(account);
+
 		MultipartFile pictureFromDto = inputs.picture();
 		if (pictureFromDto != null) {
 			String pictureToEntity = buildPicture(pictureFromDto);

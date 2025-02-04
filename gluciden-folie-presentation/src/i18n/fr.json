@@ -1,11 +1,13 @@
 {
   "header": {
-    "link_test": "Test",
-    "link_list_recipes": "Liste des recettes",
-    "link_create": "Créer une recette",
-    "link_update": "Modifier une recette",
-    "link_list_categories": "Liste des catégories",
-    "button": "Connexion"
+    "test": "Test",
+    "list_recipes": "Liste des recettes",
+    "create_recipe": "Créer une recette",
+    "update_recipe": "Modifier une recette",
+    "list_categories": "Liste des catègories",
+    "button": "Connexion",
+    "create-category": "Créer une catègorie",
+    "update_category": "Update ne catègorie"
   },
   "home": {
     "title": "Bienvenue sur GLUCID'EN FOLIE",
@@ -93,6 +95,12 @@
     "text": "Vous êtes sur la page de test. Vous pouvez naviguer vers d'autres pages via la barre de navigation."
   },
   "footer": {
-    "text": "GLUCID'EN FOLIE. Tous droits rèservès."
+    "notices" : "Mentions lègales",
+    "about" : "A propos",
+    "confidentiality" : "Politique de confidentialitè",
+    "condition" : "Conditions d'utilisation",
+    "map" : "Plan du site",
+    "contact" : "Contact",
+    "copyright": "GLUCID'EN FOLIE. Tous droits rèservès."
   }
 }

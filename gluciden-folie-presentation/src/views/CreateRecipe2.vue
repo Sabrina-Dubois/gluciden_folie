@@ -3,7 +3,7 @@
 		<h1>{{ $t("create_recipe.title") }}</h1>
 		<v-card class="recipeForm d-flex align-center">
 			<!-- Formulaire pour créer une recette -->
-			<v-form @submit.prevent="newRecipe" :model="v$">
+			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
 					v-model="recipeName"
@@ -96,20 +96,13 @@
 
 				<h3 class="text-h6 mb-2">Type de cuisson</h3>
 				<v-container class="mx-auto" max-width="400">
-						
-
-					
-					
-
-						<v-chip-group v-model="amenities" column multiple>
-							<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
-							<v-chip text="Micro-onde" variant="outlined" filter></v-chip>
-							<v-chip text="Four" variant="outlined" filter></v-chip>
-							<v-chip text="Poêle" variant="outlined" filter></v-chip>
-							<v-chip text="Vapeur" variant="outlined" filter></v-chip>
-						</v-chip-group>
-					
-
+					<v-chip-group v-model="amenities" column multiple>
+						<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
+						<v-chip text="Micro-onde" variant="outlined" filter></v-chip>
+						<v-chip text="Four" variant="outlined" filter></v-chip>
+						<v-chip text="Poêle" variant="outlined" filter></v-chip>
+						<v-chip text="Vapeur" variant="outlined" filter></v-chip>
+					</v-chip-group>
 				</v-container>
 
 				<v-container class="boo pa-0" fluid>
@@ -272,7 +265,7 @@ export default {
 				this.imagePreview = URL.createObjectURL(file);
 			}
 		},
-		async newRecipe() {
+		async cipe() {
 			this.submitted = true; // formulaire soumis
 			this.v$.$touch(); // Marque tous les champs comme touchés
 			if (this.v$.$invalid) {

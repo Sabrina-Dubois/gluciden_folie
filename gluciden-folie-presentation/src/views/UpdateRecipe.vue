@@ -30,7 +30,7 @@
 				<v-file-input
 					@change="handleFileUpload"
 					accept="image/*"
-					:label="$t(`update_recipe.label`) + ' *'"
+					:label="$t(`update_recipe.picture.label`) + ' *'"
 					:error="v$.recipePicture.$error"
 					:error-messages="getRecipePictureErrorMessages()"
 					chips
@@ -52,6 +52,7 @@
 
 <script>
 import apiClient from "../api/axiosConfig";
+import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
@@ -69,7 +70,7 @@ export default {
 		};
 	},
 	beforeMount() {
-		this.initRecipe();
+		this.loadRecipe();
 	},
 	validations() {
 		return recipeValidation;
@@ -78,13 +79,14 @@ export default {
 		this.v$ = useVuelidate(); // Initialisation de Vuelidate
 	},
 	mounted() {
-		this.initRecipe();
+		this.loadRecipe();
 	},
 	methods: {
-		async initRecipe() {
+		async loadRecipe() {
 			try {
 				const response = await apiClient.get(`/recipes/${this.id}`);
 				this.recipeName = response.data.name;
+				this.recipePicture = response.data.picture;
 				this.imagePreview = `/images/${response.data.picture}`; // Afficher l'image existante
 			} catch (error) {
 				console.error("Erreur lors de la récupération de la recette:", error);
@@ -94,52 +96,48 @@ export default {
 		handleFileUpload(event) {
 			const file = event.target.files[0];
 			if (file) {
-				this.recipePicture = file;
-				this.imagePreview = URL.createObjectURL(file); // Afficher l'image téléchargée
+				this.recipePicture = file; // Cette ligne garde la référence du fichier
+				this.imagePreview = URL.createObjectURL(file); // Crée une URL pour la prévisualisation
+			} else {
+				// Si aucun fichier n'est sélectionné, on peut réinitialiser l'image
+				this.imagePreview = "";
+				this.recipePicture = "";
 			}
 		},
 		// Mise à jour de la recette
 		async updateRecipe() {
-			this.submitted = true; // formulaire soumis
-			this.v$.$touch(); // Marque tous les champs comme touchés
+			this.submitted = true; // Marque comme soumis
+			this.v$.$touch(); // Marquer tous les champs comme touchés
 			if (this.v$.$invalid) {
 				console.log("Formulaire invalide");
-				return; // Si le formulaire est invalide, arrête la soumission
+				return;
 			}
-			const formData = new FormData();
+
+			const formData = new FormData(); // S'assurer que formData est bien initialisé ici
 			formData.append("name", this.recipeName);
 
-			if (this.recipePicture) {
+			// Si une nouvelle image a été téléchargée, ajouter la nouvelle image
+			if (this.recipePicture && this.recipePicture instanceof File) {
+				// Si la nouvelle image est un fichier
 				formData.append("picture", this.recipePicture);
+			} else if (this.recipePicture && typeof this.recipePicture === "string") {
+				// Si la recette a une image existante (URL)
+				formData.append("picture", this.recipePicture);
+			} else {
+				// Si aucune image n'est spécifiée, conserver une valeur vide ou une image par défaut
+				formData.append("picture", this.imagePreview || "");
 			}
 
-			try {
-				const response = await apiClient.put(`/recipes/${this.id}`, formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				});
-
-				if (response.status === 200) {
-					this.submitted = false;
-					console.log("Recette mise à jour avec succès !");
-					this.$router.push({ name: "recipesList" });
-
-					if (this.recipePicture) {
-						this.imagePreview = URL.createObjectURL(this.recipePicture);
-					}
-				} else {
-					console.error("Erreur lors de la mise à jour de la recette");
-				}
-			} catch (error) {
-				if (error.response) {
-					console.error(
-						"Erreur réseau lors de la mise à jour:",
-						error.response.data
-					);
-				} else {
-					console.error("Erreur réseau lors de la mise à jour:", error.message);
-				}
+			const recipeStore = useRecipesStore(); // Utilisation du store Pinia
+			const success = await recipeStore.updateRecipe(
+				this.id,
+				this.recipeName,
+				formData
+			); // Appel du store Pinia
+			if (success) {
+				this.$router.push({ name: "recipesList" });
+			} else {
+				console.error("Erreur lors de la mise à jour de la recette");
 			}
 		},
 		getRecipeNameErrorMessages() {
@@ -180,6 +178,13 @@ export default {
 </script>
 
 <style scoped>
+/* *** Boutons *** */
+.v-btn {
+	justify-items: center;
+	background-color: #5d827f;
+	color: #d3beb1;
+}
+
 .main-content.custom-bg {
 	padding-top: 10px;
 }

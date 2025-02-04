@@ -1,11 +1,13 @@
 {
   "header": {
-    "link_test": "Test",
-    "link_list_recipes": "Recipes list",
-    "link_create": "Create recipe",
-    "link_update": "Update recipe",
-    "link_list_categories": "Categories list",
-    "button": "Connection"
+    "test": "Test",
+    "list_recipes": "Recipes list",
+    "create_recipe": "Create recipe",
+    "update_recipe": "Update recipe",
+    "list_categories": "Categories list",
+    "button": "Connection",
+    "create-category": "Create category",
+    "update_category": "Update recipe"
   },
   "home": {
     "title": "Welcome to GLUCID'EN FOLIE",
@@ -83,6 +85,12 @@
     "text": "You are on the test page. You can navigate to other pages via the navigation bar."
   },
   "footer": {
-    "text": "GLUCID'EN FOLIE.All rights reserved."
+    "notices": "Legal notices",
+    "about": "about",
+    "confidentiality": "Privacy Policy",
+    "condition": "Terms of use",
+    "map": "Site map",
+    "contact": "Contact",
+    "copyright": "GLUCID'EN FOLIE.All rights reserved."
   }
 }

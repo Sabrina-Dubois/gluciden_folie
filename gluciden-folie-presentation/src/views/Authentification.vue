@@ -83,12 +83,12 @@ export default {
 	created() {
 		this.v$ = useVuelidate();
 		const token = localStorage.getItem("jwt");
-		if (token) {
-			// Si le token est présent, rediriger vers la page d'accueil
-			this.$router.push({ name: "home" });
-		} else {
-			// Sinon, rester sur la page de connexion
-			this.$router.push({ name: "authentification" });
+		if (token && !this.isLogin) {
+			// Si le token est présent et qu'on est sur la page d'inscription, rediriger vers la page de login
+			this.$router.push({
+				name: "authentification",
+				params: { action: "home" },
+			});
 		}
 	},
 
@@ -134,10 +134,9 @@ export default {
 		},
 		logout() {
 			localStorage.removeItem("jwt"); // Supprime le token du localStorage
-			this.$router.push({ name: "authentification" }); // Redirection vers la page de connexion
+			this.$router.push({ name: "home" }); // Redirection vers la page de connexion
 		},
 		async newAuth() {
-			console.log("Méthode newAuth appelée");
 			this.submitted = true;
 			this.v$.$touch();
 
@@ -155,12 +154,12 @@ export default {
 			try {
 				if (this.isLogin) {
 					const response = await apiClient.post("accounts/login", userData);
-					console.log("Token reçu :", response.data.token);
 
 					if (response.status === 200) {
 						console.log("Utilisateur connecté avec succès !");
 						localStorage.setItem("jwt", response.data.token); // Sauvegarde du token
 						this.$router.push({ name: "home" }); // Redirection vers la page d'accueil après connexion
+						this.isAuthenticated = true; 
 					} else {
 						console.warn("Erreur lors de la connexion :", response);
 						alert(

@@ -47,9 +47,6 @@ export default {
     this.v$ = useVuelidate(); // Initialisation de Vuelidate
     this.initCategory(); // Récupère la catégorie à modifier
   },
-	// beforeMount() {
-	// 	this.initCategory();
-	// },
 	validations() {
 		return categoryValidation;
 	},

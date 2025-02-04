@@ -2,7 +2,7 @@
 	<v-app-bar class="custom-app-bar">
 		<!-- Menu principal -->
 		<v-menu
-			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
+			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
 			v-model="menuOpen"
 			offset-y
 			class="text-center"
@@ -19,32 +19,24 @@
 					<v-list-item-title>Accueil</v-list-item-title>
 				</v-list-item>
 
-				<!-- Favoris -->
-				<v-list-item>
-					<v-list-item-title>Favoris</v-list-item-title>
-				</v-list-item>
-
 				<!-- Création de recettes -->
-				<v-list-item @click="isCreateCategory">
-					{{ $t("header.link_create") }}
+				<v-list-item @click="goToCreateRecipe">
+					{{ $t("header.create_recipe") }}
 				</v-list-item>
 
 				<!-- Liste des recettes -->
 				<v-list-item @click="recipesList">
-					{{ $t("header.link_list_recipes") }}
+					{{ $t("header.list_recipes") }}
 				</v-list-item>
 
-				<!-- Création des catégories -->
-				<v-list-item @click="isCreateCategory"> Catégories </v-list-item>
+				<!-- Création de catégories -->
+				<v-list-item @click="goToCreateCategory">
+					{{ $t("header.create-category") }}
+				</v-list-item>
 
 				<!-- Liste des catégories -->
 				<v-list-item @click="categoriesList">
-					{{ $t("header.link_list_categories") }}
-				</v-list-item>
-
-				<!-- Test -->
-				<v-list-item @click="test">
-					{{ $t("header.link_test") }}
+					{{ $t("header.list_categories") }}
 				</v-list-item>
 
 				<!-- Langue -->
@@ -89,7 +81,7 @@
 
 		<!-- Barre de recherche -->
 		<v-text-field
-			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
+			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
 			class="custom-text-field"
 			append-inner-icon="mdi-magnify"
 			density="compact"
@@ -103,14 +95,14 @@
 
 		<!-- Connexion ou déconnexion -->
 		<v-btn
-			v-if="!isAuthentification && !isCreateRecipe && !isCreateCategory"
+			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
 			@click="goToConnection"
 			class="connexion"
 			ml-5
 			rounded=""
 			prepend-icon="mdi-account"
 		>
-			{{ buttonText }}
+			{{ isAuthenticated ? "Se déconnecter" : "Se connecter" }}
 		</v-btn>
 	</v-app-bar>
 </template>
@@ -122,39 +114,31 @@ export default {
 		return {
 			menuOpen: false,
 			languageMenuOpen: false,
+			//isAuthenticated: !!localStorage.getItem("jwt"),
 		};
 	},
 	computed: {
-		isAuthentification() {
-			return this.$route.name === "authentification";
+		isAuthenticated() {
+			return !!localStorage.getItem("jwt"); // Vérifie la présence du token
 		},
-		// Verif page Création recettes et cat
 		isCreateRecipe() {
 			return this.$route.name === "createRecipe";
-		},
-		isRecipesList() {
-			return this.$route.name === "recipesList";
 		},
 		isCreateCategory() {
 			return this.$route.name === "createCategory";
 		},
-		isCatgoriesList() {
-			return this.$route.name === "categoriesList";
-		},
-		buttonText() {
-			return this.isAuthenticated ? "Se déconnecter" : "Se connecter";
-		},
-		isAuthenticated() {
-			return !!localStorage.getItem("jwt");
-		},
-		isTested() {
-			return this.$route.name === "test";
+		// Vérification si on est sur la page de login ou register
+		isLoginPage() {
+			return (
+				this.$route.params.action === "login" ||
+				this.$route.params.action === "register"
+			);
 		},
 	},
 	methods: {
 		goToConnection() {
 			if (this.isAuthenticated) {
-				this.logout(); // Déconnexion
+				this.logout();
 			} else {
 				this.$router.push({
 					name: "authentification",
@@ -163,23 +147,40 @@ export default {
 			}
 		},
 		goToHome() {
-			this.$router.push({ name: "home" }); // Utilise $router.push pour naviguer vers la page d'accueil
+			this.$router.push({ name: "home" });
+		},
+		goToCreateRecipe() {
+			this.$router.push({ name: "createRecipe" });
+		},
+		goToCreateCategory() {
+			this.$router.push({ name: "createCategory" });
 		},
 		setLanguage(lang) {
 			this.$i18n.locale = lang;
 			alert(`Langue changée en ${lang === "fr" ? "Français" : "Anglais"}`);
 		},
+		recipesList() {
+			this.$router.push({ name: "recipesList" });
+		},
+		categoriesList() {
+			this.$router.push({ name: "categoriesList" });
+		},
 		logout() {
-			// Supprime le token d'authentification
-			localStorage.removeItem("jwt");
-			// Redirige vers la page d'accueil et recharge la page
-			this.$router.push({ name: "home" }).then(() => {
-				window.location.reload(); // Recharge la page pour mettre à jour l'état d'authentification
-			});
+			console.log("Déconnexion en cours...");
+    localStorage.removeItem("jwt");
+    console.log("Token après suppression :", localStorage.getItem("jwt"));
+    this.$router.push({ name: "home" });
+    this.$forceUpdate();
+
 		},
 	},
 };
 </script>
+
+
+
+
+
 
 <style scoped>
 .title {
