@@ -146,4 +146,7 @@ export default {
 	font-weight: bold !important;
 	color: #5d827f;
 }
+.Recip-list-container{
+	background-color:  #f5ede8;
+}
 </style>

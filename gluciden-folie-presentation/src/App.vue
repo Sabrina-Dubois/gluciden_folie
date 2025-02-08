@@ -39,6 +39,11 @@ body,
 	position: fixed;
 	bottom: 0px;
 }
+body, #app {
+  background-color: #f5ede8; /* Mets la couleur que tu veux */
+  min-height: 100vh; /* Assure que ça prend toute la hauteur */
+  margin: 0;
+}
 .main-content {
 	padding-top: 90px;
 	padding-bottom: 50px;

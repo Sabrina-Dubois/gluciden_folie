@@ -1,6 +1,6 @@
 <template>
 	<v-footer class="custom-footer">
-		<v-container class="footer text-center">
+		<v-container >
 			<div class="footer-row">
 				<h4>{{ $t("footer.notices") }}</h4>
 			</div>
@@ -43,13 +43,7 @@ export default {
 	width: 100%;
 }
 
-.footer {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-}
+
 
 .footer-row {
 	text-align: center;
@@ -62,7 +56,6 @@ export default {
 }
 
 .footer-row li a {
-	text-decoration: none;
 	color: #5d827f;
 	font-size: 15px;
 }
