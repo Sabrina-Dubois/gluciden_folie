@@ -44,7 +44,6 @@ export default {
 	created() {
 		this.v$ = useVuelidate(); // Initialisation de Vuelidate ,
 	},
-
 	computed: {
 		categoryNameErrors() {
 			if (!this.v$.categoryName.$error) {
@@ -60,7 +59,6 @@ export default {
 	},
 
 	methods: {
-		
 		async createCategory() {
 			this.submitted = true; // formulaire soumis
 			this.v$.$touch(); // Marque tous les champs comme touchés
@@ -72,7 +70,7 @@ export default {
 				try {
 					const categoryStore = useCategoriesStore();
 					await categoryStore.addCategory(this.categoryName);
-					this.$emit("categoryCreated", this.categoryName);
+					this.$emit("categoryCreated");
 					this.categoryName = "";
 					this.submitted = false;
 					this.$router.push({ name: "home" });

@@ -57,8 +57,7 @@ export default {
 	name: "recipesList",
 	components: RecipeDetails,
 	data() {
-		return {
-		};
+		return {};
 	},
 	//regarder
 	mounted() {
@@ -70,9 +69,9 @@ export default {
 			return recipesStore.recipes; // Utilise directement les recettes du store
 		},
 		sortedRecipes() {
-			return this.recipes.sort((a, b) => {
-				return a.name.localeCompare(b.name);
-			});
+			return this.recipes
+				.filter((recipe) => recipe.name) // Filtrer les recettes sans nom
+				.sort((a, b) => a.name.localeCompare(b.name));
 		},
 		imageUrl() {
 			return (recipe) =>
@@ -146,7 +145,7 @@ export default {
 	font-weight: bold !important;
 	color: #5d827f;
 }
-.Recip-list-container{
-	background-color:  #f5ede8;
+.Recip-list-container {
+	background-color: #f5ede8;
 }
 </style>

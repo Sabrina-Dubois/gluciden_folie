@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @RecipeCreateUnique
-public record RecipeCreateDto(@NotBlank @Size(max = 100) String name, @FileType(types = {
+public record RecipeCreateDto(@NotBlank @Size(min = 4, max = 100) String name, @FileType(types = {
 		MediaType.IMAGE_JPEG_VALUE,
 		MediaType.IMAGE_PNG_VALUE }) @NotNull @FileSize(max = FileSize.TWO_MB) MultipartFile picture){
 }

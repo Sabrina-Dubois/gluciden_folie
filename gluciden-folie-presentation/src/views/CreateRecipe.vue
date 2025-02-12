@@ -39,6 +39,157 @@
 					prepend-icon="mdi-camera"
 					variant="underlined"
 				></v-file-input>
+				<!-- Nombre de portions -->
+				<h3 class="section-title portions-title">
+					Nombre de portion{{ $t("create_recipe.portions") }}
+				</h3>
+				<v-text-field
+					v-model="numberOfPortions"
+					type="number"
+					label="Nombre de portions"
+					hide-details
+					variant="underlined"
+				></v-text-field>
+
+				<h3>Temps de préparation</h3>
+				<v-container>
+					<v-row>
+						<v-text-field
+							class="timeCook"
+							v-model="hourTime"
+							label="Heures"
+							hide-details
+							variant="underlined"
+						></v-text-field>
+						<v-text> : </v-text>
+						<v-text-field
+							class="timeCook"
+							v-model="minuteTime"
+							label="Minutes"
+							hide-details
+							variant="underlined"
+						></v-text-field>
+					</v-row>
+				</v-container>
+				<h3>Temps de cuisson</h3>
+				<v-container>
+					<v-row>
+						<v-text-field
+							class="timeCook"
+							v-model="hourTime"
+							label="Heures"
+							hide-details
+							variant="underlined"
+						></v-text-field>
+						<v-text> : </v-text>
+						<v-text-field
+							class="timeCook"
+							v-model="minuteTime"
+							label="Minutes"
+							hide-details
+							variant="underlined"
+						></v-text-field>
+					</v-row>
+				</v-container>
+
+				<h3 class="text-h6 mb-2">Type de cuisson</h3>
+				<v-container class="mx-auto" max-width="400">
+					<v-chip-group v-model="amenities" column multiple>
+						<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
+						<v-chip text="Micro-onde" variant="outlined" filter></v-chip>
+						<v-chip text="Four" variant="outlined" filter></v-chip>
+						<v-chip text="Poêle" variant="outlined" filter></v-chip>
+						<v-chip text="Vapeur" variant="outlined" filter></v-chip>
+					</v-chip-group>
+				</v-container>
+
+				<v-container class="boo pa-0" fluid>
+					<v-row class="d-flex">
+						<v-col
+							v-for="(cook, index) in cooks"
+							:key="index"
+							cols="12"
+							md="3"
+							no-gutters
+							@click="selectCook(index)"
+						>
+							<v-card>
+								<v-icon v-if="cook.icon">
+									{{ cook.icon }}
+								</v-icon>
+								<v-card-subtitle class="text-center">
+									{{ cook.name }}
+								</v-card-subtitle>
+							</v-card>
+						</v-col>
+					</v-row>
+				</v-container>
+
+				<h3>Difficultés</h3>
+				<div class="text-center">
+					<v-rating
+						v-model="rating"
+						:item-labels="labelsDifficulty"
+						length="4"
+						empty-icon="mdi-circle-outline"
+						full-icon="mdi-circle"
+						hover
+					>
+						<template v-slot:item-label="props">
+							<span>
+								{{ props.label }}
+							</span>
+						</template>
+					</v-rating>
+				</div>
+
+				<h3>Coûts</h3>
+				<div class="text-center">
+					<v-rating
+						v-model="rating"
+						:item-labels="labelsCost"
+						length="3"
+						empty-icon="mdi-circle-outline"
+						full-icon="mdi-circle"
+						hover
+					>
+						<template v-slot:item-label="props">
+							<span>
+								{{ props.label }}
+							</span>
+						</template>
+					</v-rating>
+				</div>
+
+				<h3>Choix des ingrédients</h3>
+				<v-container class="ingredients-list">
+					<v-row>
+						<v-col
+							v-for="(ingredient, index) in ingredients"
+							:key="index"
+							cols="1"
+							sm="1"
+							md="1"
+							lg="1"
+							hide-details
+							@click="selectIngredient(index)"
+						>
+							<v-img
+								:src="ingredient.image"
+								contain
+								class="ingredient-img"
+							></v-img>
+							<!-- <v-card-subtitle class="text-center">
+									{{ ingredient.name }}
+								</v-card-subtitle> -->
+						</v-col>
+					</v-row>
+				</v-container>
+				<h3>Commentaires</h3>
+				<v-textarea
+					label="Ecrit ton commentaire"
+					variant="underlined"
+				></v-textarea>
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
@@ -71,7 +222,7 @@ export default {
 	created() {
 		this.v$ = useVuelidate();
 	},
-	
+
 	computed: {
 		recipeNameErrors() {
 			if (!this.v$.recipeName.$error) {
@@ -106,17 +257,26 @@ export default {
 				this.imagePreview = URL.createObjectURL(file);
 			}
 		},
-		
+
 		async addRecipe() {
-			this.submitted = true; // formulaire soumis
-			this.v$.$touch(); // Marque tous les champs comme touchés
+			console.log("Validation state:", this.v$); // Vérifie l'état de validation
+
+			this.submitted = true;
+
+			// On valide le formulaire ici
+			await this.v$.$validate();
+
+			// Si le formulaire est invalide, on arrête la soumission
 			if (this.v$.$invalid) {
-				console.log("Formulaire invalide");
+				console.log("Formulaire invalide", this.v$.$errors);
 				return;
 			}
 			try {
 				const recipesStore = useRecipesStore();
-				const response = await recipesStore.addRecipe(this.recipeName, this.recipePicture);
+				const response = await recipesStore.addRecipe(
+					this.recipeName,
+					this.recipePicture
+				);
 
 				if (response) {
 					this.recipeName = "";
@@ -124,7 +284,7 @@ export default {
 					this.imagePreview = null;
 					this.submitted = false;
 					this.$router.push({ name: "recipesList" });
-					} else {
+				} else {
 					console.error("Erreur lors de la création de la recette");
 				}
 			} catch (error) {

@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import apiClient from "@/api/axiosConfig";
 
-
 export const useCategoriesStore = defineStore("categories", {
   state: () => ({
     categories: [],
@@ -9,22 +8,21 @@ export const useCategoriesStore = defineStore("categories", {
   actions: {
     // Récup catégorie depuis API
     async fetchCategories() {
-      try {
-        const response = await apiClient.get("/categories");
-        this.categories = response.data;
-      } catch (error) {
-        console.error("Erreur lors de la récupératio des catégories:", error);
-      }
+        try {
+          const response = await apiClient.get("/categories");
+          this.categories = response.data;
+        } catch (error) {
+          console.error("Erreur lors de la récupératio des catégories:", error);
+        }
+      
     },
 
     //Ajouter une nouvelle catégorie
     async addCategory(categoryName) {
       try {
-        //Créer la cat -> serveur
         const response = await apiClient.post("/categories", { name: categoryName });
         // Ajout catégorie complète(ID)
-        this.categories.push(response.data);
-
+        this.categories = [...this.categories, response.data];
         console.log("Catégorie ajoutée avec succès:", response.data);
       } catch (error) {
         console.error("Erreur lors de la récupératio des catégories:", error);
@@ -43,7 +41,7 @@ export const useCategoriesStore = defineStore("categories", {
         console.error("Erreur lors de la mise à jour de la catégorie:", error);
       }
     },
-    // Suprrimer uen catégorie
+    // Supprimer une catégorie
     async deleteCategory(categoryId) {
       try {
         await apiClient.delete(`/categories/${categoryId}`);

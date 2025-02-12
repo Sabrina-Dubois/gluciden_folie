@@ -24,7 +24,7 @@ export const useRecipesStore = defineStore("recipes", {
         const formData = new FormData();
         formData.append("name", recipeName);
         formData.append("picture", recipePicture);
-
+       
         console.log("Envoi de la requête avec les données:", formData);
 
         const response = await apiClient.post("/recipes", formData, {
@@ -35,6 +35,11 @@ export const useRecipesStore = defineStore("recipes", {
         if (response.status === 200 || response.status === 201) {
           console.log("Recette créée avec succès !");
           this.recipes.push(response.data);
+          //await this.fetchRecipes();
+          // Forcer Vue à rafraîchir la vue après l'ajout
+          
+            //this.$router.push({ name: "recipe-list" });
+
           return true;
         } else {
           console.error("Erreur lors de la création de la recette");
@@ -49,7 +54,6 @@ export const useRecipesStore = defineStore("recipes", {
     // Mettre à jour une recette
     async updateRecipe(recipeId, recipeName, formData) {
       try {
-
         const response = await apiClient.put(`/recipes/${recipeId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",

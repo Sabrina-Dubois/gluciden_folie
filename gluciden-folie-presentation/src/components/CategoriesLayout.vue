@@ -1,14 +1,12 @@
-//Ajout et gsetion des catégories
+<!--Ajout et gestion des catégories-->
 <template>
 	<div>
-		<!-- création de la catégorie et envoi de l'évènement -->
 		<CreateCategory v-if="showCreateCategory" @categoryCreated="addCategory" />
 		<CategoriesTabs :categories="categories" />
 	</div>
 </template>
 
 <script>
-import apiClient from "../api/axiosConfig";
 import CreateCategory from "../views/CreateCategory.vue";
 import CategoriesTabs from "./CategoriesTabs.vue";
 import { useCategoriesStore } from "@/stores/categoriesStore.js";
@@ -25,44 +23,23 @@ export default {
 			default: true,
 		},
 	},
-	data() {
-		return {
-			categories: [],
-		};
+	computed: {
+		categories() {
+			const categoriesStore = useCategoriesStore();
+			return categoriesStore.categories; // On récupère directement depuis le store
+		},
 	},
 	mounted() {
 		const categoriesStore = useCategoriesStore();
-		categoriesStore.fetchCategories();
-		this.categories = categoriesStore.categories;
+		if (categoriesStore.categories.length === 0) {
+			categoriesStore.fetchCategories();
+		}
 	},
 	methods: {
-		addCategory(categoryName) {
-			useCategoriesStore().addCategory(categoryName);
+		async onCategoryCreated() {
+			const categoriesStore = useCategoriesStore();
+			await categoriesStore.fetchCategories(); // Re-fetch categories after a new one is added
 		},
-		// methods: {
-		// 	async fetchCategories() {
-		// 		try {
-		// 			const response = await apiClient.get("/categories");
-		// 			this.categories = response.data;
-		// 		} catch (error) {
-		// 			console.error("Erreur lors de la récupératio des catégories:", error);
-		// 		}
-		// 	},
-		// 	async addCategory(newCategory) {
-		// 		try {
-		// 			//Créer la cat -> serveur
-		// 			const response = await apiClient.post("/categories", {
-		// 				newCategory,
-		// 			});
-		// 			// Ajout catégorie complète(ID)
-		// 			this.categories.push(response.data);
-
-		// 			console.log("Catégorie ajoutée avec succès:", response.data);
-		// 		} catch (error) {
-		// 			console.error("Erreur lors de la récupératio des catégories:", error);
-		// 		}
-		// 	},
-		// },
 	},
 };
 </script>

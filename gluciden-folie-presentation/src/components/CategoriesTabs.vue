@@ -5,7 +5,7 @@
 			<!-- Contenu des onglets -->
 			<v-tab
 				v-for="category in categories"
-				:key="category.name"
+				:key="category.id"
 				:value="category.name"
 				class="tab"
 				:elevation="8"
@@ -27,39 +27,28 @@ export default {
 			tab: null,
 		};
 	},
-
 	computed: {
 		categories() {
-			return useCategoriesStore().categories;
+			const categoriesStore = useCategoriesStore();
+			return categoriesStore.categories;
+		},
+	},
+	watch: {
+		// Watch pour suivre les changements de catégories
+		categories(newCategories) {
+			if (newCategories.length > 0 && !this.tab) {
+				this.tab = newCategories[0].name; // Si on n'a pas encore de tab sélectionné, on sélectionne la première catégorie
+			}
 		},
 	},
 	created() {
-		useCategoriesStore().fetchCategories();
-	},
-	// Ajouter la nouvelle catégorie à la liste des catégories après création réussie
-	createCategory() {
-		console.log("Nom de la catégorie:", this.newCategory);
-		const formData = new FormData();
-		formData.append("name", this.newCategory);
-		const options = { method: "POST", body: formData };
-
-		try {
-			fetch("http://localhost:8080/categories", options)
-				.then((response) => {
-					if (response.ok) {
-						console.log("Catégorie créée avec succès !");
-						this.$emit("categoryCreated", this.newCategory);
-						this.newCategory = ""; // Réinitialiser après succès
-					} else {
-						console.error("Erreur lors de la création de la catégorie");
-					}
-				})
-				.catch((error) => {
-					console.error("Erreur lors de la requête API :", error);
-				});
-		} catch (error) {
-			console.error("Erreur inattendue :", error);
-		}
+		const categoriesStore = useCategoriesStore();
+		this.$watch(
+			() => categoriesStore.categories,
+			(newVal) => {
+				this.tab = newVal.length > 0 ? newVal[0].name : null;
+			}
+		);
 	},
 };
 </script>

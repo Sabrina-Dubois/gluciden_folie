@@ -149,7 +149,7 @@ export default {
 				username: this.username,
 				password: this.password,
 			};
-			console.log("Données envoyées au backend :", userData);
+			//console.log("Données envoyées au backend :", userData);
 
 			try {
 				if (this.isLogin) {
