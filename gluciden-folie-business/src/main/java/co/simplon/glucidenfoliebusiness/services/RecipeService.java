@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import co.simplon.glucidenfoliebusiness.dtos.RecipeCreateDto;
-import co.simplon.glucidenfoliebusiness.dtos.RecipeUpdateDto;
-import co.simplon.glucidenfoliebusiness.dtos.RecipeViewDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeViewDto;
 import co.simplon.glucidenfoliebusiness.entities.Account;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
 import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
@@ -28,14 +28,14 @@ public class RecipeService {
 	private String uploadsDest;
 
 	// necessary field for communicated with DB
-	private final RecipeRepository recipes;
-	private final AccountRepository accounts;
+	private final RecipeRepository recipesRepo;
+	private final AccountRepository accountsRepo;
 
 	// Constructeur de la classe SpotService qui initialise les champs recipes avec
 	// les instances des repositories injectées par Spring.
 	public RecipeService(RecipeRepository recipes, AccountRepository accounts) {
-		this.recipes = recipes;
-		this.accounts = accounts;
+		this.recipesRepo = recipes;
+		this.accountsRepo = accounts;
 
 	}
 
@@ -50,7 +50,7 @@ public class RecipeService {
 		String username = jwt.getClaimAsString("sub"); // Assurez-vous que ce champ existe dans le JWT
 
 		// Trouver l'account associé à cet utilisateur
-		Account account = accounts.findByUsernameIgnoreCase(username)
+		Account account = accountsRepo.findByUsernameIgnoreCase(username)
 				.orElseThrow(() -> new RuntimeException("Account not found for username: " + username));
 
 		// Ajoute l'utilisateur à la recette
@@ -62,7 +62,7 @@ public class RecipeService {
 			storePicture(pictureFromDto, pictureToEntity);
 			entity.setPicture(pictureToEntity);
 		}
-		recipes.save(entity);
+		recipesRepo.save(entity);
 	}
 
 	// Importer une photo de la recette
@@ -88,17 +88,17 @@ public class RecipeService {
 
 	// Lire toutes les recettes
 	public Collection<RecipeViewDto> getAll() {
-		return recipes.findAllProjectedBy();
+		return recipesRepo.findAllProjectedBy();
 	}
 
 	// Supprimer une recette
 	public void deleteOne(Long id) {
-		recipes.deleteById(id);
+		recipesRepo.deleteById(id);
 	}
 
 	// Modifier une recette
 	public void updateOne(long id, RecipeUpdateDto inputs) {
-		Recipe entity = recipes.findById(id).orElseThrow();
+		Recipe entity = recipesRepo.findById(id).orElseThrow();
 		entity.setName(inputs.name());
 
 		MultipartFile newPicture = inputs.picture();
@@ -107,12 +107,12 @@ public class RecipeService {
 			storePicture(newPicture, newPictureName);
 			entity.setPicture(newPictureName);
 		}
-		recipes.save(entity);
+		recipesRepo.save(entity);
 	}
 
 	// Récupère une recette
 	public RecipeViewDto getOne(Long id) {
-		return recipes.findOneProjectedById(id);
+		return recipesRepo.findOneProjectedById(id);
 	}
 
 }

@@ -20,7 +20,7 @@
 				</v-list-item>
 
 				<!-- Création de recettes -->
-				<v-list-item @click="goToCreateRecipe">
+				<v-list-item v-if="isAdmin" @click="goToCreateRecipe">
 					{{ $t("header.create_recipe") }}
 				</v-list-item>
 
@@ -30,12 +30,12 @@
 				</v-list-item>
 
 				<!-- Création de catégories -->
-				<v-list-item @click="goToCreateCategory">
+				<v-list-item v-if="isAdmin" @click="goToCreateCategory">
 					{{ $t("header.create-category") }}
 				</v-list-item>
 
 				<!-- Liste des catégories -->
-				<v-list-item @click="categoriesList">
+				<v-list-item v-if="isAdmin" @click="categoriesList">
 					{{ $t("header.list_categories") }}
 				</v-list-item>
 
@@ -114,10 +114,28 @@ export default {
 		return {
 			menuOpen: false,
 			languageMenuOpen: false,
-			//isAuthenticated: !!localStorage.getItem("jwt"),
 		};
 	},
 	computed: {
+		isAdmin() {
+			// 1. Récupère le token JWT depuis le localStorage
+			const token = localStorage.getItem("jwt");
+			// 2. Si pas de token, l'utilisateur n'est pas admin
+			if (!token) return false;
+			try {
+				// 3. Décodage du token JWT (qui a 3 parties séparées par des points)
+				// atob() décode une string en base64
+				// On prend la partie payload (index 1) qui contient les infos utilisateur
+				const payload = JSON.parse(atob(token.split(".")[1]));
+				// Solution 1 (si vous utilisez la claim "role")
+				return payload.role === "ROLE_ADMIN";
+				// 4. Vérifie si le tableau 'roles' contient 'ROLE_ADMIN'
+				// Le ?. est l'opérateur de chaînage optionnel (évite les erreurs si roles est undefined)
+				return payload.roles?.includes("ROLE_ADMIN");
+			} catch {
+				return false;
+			}
+		},
 		isAuthenticated() {
 			return !!localStorage.getItem("jwt"); // Vérifie la présence du token
 		},
@@ -166,12 +184,8 @@ export default {
 			this.$router.push({ name: "categoriesList" });
 		},
 		logout() {
-			console.log("Déconnexion en cours...");
-    localStorage.removeItem("jwt");
-    console.log("Token après suppression :", localStorage.getItem("jwt"));
-    this.$router.push({ name: "home" });
-    this.$forceUpdate();
-
+			localStorage.removeItem("jwt");
+			this.$router.push({ name: "home" });
 		},
 	},
 };

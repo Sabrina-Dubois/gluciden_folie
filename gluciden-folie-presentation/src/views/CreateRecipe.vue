@@ -1,7 +1,7 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
-		<v-card class="recipeForm d-flex align-center">
+		<v-card class="recipeForm" max-width="800px">
 			<!-- Formulaire pour créer une recette -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
@@ -39,9 +39,10 @@
 					prepend-icon="mdi-camera"
 					variant="underlined"
 				></v-file-input>
+				
 				<!-- Nombre de portions -->
-				<h3 class="section-title portions-title">
-					Nombre de portion{{ $t("create_recipe.portions") }}
+				<!-- <h3 class="section-title portions-title"> -->
+					<!-- Nombre de portion{{ $t("create_recipe.portions") }}
 				</h3>
 				<v-text-field
 					v-model="numberOfPortions"
@@ -49,9 +50,9 @@
 					label="Nombre de portions"
 					hide-details
 					variant="underlined"
-				></v-text-field>
+				></v-text-field> -->
 
-				<h3>Temps de préparation</h3>
+				<!-- <h3>Temps de préparation</h3>
 				<v-container>
 					<v-row>
 						<v-text-field
@@ -70,8 +71,8 @@
 							variant="underlined"
 						></v-text-field>
 					</v-row>
-				</v-container>
-				<h3>Temps de cuisson</h3>
+				</v-container> -->
+				<!-- <h3>Temps de cuisson</h3>
 				<v-container>
 					<v-row>
 						<v-text-field
@@ -90,9 +91,9 @@
 							variant="underlined"
 						></v-text-field>
 					</v-row>
-				</v-container>
+				</v-container> -->
 
-				<h3 class="text-h6 mb-2">Type de cuisson</h3>
+				<!-- <h3 class="text-h6 mb-2">Type de cuisson</h3>
 				<v-container class="mx-auto" max-width="400">
 					<v-chip-group v-model="amenities" column multiple>
 						<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
@@ -101,9 +102,9 @@
 						<v-chip text="Poêle" variant="outlined" filter></v-chip>
 						<v-chip text="Vapeur" variant="outlined" filter></v-chip>
 					</v-chip-group>
-				</v-container>
+				</v-container> -->
 
-				<v-container class="boo pa-0" fluid>
+				<!-- <v-container class="boo pa-0" fluid>
 					<v-row class="d-flex">
 						<v-col
 							v-for="(cook, index) in cooks"
@@ -123,9 +124,9 @@
 							</v-card>
 						</v-col>
 					</v-row>
-				</v-container>
+				</v-container> -->
 
-				<h3>Difficultés</h3>
+				<!-- <h3>Difficultés</h3>
 				<div class="text-center">
 					<v-rating
 						v-model="rating"
@@ -141,9 +142,9 @@
 							</span>
 						</template>
 					</v-rating>
-				</div>
+				</div> -->
 
-				<h3>Coûts</h3>
+				<!-- <h3>Coûts</h3>
 				<div class="text-center">
 					<v-rating
 						v-model="rating"
@@ -159,37 +160,16 @@
 							</span>
 						</template>
 					</v-rating>
-				</div>
+				</div> -->
 
 				<h3>Choix des ingrédients</h3>
-				<v-container class="ingredients-list">
-					<v-row>
-						<v-col
-							v-for="(ingredient, index) in ingredients"
-							:key="index"
-							cols="1"
-							sm="1"
-							md="1"
-							lg="1"
-							hide-details
-							@click="selectIngredient(index)"
-						>
-							<v-img
-								:src="ingredient.image"
-								contain
-								class="ingredient-img"
-							></v-img>
-							<!-- <v-card-subtitle class="text-center">
-									{{ ingredient.name }}
-								</v-card-subtitle> -->
-						</v-col>
-					</v-row>
-				</v-container>
-				<h3>Commentaires</h3>
+				<Ingredients />
+
+				<!-- <h3>Commentaires</h3>
 				<v-textarea
 					label="Ecrit ton commentaire"
 					variant="underlined"
-				></v-textarea>
+				></v-textarea> -->
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
@@ -204,11 +184,15 @@ import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
+import Ingredients from '@/components/Ingredients.vue';
 
 export default {
 	name: "createRecipe",
+	components: {
+		Ingredients
+	},
 	data() {
-		return {
+	return {
 			recipeName: "",
 			recipePicture: null,
 			imagePreview: null,
@@ -300,30 +284,20 @@ export default {
 	padding-top: 10px;
 }
 
-.d-flex {
-	align-items: center;
-	justify-content: center;
-}
-
-.v-icon,
-.v-rating {
-	color: #f29eb0;
-}
-
 .recipeForm {
-	max-width: 900px;
+	max-width: 800px;
 	margin: auto;
 }
 
 .v-form {
 	background-color: white;
+	width: 100%;
 }
 
 .v-text-field,
 .v-file-input {
-	max-height: 20px;
 	max-width: auto;
-	margin-bottom: 90px;
+	margin-bottom: 30px;
 	padding-left: 20px;
 	color: #5d827f;
 }
@@ -333,9 +307,7 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
+	
 }
 
-.v-rating__wrapper span {
-	margin: 0 10px;
-}
 </style>

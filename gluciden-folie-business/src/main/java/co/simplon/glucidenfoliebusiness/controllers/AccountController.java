@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.simplon.glucidenfoliebusiness.dtos.AccountCreateDto;
-import co.simplon.glucidenfoliebusiness.dtos.AccountLogin;
 import co.simplon.glucidenfoliebusiness.dtos.LoginResponse;
+import co.simplon.glucidenfoliebusiness.dtos.account.AccountCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.account.AccountLogin;
 import co.simplon.glucidenfoliebusiness.services.AccountService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/accounts")
-//@CrossOrigin("*")
 public class AccountController {
 
 	private final AccountService accountService;
@@ -26,10 +25,10 @@ public class AccountController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public String create(@Valid @RequestBody AccountCreateDto inputs) {
+	public String create(@Valid @RequestBody AccountCreateDto accountCreateDto) {
 		try {
 			// Appel à la méthode service pour créer le compte
-			accountService.create(inputs);
+			accountService.create(accountCreateDto, accountCreateDto.roles());
 			// Retourne un message de succès une fois que le compte est créé
 			return "Compte créé avec succès !";
 		} catch (Exception exception) {
@@ -40,8 +39,8 @@ public class AccountController {
 
 	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.OK)
-	LoginResponse authentificated(@RequestBody AccountLogin inputs) {
-		return accountService.authenticate(inputs);
+	LoginResponse authentificate(@RequestBody AccountLogin accountLogin) {
+		return accountService.authenticate(accountLogin);
 
 	}
 

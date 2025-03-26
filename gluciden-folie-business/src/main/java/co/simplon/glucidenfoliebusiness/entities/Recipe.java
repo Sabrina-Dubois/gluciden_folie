@@ -25,8 +25,12 @@ public class Recipe extends AbstractEntity {
 	@JoinTable(name = "t_recipes_categories", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_category"))
 	private Set<Category> categories = new HashSet<>();
 
+	@ManyToMany
+	@JoinTable(name = "t_recipes_ingredients", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_ingredient"))
+	private Set<Ingredient> ingredients = new HashSet<>();
+
 	@ManyToOne
-	@JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
 	private Account account;
 
 	@Override
@@ -35,7 +39,7 @@ public class Recipe extends AbstractEntity {
 				account);
 	}
 
-	// Getters et setters
+	// Getters & setters
 	public String getName() {
 		return name;
 	}
@@ -50,6 +54,14 @@ public class Recipe extends AbstractEntity {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+
+	public Set<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(Set<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 	public Set<Category> getCategories() {

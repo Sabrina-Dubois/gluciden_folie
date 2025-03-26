@@ -13,7 +13,7 @@ const apiClient = axios.create({
 // Instance qui définit intercepeteur avant envoie de la requete
 apiClient.interceptors.request.use(
   (config) => {
-      console.log("Intercepting request: ", config.url);
+    console.log("Intercepting request: ", config.url);
     const token = localStorage.getItem("jwt"); // Recup token local storage
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -28,20 +28,21 @@ apiClient.interceptors.request.use(
 // Intercepteur -> erreur 401
 apiClient.interceptors.response.use(
   (response) => response, // On renvoie la réponse
-  
+
   async (error) => {
     console.log("Intercepting response error: ", error.response?.status);
     if (error.response && error.response.status === 401) {
+      console.log("Erreur 401 : Jeton invalide ou expiré.");
       // Si le jeton est expiré ou invalide > supprime le token
       localStorage.removeItem("jwt");
       // Rediriger l'utilisateur vers la page de connexion
-      //router.push("/login");
-      window.location.href = "/login";
-
+     
+      if (window.location.pathname !== "/login") {
+        router.push("/login");
+      }
     }
     return Promise.reject(error);
   }
 );
-
 
 export default apiClient;

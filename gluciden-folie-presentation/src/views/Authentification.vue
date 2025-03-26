@@ -1,62 +1,73 @@
 <template>
-	<div class="auth-form">
-		<h1>
-			{{ isLogin ? $t("auth.toggleToLogin") : $t("auth.toggleToRegister") }}
-		</h1>
-		<v-card class="connection d-flex align-center">
-			<v-form @submit.prevent="newAuth" :model="v$">
-				<!-- Email -->
-				<div class="field-container">
-					<label class="custom-label"
-						>{{ $t("auth.email.label-mail") }} *</label
-					>
-					<v-text-field
-						v-model="username"
-						class="text-field"
-						:placeholder="$t('auth.email.placeholder-mail')"
-						density="compact"
-						variant="solo"
-						prepend-inner-icon="mdi-email"
-						:error="v$.username.$error"
-						:error-messages="usernameErrors"
-						hide-details="auto"
-					></v-text-field>
-				</div>
-				<!-- Password -->
-				<div class="field-container">
-					<label class="custom-label"
-						>{{ $t("auth.password.label-pass") }} *</label
-					>
+	<v-container class="auth-form" fluid>
+		<v-row justify="center">
+			<v-col cols="12" sm="8" md="6" lg="4">
+				<h1>
+					{{ isLogin ? $t("auth.toggleToLogin") : $t("auth.toggleToRegister") }}
+				</h1>
+				<v-card class="connection">
+					<v-form @submit.prevent="newAuth" :model="v$">
+						<!-- Email -->
+						<div class="field-container">
+							<label class="custom-label"
+								>{{ $t("auth.email.label-mail") }} *</label
+							>
+							<v-text-field
+								v-model="username"
+								class="text-field"
+								:placeholder="$t('auth.email.placeholder-mail')"
+								density="compact"
+								variant="solo"
+								prepend-inner-icon="mdi-email"
+								:error="v$.username.$error"
+								:error-messages="usernameErrors"
+								hide-details="auto"
+							></v-text-field>
+						</div>
 
-					<v-text-field
-						v-model="password"
-						class="text-field"
-						:type="showPassword ? 'text' : 'password'"
-						:placeholder="$t('auth.password.placeholder-pass')"
-						variant="solo"
-						prepend-inner-icon="mdi-lock"
-						:append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-						@click:append-inner="togglePasswordVisibility"
-						:error="v$.password.$error"
-						:error-messages="passwordErrors"
-						density="compact"
-					></v-text-field>
-				</div>
+						<!-- Password -->
+						<div class="field-container">
+							<label class="custom-label"
+								>{{ $t("auth.password.label-pass") }} *</label
+							>
+							<v-text-field
+								v-model="password"
+								class="text-field"
+								:type="showPassword ? 'text' : 'password'"
+								:placeholder="$t('auth.password.placeholder-pass')"
+								variant="solo"
+								prepend-inner-icon="mdi-lock"
+								:append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+								@click:append-inner="togglePasswordVisibility"
+								:error="v$.password.$error"
+								:error-messages="passwordErrors"
+								density="compact"
+							></v-text-field>
+						</div>
 
-				<!-- Bouton d'action -->
-				<v-btn class="custom-btn" ml-5 rounded type="submit">
-					{{ isLogin ? $t("auth.button-connexion") : $t("auth.button-auth") }}
-				</v-btn>
-			</v-form>
-			<!-- Switch entre connexion et inscription -->
-			<p>
-				{{ isLogin ? $t("auth.toggleToRegister") : $t("auth.toggleToLogin") }}
-				<v-btn rounded @click="toggleMode">
-					{{ isLogin ? $t("auth.button-auth") : $t("auth.button-connexion") }}
-				</v-btn>
-			</p>
-		</v-card>
-	</div>
+						<!-- Bouton d'action -->
+						<v-btn class="custom-btn" type="submit" rounded block>
+							{{
+								isLogin ? $t("auth.button-connexion") : $t("auth.button-auth")
+							}}
+						</v-btn>
+					</v-form>
+
+					<!-- Switch entre connexion et inscription -->
+					<p>
+						{{
+							isLogin ? $t("auth.toggleToRegister") : $t("auth.toggleToLogin")
+						}}
+						<v-btn rounded @click="toggleMode">
+							{{
+								isLogin ? $t("auth.button-auth") : $t("auth.button-connexion")
+							}}
+						</v-btn>
+					</p>
+				</v-card>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
@@ -83,20 +94,27 @@ export default {
 	created() {
 		this.v$ = useVuelidate();
 		const token = localStorage.getItem("jwt");
+
+		const action = this.$route.params.action;
+
+		if (action === "login") {
+			this.isLogin = true;
+		} else if (action === "register") {
+			this.isLogin = false;
+		}
+
 		if (token && !this.isLogin) {
 			// Si le token est présent et qu'on est sur la page d'inscription, rediriger vers la page de login
 			this.$router.push({
 				name: "authentification",
-				params: { action: "home" },
+				params: { action: "login" },
 			});
 		}
 	},
-
 	computed: {
 		usernameErrors() {
 			const errors = [];
 			const rules = this.v$.username;
-
 			if (rules.$error) {
 				if (rules.required.$invalid) errors.push(messages.required);
 				if (this.v$.username.validEmail.$invalid)
@@ -104,25 +122,20 @@ export default {
 				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
 				if (rules.maxLength.$invalid) errors.push(messages.maxLength(50));
 			}
-
 			return errors;
 		},
-
 		passwordErrors() {
 			const errors = [];
 			const rules = this.v$.password;
-
 			if (rules.$error) {
 				if (rules.required.$invalid) errors.push(messages.required);
 				if (rules.validPassword.$invalid) errors.push(messages.validPassword);
 				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
 				if (rules.maxLength.$invalid) errors.push(messages.maxLength(72));
 			}
-
 			return errors;
 		},
 	},
-
 	methods: {
 		toggleMode() {
 			this.isLogin = !this.isLogin;
@@ -139,48 +152,45 @@ export default {
 		async newAuth() {
 			this.submitted = true;
 			this.v$.$touch();
-
 			if (this.v$.$invalid) {
 				console.log("Formulaire invalide");
 				return;
 			}
 
-			const userData = {
-				username: this.username,
-				password: this.password,
-			};
-			//console.log("Données envoyées au backend :", userData);
-
+			const userData = { username: this.username, password: this.password };
 			try {
 				if (this.isLogin) {
-					const response = await apiClient.post("accounts/login", userData);
-
+					const response = await apiClient.post("accounts/login", { username : this.username, password : this.password });
 					if (response.status === 200) {
 						console.log("Utilisateur connecté avec succès !");
-						localStorage.setItem("jwt", response.data.token); // Sauvegarde du token
-						this.$router.push({ name: "home" }); // Redirection vers la page d'accueil après connexion
-						this.isAuthenticated = true; 
+						localStorage.setItem("jwt", response.data.token);
+						this.$router.push({ name: "home" });
 					} else {
-						console.warn("Erreur lors de la connexion :", response);
-						alert(
-							"Impossible de se connecter. Veuillez vérifier vos informations."
-						);
+						alert("Erreur de connexion");
 					}
 				} else {
 					const response = await apiClient.post("/accounts", userData);
 					if (response.status === 201) {
-						console.log("Compte créé avec succès !");
 						this.$router.push({
 							name: "authentification",
 							params: { action: "login" },
 						});
 					} else {
-						console.warn("Erreur lors de la création du compte :", response);
-						alert("Impossible de créer un compte. Veuillez réessayer.");
+						alert("Erreur lors de la création du compte");
 					}
 				}
 			} catch (error) {
-				console.error(error);
+				console.error(
+					"Erreur lors de la connexion : ",
+					error.response ? error.response.data : error.message
+				);
+				if (error.response && error.response.status === 401) {
+					alert(
+						"Identifiants incorrects. Veuillez vérifier votre email et votre mot de passe."
+					);
+				} else {
+					alert("Une erreur s'est produite. Veuillez réessayer plus tard.");
+				}
 			}
 		},
 	},
@@ -189,27 +199,30 @@ export default {
 
 <style scoped>
 .auth-form {
-	max-width: 500px;
-	margin: auto;
 	padding: 20px;
-	text-align: center;
 }
 
 .connection {
-	background-color: #f3f3f3;
+	background-color: #d3beb1;
 	padding: 20px;
 	border-radius: 10px;
 }
 
+.text-field {
+	width: 100%;
+	margin: 10px 0;
+}
+
 .field-container {
-	margin-bottom: 15px;
-	text-align: left;
+	display: flex;
+	flex-direction: column;
 }
 
 .custom-label {
 	font-size: 16px;
-	margin-bottom: 5px;
-	color: #333;
+	color: #5d827f;
+	margin-left: 20px;
+	text-align: left;
 }
 
 .v-btn {
@@ -223,43 +236,6 @@ export default {
 }
 
 p {
-	margin-top: 15px;
 	color: #5d827f;
-}
-
-.connection {
-	max-width: 800px;
-	margin: auto;
-	padding: 20px;
-}
-
-h2 {
-	font-family: "Laila", serif;
-	font-weight: 400;
-	font-style: normal;
-}
-
-.v-card {
-	background-color: #d3beb1;
-}
-
-.text-field {
-	/* Réduction de la largeur des champs */ /* Largeur minimale pour des écrans plus petits */
-	max-width: 800px;
-	align-content: center;
-	margin: 10px; /* Espacement entre les champs */
-}
-
-.field-container {
-	display: flex;
-	flex-direction: column;
-}
-.custom-label {
-	font-size: 16px;
-	color: #5d827f;
-	margin-left: 20px;
-	padding-bottom: 0px;
-	text-align: left; /* Le label est aligné à gauche */
-	width: 100%; /* Prendre toute la largeur disponible */
 }
 </style>

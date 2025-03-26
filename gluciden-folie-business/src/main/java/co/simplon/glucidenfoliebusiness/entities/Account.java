@@ -5,6 +5,8 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -12,14 +14,15 @@ import jakarta.persistence.Table;
 @Table(name = "t_accounts")
 public class Account extends AbstractEntity {
 
-	@Column(name = "username", unique = true)
+	@Column(name = "username", unique = true, nullable = false)
 	private String username;
 
 	@Column(name = "password", nullable = false)
 	private String password;
 
-	// @Column(nullable = false)
-	// private String role = "User";
+	@ManyToOne
+	@JoinColumn(name = "id_role", nullable = false)
+	private Role role;
 
 	@OneToMany(mappedBy = "account") // Une relation One-to-Many avec Category
 	private Set<Category> categories = new HashSet<>();
@@ -64,12 +67,12 @@ public class Account extends AbstractEntity {
 		return String.format("username=%s", "password=[PORTECTED]", username);
 	}
 
-	// public String getRole() {
-	// return role;
-	// }
+	public Role getRole() {
+		return role;
+	}
 
-	// public void setRole(String role) {
-	// this.role = role;
-	// }
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 }

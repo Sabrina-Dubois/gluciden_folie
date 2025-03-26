@@ -14,7 +14,7 @@ public class Category extends AbstractEntity {
 	private String name;
 
 	@ManyToOne // Chaque catégorie appartient à un utilisateur
-	@JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
 	private Account account;
 
 	public String getName() {

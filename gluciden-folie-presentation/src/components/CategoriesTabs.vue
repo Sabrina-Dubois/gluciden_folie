@@ -8,7 +8,7 @@
 				:key="category.id"
 				:value="category.name"
 				class="tab"
-				:elevation="8"
+				
 			>
 				<!-- Affiche le nom de l'élément dans l'onglet -->
 				{{ category.name }}
@@ -55,7 +55,7 @@ export default {
 
 <style scoped>
 .v-card {
-	width: 1000px;
+	width:auto;
 	max-height: 70px;
 	margin: auto;
 	background-color: #5d827f !important;
@@ -68,10 +68,9 @@ export default {
 	color: #d3beb1;
 	font-style: bold;
 }
-.tab:hover,
+
 .tab--active {
 	background-color: #d3beb1;
 	color: #5d827f !important;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 </style>

@@ -13,8 +13,23 @@ const router = createRouter({
       name: "test",
       component: () => import("../views/Test.vue"),
     },
-    {
+    /*{
       path: "/:action",
+      name: "authentification",
+      component: () => import("../views/Authentification.vue"),
+    },*/
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("../views/Authentification.vue"),
+    },
+    /*{
+      path: "/register",
+      name: "register",
+      component: () => import("../views/Authentification.vue"),
+    },*/
+    {
+      path: "/authentification/:action",
       name: "authentification",
       component: () => import("../views/Authentification.vue"),
     },
@@ -36,7 +51,7 @@ const router = createRouter({
     {
       path: "/recipes/:id",
       name: "recipeDetails",
-      component: () => import ("@/views/RecipeDetails.vue"),
+      component: () => import("@/views/RecipeDetails.vue"),
       props: true,
     },
     {

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.simplon.glucidenfoliebusiness.dtos.CategoryCreateDto;
-import co.simplon.glucidenfoliebusiness.dtos.CategoryUpdateDto;
-import co.simplon.glucidenfoliebusiness.dtos.CategoryViewDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryUpdateDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryViewDto;
 import co.simplon.glucidenfoliebusiness.services.CategoryService;
 import jakarta.validation.Valid;
 

@@ -10,24 +10,27 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class ValidationUtils {
 	private ValidationUtils() {
-		
-	// Not instatiable
-		}
-		@SuppressWarnings("unchecked")
-	    static String pathVariableString(String name) {
-	    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-	        .currentRequestAttributes()).getRequest();
-	    Map<String, String> pathVariables = (Map<String, String>) request
-	        .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-	    return pathVariables.get(name);
-	    }
-		
-	static Long pathVariableAsLong(String name) {
+
+		// Not instatiable
+	}
+
+	@SuppressWarnings("unchecked")
+	static String pathVariableString(String name) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+				.getRequest();
+		Map<String, String> pathVariables = (Map<String, String>) request
+				.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+		return pathVariables.get(name);
+	}
+
+	public static Long pathVariableAsLong(String name) {
 		return Long.valueOf(pathVariableString(name));
 	}
+
 	static Integer pathVariableAsInteger(String name) {
 		return Integer.valueOf(pathVariableString(name));
 	}
+
 	static Boolean pathVariableAsBoolean(String name) {
 		return Boolean.valueOf(pathVariableString(name));
 	}

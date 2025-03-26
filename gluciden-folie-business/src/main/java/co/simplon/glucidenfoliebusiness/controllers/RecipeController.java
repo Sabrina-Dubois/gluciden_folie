@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import co.simplon.glucidenfoliebusiness.dtos.RecipeCreateDto;
-import co.simplon.glucidenfoliebusiness.dtos.RecipeUpdateDto;
-import co.simplon.glucidenfoliebusiness.dtos.RecipeViewDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeViewDto;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
 

@@ -8,9 +8,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.simplon.glucidenfoliebusiness.dtos.CategoryCreateDto;
-import co.simplon.glucidenfoliebusiness.dtos.CategoryUpdateDto;
-import co.simplon.glucidenfoliebusiness.dtos.CategoryViewDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryUpdateDto;
+import co.simplon.glucidenfoliebusiness.dtos.category.CategoryViewDto;
 import co.simplon.glucidenfoliebusiness.entities.Account;
 import co.simplon.glucidenfoliebusiness.entities.Category;
 import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
@@ -29,10 +29,6 @@ public class CategoryService {
 	public CategoryService(CategoryRepository categories, AccountRepository accounts) {
 		this.categories = categories;
 		this.accounts = accounts;
-	}
-
-	public CategoryRepository getCategories() {
-		return categories;
 	}
 
 	@Transactional
