@@ -4,6 +4,7 @@ import apiClient from "../api/axiosConfig";
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
     recipes: [],
+    ingredientList: [],
   }),
   actions: {
     // Récupérer les recettes
@@ -19,13 +20,29 @@ export const useRecipesStore = defineStore("recipes", {
     },
 
     // Ajouter une nouvelle recette
-    async addRecipe(recipeName, recipePicture) {
+    async addRecipe({ recipeName, recipePicture, ingredients }) {
       try {
+        if (!ingredients || !Array.isArray(ingredients) || !ingredients.length) {
+          console.log("🧪 ingrédients:", ingredients);
+          throw new Error("Les ingrédients sont manquants ou mal définis.");
+        }
+
+        // if (!quantities || !Array.isArray(quantities) || quantities.length === 0) {
+        //   throw new Error("Les quantités sont manquantes ou mal définies.");
+        // }
+
+        // if (!unities || !Array.isArray(unities) || unities.length === 0) {
+        //   throw new Error("Les unités sont manquantes ou mal définies.");
+        // }
+
+        console.log("🧪 ingrédients:", ingredients);
+        console.log("🧪 name:", recipeName);
+        console.log("🧪 picture:", recipePicture);
+
         const formData = new FormData();
         formData.append("name", recipeName);
         formData.append("picture", recipePicture);
-       
-        console.log("Envoi de la requête avec les données:", formData);
+        formData.append("ingredients", JSON.stringify(ingredients));
 
         const response = await apiClient.post("/recipes", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -33,12 +50,11 @@ export const useRecipesStore = defineStore("recipes", {
         console.log("Réponse de l'API:", response);
 
         if (response.status === 200 || response.status === 201) {
+          const newRecipe = response.data;
+          newRecipe.ingredients = ingredients; //ingrédients sont bien ajoutés
+          this.recipes.push(newRecipe);
+
           console.log("Recette créée avec succès !");
-          this.recipes.push(response.data);
-          //await this.fetchRecipes();
-          // Forcer Vue à rafraîchir la vue après l'ajout
-          
-            //this.$router.push({ name: "recipe-list" });
 
           return true;
         } else {
@@ -51,7 +67,7 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
 
-    // Mettre à jour une recette
+    // Maj une recette
     async updateRecipe(recipeId, recipeName, formData) {
       try {
         const response = await apiClient.put(`/recipes/${recipeId}`, formData, {
@@ -62,7 +78,7 @@ export const useRecipesStore = defineStore("recipes", {
 
         if (response.status === 200) {
           const updatedRecipe = response.data;
-          // Mettre à jour la recette dans le tableau local
+          // Majk;o,; la recette dans le tableau local
           const index = this.recipes.findIndex((recipe) => recipe.id === recipeId);
           if (index !== -1) {
             this.recipes[index] = updatedRecipe;

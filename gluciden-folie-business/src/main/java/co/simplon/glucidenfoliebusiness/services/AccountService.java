@@ -1,7 +1,5 @@
 package co.simplon.glucidenfoliebusiness.services;
 
-import java.util.Set;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,9 +26,9 @@ public class AccountService {
 	private final PasswordEncoder encoder;
 	private final JwtProvider jwtProvider;
 
-	public AccountService(AccountRepository accounts, RoleRepository roles, PasswordEncoder encoder,
+	public AccountService(AccountRepository accountsRepo, RoleRepository roles, PasswordEncoder encoder,
 			JwtProvider jwtProvider) {
-		this.accountsRepo = accounts;
+		this.accountsRepo = accountsRepo;
 		this.roleRepo = roles;
 		this.encoder = encoder;
 		this.jwtProvider = jwtProvider;
@@ -50,8 +48,12 @@ public class AccountService {
 	}
 
 	@Transactional
-	public void create(AccountCreateDto inputs, Set<String> roleNames) {
-		// 1. Vérifications du username
+	public void create(AccountCreateDto inputs) {
+		// Création du compte
+		Account entity = new Account();
+		entity.setUsername(inputs.username());
+
+		// Vérifications du username
 		if (inputs.username() == null || inputs.username().trim().isEmpty()) {
 			throw new IllegalArgumentException("Le nom d'utilisateur ne peut pas être vide.");
 		}
@@ -59,48 +61,24 @@ public class AccountService {
 			throw new IllegalArgumentException("L'utilisateur avec ce nom existe déjà.");
 		}
 
-		// 2. Gestion des rôles
+		// Gestion des rôles
 		Role role;
-		if (roleNames == null || roleNames.isEmpty()) {
-			// Cas par défaut: rôle USER
-			role = roleRepo.findByRoleName("USER")
-					.orElseThrow(() -> new RuntimeException("Rôle USER par défaut non trouvé"));
-		} else {
-			// Prend le premier rôle spécifié
-			String firstRoleName = roleNames.iterator().next();
-			String cleanRoleName = firstRoleName.startsWith("ROLE_") ? firstRoleName.substring(5) : firstRoleName;
+		// Cas par défaut: rôle USER
+		role = roleRepo.findByRoleName("USER")
+				.orElseThrow(() -> new RuntimeException("Rôle USER par défaut non trouvé"));
 
-			role = roleRepo.findByRoleName(cleanRoleName)
-					.orElseThrow(() -> new IllegalArgumentException("Rôle non trouvé: " + cleanRoleName));
-		}
+		entity.setRole(role);
 
-		// 3. Création du compte
-		Account entity = new Account();
-		entity.setUsername(inputs.username());
-
-		// Assurez-vous que le mot de passe est bien encodé avec BCrypt
+		// Mot de passe est bien encodé avec BCrypt?
 		String encodedPassword = encoder.encode(inputs.password());
 		entity.setPassword(encodedPassword);
 		// entity.setPassword(encoder.encode(inputs.password()));
-		entity.setRole(role);
 
-		// 4. Sauvegarde
+		// Sauvegarde
 		accountsRepo.save(entity);
 	}
 
 	@Transactional
-	public void assignRoleToAccount(Long accountId, String roleName) {
-		String cleanRoleName = roleName.startsWith("ROLE_") ? roleName.substring(5) : roleName;
-
-		Role role = roleRepo.findByRoleName(cleanRoleName).orElseThrow(() -> new RuntimeException("Rôle introuvable"));
-
-		Account account = accountsRepo.findById(accountId)
-				.orElseThrow(() -> new RuntimeException("Compte introuvable"));
-
-		account.setRole(role);
-		accountsRepo.save(account);
-	}
-
 	public LoginResponse authenticate(AccountLogin inputs) {
 		Account entity = accountsRepo.findByUsernameIgnoreCase(inputs.username())
 				.orElseThrow(() -> new BadCredentialsException("Identifiants invalides"));

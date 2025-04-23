@@ -126,12 +126,19 @@ export default {
 				// 3. Décodage du token JWT (qui a 3 parties séparées par des points)
 				// atob() décode une string en base64
 				// On prend la partie payload (index 1) qui contient les infos utilisateur
+				//token.split(".") : Cette méthode découpe le token en trois parties (header, payload, signature).
+
+//token.split(".")[1] : Cela récupère la partie payload du token (la deuxième section).
+
+//atob() : Cette fonction est utilisée pour décoder la chaîne en base64 et la convertir en texte lisible.
 				const payload = JSON.parse(atob(token.split(".")[1]));
 				// Solution 1 (si vous utilisez la claim "role")
-				return payload.role === "ROLE_ADMIN";
 				// 4. Vérifie si le tableau 'roles' contient 'ROLE_ADMIN'
 				// Le ?. est l'opérateur de chaînage optionnel (évite les erreurs si roles est undefined)
-				return payload.roles?.includes("ROLE_ADMIN");
+				return payload.role === "ROLE_ADMIN" || payload.roles?.includes("ROLE_ADMIN");
+
+				
+				
 			} catch {
 				return false;
 			}
@@ -240,6 +247,9 @@ export default {
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 /* *** Liste *** */
+.v-list{
+	justify-items: start;
+}
 .v-list-item {
 	background-color: white;
 	color: #5d827f;

@@ -1,6 +1,8 @@
 // Indique le package auquel appartient cette classe
 package co.simplon.glucidenfoliebusiness.services;
 
+import java.util.List;
+
 // Importation de l'annotation @Service pour indiquer que cette classe est un service Spring
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,10 @@ public class UnityService {
 
 		// Enregistrement de l'entité en base de données
 		unitiesRepo.save(entity);
+	}
+
+	public List<Unity> getAllUnities() {
+		// Récupère toutes les unités depuis la base de données
+		return unitiesRepo.findAll();
 	}
 }

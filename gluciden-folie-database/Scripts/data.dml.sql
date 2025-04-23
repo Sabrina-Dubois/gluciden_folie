@@ -13,13 +13,9 @@ INSERT INTO t_roles (role_name, role_default) VALUES
 ('USER', true),  -- Rôle par défaut
 ('ADMIN', false);
 
--- EXEMPLE DE COMPTE ADMIN (mot de passe doit être encodé en BCrypt)
-INSERT INTO t_accounts (username, password, id_role) VALUES
-(
-    'admin@example.com', 
-    '$2a$10$N9qo8uLOickgx2ZMRZoMy.Mrq4L0LQtpjXbYgP9sV7.T6u1Q1YjKO', -- "admin123" encodé
-    (SELECT id FROM t_roles WHERE role_name = 'ADMIN')
-);
+
+UPDATE t_accounts SET id_role = (SELECT id FROM t_roles WHERE role_name = 'ADMIN') 
+WHERE username = 'dubois.sabrina84@gmail.com';
 
 -- EXEMPLE DE COMPTE USER
 INSERT INTO t_accounts (username, password, id_role) VALUES
@@ -29,10 +25,20 @@ INSERT INTO t_accounts (username, password, id_role) VALUES
     (SELECT id FROM t_roles WHERE role_name = 'USER')
 );
 
+DELETE FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com'
+
 -- Insérer des comptes utilisateurs
 INSERT INTO t_accounts (username, PASSWORD,id_role)
 VALUES 
-    ('sss@sss.com', 'ssSS66!!',1);
+    ('dubois.sabrina84@gmail.com', '$2a$10$uUwwwknqP0kGhlg13/Is0u9h6ETQHSEjQ44ueedx7Ohz745g7UnTy',2);
+   
+   INSERT INTO t_roles (name, role_default) VALUES 
+('USER', true),
+('ADMIN', false);
+   
+INSERT INTO t_accounts (username, PASSWORD,id_role)
+VALUES 
+    ('dubois.sabrina84@gmail.com', '$2a$10$YtnVl3NuH/Wwf5YC0FTiBuS3teQxn2BpOuqCwYmlQCrXZzGAhJPuu',2);
 
 -- Insérer des catégories
 INSERT INTO t_categories (category_name, id_account)
@@ -62,15 +68,16 @@ VALUES
     ('c. à soupe'),
    	('pincée');
    
-   -- Insérer des ingrédients
-INSERT INTO t_ingredients (ingredient_name,quantity,id_unity)
+-- Insérer les ingrédients (un seul par type d'ingrédient)
+INSERT INTO t_ingredients (ingredient_name,id_unity)
 VALUES 
-    ('Oeuf',2,(SELECT id FROM t_unities WHERE unity_name ='unité')),
-    ('Maïzena', 100,(SELECT id FROM t_unities WHERE unity_name ='g')),
-    ('Chocolat noir', 100,(SELECT id FROM t_unities WHERE unity_name ='g')),
-    ('Sucre', 10,(SELECT id FROM t_unities WHERE unity_name ='g')),
-    ('Sirop d''agave', 20,(SELECT id FROM t_unities WHERE unity_name ='ml')),
-    ('Lait d''amande', 0.50,(SELECT id FROM t_unities WHERE unity_name ='L')),
-    ('sel',1,(SELECT id FROM t_unities WHERE unity_name ='pincée'));
+    ('Oeuf',(SELECT id FROM t_unities WHERE unity_name ='unité')),
+    ('Maïzena',(SELECT id FROM t_unities WHERE unity_name ='g')),
+    ('Chocolat noir',(SELECT id FROM t_unities WHERE unity_name ='g')),
+    ('Sucre',(SELECT id FROM t_unities WHERE unity_name ='g')),
+    ('Sirop d''agave',(SELECT id FROM t_unities WHERE unity_name ='ml')),
+    ('Lait d''amande',(SELECT id FROM t_unities WHERE unity_name ='L')),
+    ('sel',(SELECT id FROM t_unities WHERE unity_name ='pincée'));
+
    
    

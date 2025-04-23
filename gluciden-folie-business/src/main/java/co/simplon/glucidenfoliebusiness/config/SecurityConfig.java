@@ -76,8 +76,6 @@ public class SecurityConfig implements WebMvcConfigurer {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.cors(Customizer.withDefaults()) // Active CORS avec la config définie dans CorsConfig
 				.csrf((csrf) -> csrf.disable())
-				// Multiples matchers qui map VERBES+ PATHS + AUTHORISATION
-				// .authorizeHttpRequests(req -> req
 				.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login")
 						.permitAll()
 						// Accès en lecture pour tous les utilisateurs (USER + ADMIN)

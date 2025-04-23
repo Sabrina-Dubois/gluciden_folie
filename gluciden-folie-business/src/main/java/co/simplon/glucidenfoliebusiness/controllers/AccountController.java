@@ -28,11 +28,9 @@ public class AccountController {
 	public String create(@Valid @RequestBody AccountCreateDto accountCreateDto) {
 		try {
 			// Appel à la méthode service pour créer le compte
-			accountService.create(accountCreateDto, accountCreateDto.roles());
-			// Retourne un message de succès une fois que le compte est créé
+			accountService.create(accountCreateDto);
 			return "Compte créé avec succès !";
 		} catch (Exception exception) {
-			// Si une erreur se produit, retourne un message d'erreur
 			return "Erreur lors de la création du compte : " + exception.getMessage();
 		}
 	}

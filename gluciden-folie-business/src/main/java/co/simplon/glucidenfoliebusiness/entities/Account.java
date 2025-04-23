@@ -24,10 +24,10 @@ public class Account extends AbstractEntity {
 	@JoinColumn(name = "id_role", nullable = false)
 	private Role role;
 
-	@OneToMany(mappedBy = "account") // Une relation One-to-Many avec Category
+	@OneToMany(mappedBy = "account")
 	private Set<Category> categories = new HashSet<>();
 
-	@OneToMany(mappedBy = "account") // Une relation One-to-Many avec Recipe
+	@OneToMany(mappedBy = "account")
 	private Set<Recipe> recipes = new HashSet<>();
 
 	public Set<Category> getCategories() {

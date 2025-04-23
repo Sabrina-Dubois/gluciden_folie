@@ -1,5 +1,5 @@
 import { required, minLength, maxLength, helpers } from "@vuelidate/validators";
-import { messages } from"./validationMessages.js"
+import { messages } from "./validationMessages.js";
 
 // Validation champs obligatoires
 export const requiredField = helpers.withMessage(messages.required, required);
@@ -13,8 +13,8 @@ export const lengthRules = (min, max) => ({
 // Validation taille image
 const validImageSize = helpers.withMessage(
   messages.validImageSize,
-  (value) =>
-    !value || (value instanceof File && value.size <= 5242880)); // 5 mo en octets => 5 * 1024 * 1024 = 5242880 octets
+  (value) => !value || (value instanceof File && value.size <= 5242880)
+); // 5 mo en octets => 5 * 1024 * 1024 = 5242880 octets
 
 // Validation type image
 const validImageType = helpers.withMessage(
@@ -25,29 +25,28 @@ const validImageType = helpers.withMessage(
       (value.type === "image/png" || value.type === "image/jpeg"))
 );
 
-// Validation adresse email 
+// Validation adresse email
 const validEmail = helpers.withMessage(messages.validEmail, (value) =>
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(value)
 );
 
-// Validation mot de passe 
+// Validation mot de passe
 const validPassword = helpers.withMessage(
   messages.validPassword,
-  (value) => /[A-Z]/.test(value) &&
-  /[a-z]/.test(value) &&
-  /\d/.test(value) &&
-  /[!@#$%^&*(),.?":{}|<>]/.test(value)
+  (value) => /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /[!@#$%^&*(),.?":{}|<>]/.test(value)
 );
 
 export const recipeValidation = {
-  recipeName: {
-    required: requiredField,
-    ...lengthRules(4, 100),
-  },
-  recipePicture: {
-    required: requiredField,
-    validImageType,
-    validImageSize,
+  form: {
+    recipeName: {
+      required: requiredField,
+      ...lengthRules(4, 100),
+    },
+    recipePicture: {
+      required: requiredField,
+      validImageType,
+      validImageSize,
+    },
   },
 };
 export const categoryValidation = {

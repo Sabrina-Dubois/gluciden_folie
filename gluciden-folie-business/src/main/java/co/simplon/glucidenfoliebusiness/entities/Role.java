@@ -11,7 +11,7 @@ public class Role extends AbstractEntity {
 	@Column(name = "role_name", unique = true, nullable = false)
 	private String roleName;
 
-	@Column(name = "role_default")
+	@Column(name = "role_default", nullable = false)
 	private boolean roleDefault;
 
 	public Role() {
@@ -27,7 +27,6 @@ public class Role extends AbstractEntity {
 	// Constructeur pour initialiser un rôle
 	public Role(String roleName, boolean roleDefault) {
 		super();
-
 		this.roleName = roleName;
 		this.roleDefault = roleDefault;
 	}

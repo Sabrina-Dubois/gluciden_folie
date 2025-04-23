@@ -13,35 +13,48 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.simplon.glucidenfoliebusiness.dtos.IngredientCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeViewDto;
 import co.simplon.glucidenfoliebusiness.entities.Account;
+import co.simplon.glucidenfoliebusiness.entities.Ingredient;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
+import co.simplon.glucidenfoliebusiness.entities.RecipeIngredient;
 import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
+import co.simplon.glucidenfoliebusiness.repositories.IngredientRepository;
+import co.simplon.glucidenfoliebusiness.repositories.RecipeIngredientRepository;
 import co.simplon.glucidenfoliebusiness.repositories.RecipeRepository;
+import co.simplon.glucidenfoliebusiness.utils.IngredientHelper;
 
 @Service
 public class RecipeService {
 
 	@Value("${glucidenfoliebusiness.uploads.dest}")
 	private String uploadsDest;
-
 	// necessary field for communicated with DB
 	private final RecipeRepository recipesRepo;
 	private final AccountRepository accountsRepo;
+	private final IngredientRepository ingredientsRepo;
+	private final IngredientHelper ingredientsHelper;
+	private final RecipeIngredientRepository recipeIngredientRepo;
 
 	// Constructeur de la classe SpotService qui initialise les champs recipes avec
 	// les instances des repositories injectées par Spring.
-	public RecipeService(RecipeRepository recipes, AccountRepository accounts) {
-		this.recipesRepo = recipes;
-		this.accountsRepo = accounts;
-
+	public RecipeService(RecipeRepository recipesRepo, AccountRepository accountsRepo,
+			IngredientRepository ingredientsRepo, RecipeIngredientRepository recipeIngredientRepo,
+			IngredientHelper ingredientsHelper) {
+		this.recipesRepo = recipesRepo;
+		this.accountsRepo = accountsRepo;
+		this.ingredientsRepo = ingredientsRepo;
+		this.recipeIngredientRepo = recipeIngredientRepo;
+		this.ingredientsHelper = ingredientsHelper;
 	}
 
 	// Créer la recette
 	@Transactional // toutes opérations dedans gere les comme 1 et une seule transaction
 	public void create(RecipeCreateDto inputs) {
+		// 1. Créer la recette
 		Recipe entity = new Recipe(); // nouveau objet de recette vide
 		entity.setName(inputs.name());// donne un nom à la recette en utilisant le contenu de inputs
 
@@ -56,14 +69,41 @@ public class RecipeService {
 		// Ajoute l'utilisateur à la recette
 		entity.setAccount(account);
 
+		// 2. Ajouter la photo si présente
 		MultipartFile pictureFromDto = inputs.picture();
 		if (pictureFromDto != null) {
 			String pictureToEntity = buildPicture(pictureFromDto);
 			storePicture(pictureFromDto, pictureToEntity);
 			entity.setPicture(pictureToEntity);
 		}
-		recipesRepo.save(entity);
+
+		// 3. Sauvegarder la recette et obtenir son ID généré
+		// 3. Save the recipe and get the generated ID
+		Recipe savedRecipe = recipesRepo.save(entity);
+		Long recipeId = savedRecipe.getId(); // Get the ID of the saved recipe
+
+		// Log the saved recipe ID
+		System.out.println("Saved recipe with ID: " + recipeId);
+
+		// 4. Associer les ingrédients à la recette
+		for (IngredientCreateDto ingredientDto : inputs.ingredients()) {
+			// Utilisation de IngredientHelper pour créer ou récupérer un ingrédient
+			Ingredient ingredient = ingredientsHelper.createOrGetIngredient(ingredientDto);
+
+			// Créer l'association recette-ingrédient avec la quantité
+			RecipeIngredient recipeIngredient = new RecipeIngredient();
+			recipeIngredient.setRecipeId(entity); // Associe la recette
+			recipeIngredient.setIngredientId(ingredient); // Associe l'ingrédient
+			recipeIngredient.setQuantity(ingredientDto.quantity().doubleValue()); // Quantité spécifique
+
+			// Sauvegarder l'association dans la base de données
+			recipeIngredientRepo.save(recipeIngredient);
+		}
+
 	}
+
+	// Déléguer l'ajout des ingrédients à RecipeIngredientService
+	// recipeIngredientService.addIngredientsToRecipe(entity, inputs.ingredients());
 
 	// Importer une photo de la recette
 	// Générer un identifiant unique pour l'image
@@ -113,6 +153,11 @@ public class RecipeService {
 	// Récupère une recette
 	public RecipeViewDto getOne(Long id) {
 		return recipesRepo.findOneProjectedById(id);
+	}
+
+	public void addIngredientToRecipe(Long recipeId, Long ingredientId, Double quantity) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

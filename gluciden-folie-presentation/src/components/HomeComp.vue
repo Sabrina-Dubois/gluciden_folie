@@ -52,7 +52,7 @@
 					:src="item.src"
 					cover
 				>
-					<div class="text">Mousse au chocolat</div>
+					<div class="text"> Mousse au chocolat </div>
 				</v-carousel-item>
 			</v-carousel>
 		</v-card>
@@ -67,7 +67,6 @@ export default {
 		//fonction qui retourne un objet contenant les données réactives du composant->retourne un array items qui contient les src des images à afficher dans le carrousel.
 		return {
 			items: [
-				//array d'objets:chaque objet ayant une propriété src qui pointe vers une URL d'image->images utilisées par le carrousel pour afficher chaque élément.
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg" },
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg" },
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg" },

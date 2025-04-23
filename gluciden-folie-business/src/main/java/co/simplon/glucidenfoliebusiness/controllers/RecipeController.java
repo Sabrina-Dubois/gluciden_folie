@@ -1,8 +1,10 @@
 package co.simplon.glucidenfoliebusiness.controllers;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import co.simplon.glucidenfoliebusiness.dtos.IngredientCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeViewDto;
@@ -31,8 +38,24 @@ public class RecipeController {
 	}
 
 	@PostMapping
-	void create(@Valid @RequestParam("name") String name, @RequestParam("picture") MultipartFile picture) {
-		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture);
+	public void create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
+			@RequestParam("ingredients") String ingredientsJson) throws JsonProcessingException {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		// ✅ On parse le JSON en liste d’objets
+		List<IngredientCreateDto> ingredients = objectMapper.readValue(ingredientsJson,
+				new TypeReference<List<IngredientCreateDto>>() {
+				});
+
+		// Construit la liste des objets IngredientCreateDto
+		// List<IngredientCreateDto> ingredients = new ArrayList<>();
+		// for (int i = 0; i < ingredients.size(); i++)
+		/// ingredients.add(new IngredientCreateDto(ingredients));
+		// ingredients.add(new IngredientCreateDto(ingredientsNames.get(i),
+		// quantities.get(i), unities.get(i)));
+
+		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, ingredients);
 		recipeService.create(recipeCreateDto);
 	}
 
@@ -51,7 +74,7 @@ public class RecipeController {
 	@PutMapping("/{id}")
 	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
 			@RequestParam(value = "picture", required = false) MultipartFile picture) {
-		// Créez un DTO avec les données reçues
+		// Crée un DTO avec les données reçues
 		RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture);
 		recipeService.updateOne(id, recipeUpdateDto);
 	}
@@ -61,4 +84,14 @@ public class RecipeController {
 		return recipeService.getOne(id);
 	}
 
+	// Nouvelle méthode pour ajouter un ingrédient à une recette
+	@PostMapping("/{recipeId}/addIngredient")
+	public ResponseEntity<Void> addIngredientToRecipe(@PathVariable Long recipeId, @RequestParam Long ingredientId,
+			@RequestParam Double quantity) {
+		// Appel du service pour ajouter l'ingrédient à la recette
+		recipeService.addIngredientToRecipe(recipeId, ingredientId, quantity);
+
+		// Réponse de succès
+		return ResponseEntity.ok().build();
+	}
 }

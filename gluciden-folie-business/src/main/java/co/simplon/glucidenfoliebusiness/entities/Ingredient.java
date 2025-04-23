@@ -1,9 +1,13 @@
 package co.simplon.glucidenfoliebusiness.entities;
 
-import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,12 +17,12 @@ public class Ingredient extends AbstractEntity {
 	@Column(name = "ingredient_name", nullable = false)
 	private String ingredientName;
 
-	@Column(name = "quantity", nullable = false)
-	private BigDecimal quantity;
+	@ManyToOne
+	@JoinColumn(name = "id_unity", nullable = false)
+	private Unity unity;
 
-	// @ManyToOne
-	// @JoinColumn(name = "id_unity", nullable = false)
-	// private Unity unity;
+	@OneToMany(mappedBy = "ingredientId") // L'ID composite est référencé ici.
+	private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 
 	public String getIngredientName() {
 		return ingredientName;
@@ -26,20 +30,14 @@ public class Ingredient extends AbstractEntity {
 
 	public void setIngredientName(String ingredientName) {
 		this.ingredientName = ingredientName;
+
 	}
 
-	public BigDecimal getQuantity() {
-		return quantity;
+	public Unity getUnity() {
+		return unity;
 	}
 
-	public void setQuantity(BigDecimal quantity) {
-		this.quantity = quantity;
+	public void setUnity(Unity unity) {
+		this.unity = unity;
 	}
-
-	/*
-	 * public Unity getUnity() { return unity; }
-	 * 
-	 * public void setUnity(Unity unity) { this.unity = unity; }
-	 */
-
 }

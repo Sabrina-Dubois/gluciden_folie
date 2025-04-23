@@ -24,7 +24,7 @@ public class IngredientController {
 
 	@PostMapping // methode -> point acces pour grer rq http
 	void create(@Valid @RequestBody IngredientCreateDto inputs) {
-		ingredientService.create(inputs);
+		ingredientService.createOrGet(inputs);
 	}
 
 }

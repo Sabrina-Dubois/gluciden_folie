@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,9 +26,8 @@ public class Recipe extends AbstractEntity {
 	@JoinTable(name = "t_recipes_categories", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_category"))
 	private Set<Category> categories = new HashSet<>();
 
-	@ManyToMany
-	@JoinTable(name = "t_recipes_ingredients", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_ingredient"))
-	private Set<Ingredient> ingredients = new HashSet<>();
+	@OneToMany(mappedBy = "recipeId")
+	private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 
 	@ManyToOne
 	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
@@ -56,20 +56,20 @@ public class Recipe extends AbstractEntity {
 		this.picture = picture;
 	}
 
-	public Set<Ingredient> getIngredients() {
-		return ingredients;
-	}
-
-	public void setIngredients(Set<Ingredient> ingredients) {
-		this.ingredients = ingredients;
-	}
-
 	public Set<Category> getCategories() {
 		return categories;
 	}
 
 	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
+	}
+
+	public Set<RecipeIngredient> getRecipeIngredients() {
+		return recipeIngredients;
+	}
+
+	public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
 	}
 
 	public Account getAccount() {

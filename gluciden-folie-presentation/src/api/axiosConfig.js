@@ -9,39 +9,42 @@ const apiClient = axios.create({
   //withCredentials: true,
 });
 
-// Intercepeteur -> ajoute Token auto
-// Instance qui définit intercepeteur avant envoie de la requete
+// Intercepteur -> ajoute Token automatique
 apiClient.interceptors.request.use(
   (config) => {
     console.log("Intercepting request: ", config.url);
-    const token = localStorage.getItem("jwt"); // Recup token local storage
+    const token = localStorage.getItem("jwt"); // Récupérer le token depuis localStorage
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (!config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-    return config; // renvoie la config modifiée
+    // Si on envoie du FormData, laisser Axios définir le Content-Type
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"]; // Axios le gère automatiquement
+    }
+    return config; 
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(error); // Rejeter en cas d'erreur
   }
 );
 
-// Intercepteur -> erreur 401
+// Intercepteur -> Gestion de l'erreur 401
 apiClient.interceptors.response.use(
-  (response) => response, // On renvoie la réponse
-
+  (response) => response, // Si la réponse est valide, on la renvoie
   async (error) => {
     console.log("Intercepting response error: ", error.response?.status);
     if (error.response && error.response.status === 401) {
       console.log("Erreur 401 : Jeton invalide ou expiré.");
-      // Si le jeton est expiré ou invalide > supprime le token
+      // Supprimer le jeton si il est invalide ou expiré
       localStorage.removeItem("jwt");
       // Rediriger l'utilisateur vers la page de connexion
-     
       if (window.location.pathname !== "/login") {
-        router.push("/login");
+        await router.push("/login"); // Assure-toi que cela redirige correctement
       }
     }
-    return Promise.reject(error);
+    return Promise.reject(error); // Rejeter l'erreur pour que l'appel d'API puisse la gérer
   }
 );
 

@@ -2,13 +2,14 @@
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
 		<v-card class="recipeForm" max-width="800px">
+			{{ form }}
 			<!-- Formulaire pour créer une recette -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
-					v-model="recipeName"
+					v-model="form.recipeName"
 					:label="$t('create_recipe.recipe.name') + ' *'"
-					:error="v$.recipeName.$error"
+					:error="v$.form.recipeName.$error"
 					:error-messages="recipeNameErrors"
 					variant="underlined"
 					hide-details="auto"
@@ -28,21 +29,21 @@
 
 				<!-- Champs nouvelle image -->
 				<v-file-input
-					v-model="recipePicture"
+					v-model="form.recipePicture"
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
-					:error="v$.recipePicture.$error"
+					:error="v$.form.recipePicture.$error"
 					:error-messages="recipePictureErrors"
 					class="required-field"
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
-				></v-file-input>
-				
+					></v-file-input>
+
 				<!-- Nombre de portions -->
 				<!-- <h3 class="section-title portions-title"> -->
-					<!-- Nombre de portion{{ $t("create_recipe.portions") }}
+				<!-- Nombre de portion{{ $t("create_recipe.portions") }}
 				</h3>
 				<v-text-field
 					v-model="numberOfPortions"
@@ -163,7 +164,8 @@
 				</div> -->
 
 				<h3>Choix des ingrédients</h3>
-				<Ingredients />
+				<Ingredients
+				v-model:ingredients="form.ingredients" />
 
 				<!-- <h3>Commentaires</h3>
 				<v-textarea
@@ -184,17 +186,20 @@ import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
-import Ingredients from '@/components/Ingredients.vue';
+import Ingredients from "@/components/Ingredients.vue";
 
 export default {
 	name: "createRecipe",
 	components: {
-		Ingredients
+		Ingredients,
 	},
 	data() {
-	return {
-			recipeName: "",
-			recipePicture: null,
+		return {
+			form: {
+				recipeName: "",
+				recipePicture: null,
+				ingredients:[],
+			},
 			imagePreview: null,
 			v$: null,
 			submitted: false,
@@ -205,15 +210,19 @@ export default {
 	},
 	created() {
 		this.v$ = useVuelidate();
+
+	},
+	mounted(){
+console.log("validation: ", this.v$);
 	},
 
 	computed: {
 		recipeNameErrors() {
-			if (!this.v$.recipeName.$error) {
+			if (!this.v$.form.recipeName.$error) {
 				return [];
 			}
 			const errors = [];
-			const rules = this.v$.recipeName;
+			const rules = this.v$.form.recipeName;
 			if (rules.required.$invalid) errors.push(messages.required);
 			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
 			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
@@ -221,7 +230,7 @@ export default {
 		},
 		recipePictureErrors() {
 			const errors = [];
-			const rules = this.v$.recipePicture;
+			const rules = this.v$.form.recipePicture;
 
 			if (rules.$error) {
 				if (rules.required.$invalid) errors.push(messages.required);
@@ -243,8 +252,6 @@ export default {
 		},
 
 		async addRecipe() {
-			console.log("Validation state:", this.v$); // Vérifie l'état de validation
-
 			this.submitted = true;
 
 			// On valide le formulaire ici
@@ -257,10 +264,7 @@ export default {
 			}
 			try {
 				const recipesStore = useRecipesStore();
-				const response = await recipesStore.addRecipe(
-					this.recipeName,
-					this.recipePicture
-				);
+				const response = await recipesStore.addRecipe(this.form);
 
 				if (response) {
 					this.recipeName = "";
@@ -307,7 +311,5 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
-	
 }
-
 </style>

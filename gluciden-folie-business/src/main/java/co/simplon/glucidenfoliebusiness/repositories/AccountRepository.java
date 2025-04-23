@@ -13,7 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 	// Bonne pratique : ne jamais retourne une entité mais un objet de type
 	// optionnel
 	// Enveloppe qui encapsule null
-	Optional<Account> findByUsernameIgnoreCase(String username); // or null
+	Optional<Account> findByUsernameIgnoreCase(String username);
 
 	boolean existsByUsernameIgnoreCase(String username);
 

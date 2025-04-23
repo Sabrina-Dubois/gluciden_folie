@@ -61,8 +61,7 @@ CREATE TABLE t_unities (
 
 CREATE TABLE t_ingredients (
     id INT GENERATED ALWAYS AS IDENTITY, 
-    ingredient_name VARCHAR(100) NOT NULL,
-    quantity DECIMAL(10, 2) NOT NULL,
+    ingredient_name VARCHAR(100) NOT NULL, 
     id_unity INT NOT NULL, 
     CONSTRAINT t_id_ingredients_pkey PRIMARY KEY(id),  
     CONSTRAINT t_ingredients_ukey UNIQUE(ingredient_name),
@@ -72,7 +71,10 @@ CREATE TABLE t_ingredients (
 CREATE TABLE t_recipes_ingredients (
     id_recipe INT NOT NULL,
     id_ingredient INT NOT NULL,-- Clé primaire composite
+    quantity DECIMAL (10, 2) NOT NULL,
     CONSTRAINT t_recipes_ingredients_pkey PRIMARY KEY(id_recipe, id_ingredient),
     CONSTRAINT t_recipes_fkey FOREIGN KEY(id_recipe) REFERENCES t_recipes(id),  
     CONSTRAINT t_ingredients_fkey FOREIGN KEY(id_ingredient) REFERENCES t_ingredients(id)  
 );
+
+
