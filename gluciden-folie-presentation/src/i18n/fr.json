@@ -41,6 +41,8 @@
     },
     "picture": "Photo",
     "label": "Télécharger la photo",
+    "difficulty": "Difficultés",
+    "ingredients" : "Choix des ingrédients",
     "button": "Créer"
   },
   "recipe_list": {
@@ -55,6 +57,14 @@
     "picture": {
       "picture": "Photo",
       "label": "Télécharger la photo"
+    },
+    "difficulty": {
+      "name": "Difficulté",
+      "label": "Niveau de difficulté"
+    },
+    "ingredients": {
+      "name": "Ingrédients",
+      "label": "Nom des ingrédients"
     },
     "button": "Enregistrer"
   },

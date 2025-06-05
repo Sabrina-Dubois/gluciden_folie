@@ -30,6 +30,29 @@ public class Account extends AbstractEntity {
 	@OneToMany(mappedBy = "account")
 	private Set<Recipe> recipes = new HashSet<>();
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+
+		Account account = (Account) obj;
+
+		return getId() != null && getId().equals(account.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getId() != null ? getId().hashCode() : 0;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("username=%s", "password=[PORTECTED]", username);
+	}
+	// *** Getters & setters ***
+
 	public Set<Category> getCategories() {
 		return categories;
 	}
@@ -60,11 +83,6 @@ public class Account extends AbstractEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("username=%s", "password=[PORTECTED]", username);
 	}
 
 	public Role getRole() {

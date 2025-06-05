@@ -4,8 +4,8 @@ import "./assets/main.css";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { createVuetify } from "vuetify";
-import i18n from "./i18n";
-import axios from "./api/axiosConfig"
+import i18n from "./i18n/i18n";
+import axios from "./api/axiosConfig";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import "@mdi/font/css/materialdesignicons.css";

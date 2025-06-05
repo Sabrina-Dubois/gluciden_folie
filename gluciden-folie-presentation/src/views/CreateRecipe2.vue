@@ -1,15 +1,16 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
-		<v-card class="recipeForm d-flex align-center">
+		<v-card class="recipeForm" max-width="800px">
+			{{ form }}
 			<!-- Formulaire pour créer une recette -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
-					v-model="recipeName"
+					v-model="form.name"
 					:label="$t('create_recipe.recipe.name') + ' *'"
-					:error="v$.recipeName.$error"
-					:error-messages="getRecipeNameErrorMessages()"
+					:error="v$.form.name.$error"
+					:error-messages="nameErrors"
 					variant="underlined"
 					hide-details="auto"
 				></v-text-field>
@@ -28,21 +29,21 @@
 
 				<!-- Champs nouvelle image -->
 				<v-file-input
-					v-model="recipePicture"
+					v-model="form.picture"
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
-					:error="v$.recipePicture.$error"
-					:error-messages="getRecipePictureErrorMessages()"
+					:error="v$.form.picture.$error"
+					:error-messages="pictureErrors"
 					class="required-field"
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
-				></v-file-input>
+					></v-file-input>
 
 				<!-- Nombre de portions -->
-				<h3 class="section-title portions-title">
-					Nombre de portion{{ $t("create_recipe.portions") }}
+				<!-- <h3 class="section-title portions-title"> -->
+				<!-- Nombre de portion{{ $t("create_recipe.portions") }}
 				</h3>
 				<v-text-field
 					v-model="numberOfPortions"
@@ -50,9 +51,9 @@
 					label="Nombre de portions"
 					hide-details
 					variant="underlined"
-				></v-text-field>
+				></v-text-field> -->
 
-				<h3>Temps de préparation</h3>
+				<!-- <h3>Temps de préparation</h3>
 				<v-container>
 					<v-row>
 						<v-text-field
@@ -71,9 +72,8 @@
 							variant="underlined"
 						></v-text-field>
 					</v-row>
-				</v-container>
-
-				<h3>Temps de cuisson</h3>
+				</v-container> -->
+				<!-- <h3>Temps de cuisson</h3>
 				<v-container>
 					<v-row>
 						<v-text-field
@@ -92,9 +92,9 @@
 							variant="underlined"
 						></v-text-field>
 					</v-row>
-				</v-container>
+				</v-container> -->
 
-				<h3 class="text-h6 mb-2">Type de cuisson</h3>
+				<!-- <h3 class="text-h6 mb-2">Type de cuisson</h3>
 				<v-container class="mx-auto" max-width="400">
 					<v-chip-group v-model="amenities" column multiple>
 						<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
@@ -103,9 +103,9 @@
 						<v-chip text="Poêle" variant="outlined" filter></v-chip>
 						<v-chip text="Vapeur" variant="outlined" filter></v-chip>
 					</v-chip-group>
-				</v-container>
+				</v-container> -->
 
-				<v-container class="boo pa-0" fluid>
+				<!-- <v-container class="boo pa-0" fluid>
 					<v-row class="d-flex">
 						<v-col
 							v-for="(cook, index) in cooks"
@@ -125,7 +125,7 @@
 							</v-card>
 						</v-col>
 					</v-row>
-				</v-container>
+				</v-container> -->
 
 				<h3>Difficultés</h3>
 				<div class="text-center">
@@ -145,7 +145,7 @@
 					</v-rating>
 				</div>
 
-				<h3>Coûts</h3>
+				<!-- <h3>Coûts</h3>
 				<div class="text-center">
 					<v-rating
 						v-model="rating"
@@ -161,37 +161,17 @@
 							</span>
 						</template>
 					</v-rating>
-				</div>
+				</div> -->
 
 				<h3>Choix des ingrédients</h3>
-				<v-container class="ingredients-list">
-					<v-row>
-						<v-col
-							v-for="(ingredient, index) in ingredients"
-							:key="index"
-							cols="1"
-							sm="1"
-							md="1"
-							lg="1"
-							hide-details
-							@click="selectIngredient(index)"
-						>
-							<v-img
-								:src="ingredient.image"
-								contain
-								class="ingredient-img"
-							></v-img>
-							<!-- <v-card-subtitle class="text-center">
-									{{ ingredient.name }}
-								</v-card-subtitle> -->
-						</v-col>
-					</v-row>
-				</v-container>
-				<h3>Commentaires</h3>
+				<Ingredients
+				v-model:ingredients="form.ingredients" />
+
+				<!-- <h3>Commentaires</h3>
 				<v-textarea
 					label="Ecrit ton commentaire"
 					variant="underlined"
-				></v-textarea>
+				></v-textarea> -->
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
@@ -200,53 +180,27 @@
 		</v-card>
 	</div>
 </template>
+
 <script>
-import apiClient from "../api/axiosConfig";
+import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
+import Ingredients from "@/components/Ingredients.vue";
 
 export default {
 	name: "createRecipe",
+	components: {
+		Ingredients,
+	},
 	data() {
 		return {
-			recipeName: "",
-			recipePicture: null,
+			form: {
+				name: "",
+				picture: null,
+				ingredients:[],
+			},
 			imagePreview: null,
-			cooks: [
-				{ name: "Grill", icon: "mdi-fire" },
-				{ name: "Baking", icon: "mdi-oven" },
-				{ name: "Boil", icon: "mdi-water" },
-			],
-			ingredients: [
-				{
-					image:
-						"https://www.agir-crt.com/wp-content/uploads/2014/06/chocolat.jpg",
-				},
-				{
-					name: "Milk",
-					image:
-						"https://upload.wikimedia.org/wikipedia/commons/0/0e/Milk_glass.jpg",
-				},
-				{
-					name: "Egg",
-					image:
-						"https://i0.wp.com/technomitron.aainb.com/wp-content/uploads/2018/09/word-image-93.jpeg?resize=622%2C426&ssl=1",
-				},
-				{
-					name: "Sugar",
-					image: "https://www.plantes-et-sante.fr/images/sucre.jpg",
-				},
-				{
-					name: "Apple",
-					image: "https://www.norabio.fr/wp-content/uploads/2024/03/Pomme.png",
-				},
-				{
-					name: "Banana",
-					image:
-						"https://mapetiteassiette.com/wp-content/uploads/2019/05/shutterstock_553887610-e1557046359887.jpg",
-				},
-			],
 			v$: null,
 			submitted: false,
 		};
@@ -255,80 +209,76 @@ export default {
 		return recipeValidation;
 	},
 	created() {
-		this.v$ = useVuelidate(); // Initialisation de Vuelidate },
+		this.v$ = useVuelidate();
+		
+
 	},
+	mounted(){
+console.log("validation: ", this.v$);
+	},
+
+	computed: {
+		recipeNameErrors() {
+			if (!this.v$.form.name.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.form.name;
+			if (rules.required.$invalid) errors.push(messages.required);
+			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
+			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
+			return errors;
+		},
+		recipePictureErrors() {
+			const errors = [];
+			const rules = this.v$.form.picture;
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.validImageType.$invalid) errors.push(messages.validImageType);
+				if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
+			}
+
+			return errors;
+		},
+	},
+
 	methods: {
 		handleFileUpload(event) {
 			const file = event.target.files[0];
 			if (file) {
-				this.recipePicture = file;
+				this.picture = file;
 				this.imagePreview = URL.createObjectURL(file);
 			}
 		},
-		async cipe() {
-			this.submitted = true; // formulaire soumis
-			this.v$.$touch(); // Marque tous les champs comme touchés
+
+		async addRecipe() {
+			this.submitted = true;
+
+			// On valide le formulaire ici
+			await this.v$.$validate();
+
+			// Si le formulaire est invalide, on arrête la soumission
 			if (this.v$.$invalid) {
-				console.log("Formulaire invalide");
-				return; // Si le formulaire est invalide, arrête la soumission }
+				console.log("Formulaire invalide", this.v$.$errors);
+				return;
 			}
-			const formData = new FormData();
-			formData.append("name", this.recipeName);
-			formData.append("picture", this.recipePicture);
-
 			try {
-				const response = await apiClient.post("/recipes", formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				});
+				const recipesStore = useRecipesStore();
+				const response = await recipesStore.addRecipe(this.form);
 
-				if (response.status === 200) {
-					this.recipeName = "";
-					this.recipePicture = null;
+				if (response) {
+					this.name = "";
+					this.picture = null;
+					this.imagePreview = null;
 					this.submitted = false;
-
-					console.log("Recette créée avec succès !");
 					this.$router.push({ name: "recipesList" });
 				} else {
 					console.error("Erreur lors de la création de la recette");
 				}
 			} catch (error) {
-				console.error(error);
+				console.error("Erreur lors de la création de la recette :", error);
 			}
-		},
-		getRecipeNameErrorMessages() {
-			const errors = [];
-			console.log("Validation status:", this.v$.recipeName);
-
-			if (this.v$.recipeName.$error) {
-				if (this.v$.recipeName.required.$invalid) {
-					errors.push(messages.required);
-				}
-				if (this.v$.recipeName.minLength.$invalid) {
-					errors.push(messages.minLength(4));
-				}
-				if (this.v$.recipeName.maxLength.$invalid) {
-					errors.push(messages.maxLength(100));
-				}
-			}
-			return errors;
-		},
-		getRecipePictureErrorMessages() {
-			const errors = [];
-
-			if (this.v$.recipePicture.$error) {
-				if (this.v$.recipePicture.required.$invalid) {
-					errors.push(messages.required);
-				}
-				if (this.v$.recipePicture.validImageType.$invalid) {
-					errors.push(messages.validImageType);
-				}
-				if (this.v$.recipePicture.validImageSize.$invalid) {
-					errors.push(messages.validImageSize);
-				}
-			}
-			return errors;
 		},
 	},
 };
@@ -339,30 +289,20 @@ export default {
 	padding-top: 10px;
 }
 
-.d-flex {
-	align-items: center;
-	justify-content: center;
-}
-
-.v-icon,
-.v-rating {
-	color: #f29eb0;
-}
-
 .recipeForm {
-	max-width: 900px;
+	max-width: 800px;
 	margin: auto;
 }
 
 .v-form {
 	background-color: white;
+	width: 100%;
 }
 
 .v-text-field,
 .v-file-input {
-	max-height: 20px;
 	max-width: auto;
-	margin-bottom: 90px;
+	margin-bottom: 30px;
 	padding-left: 20px;
 	color: #5d827f;
 }
@@ -372,9 +312,5 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
-}
-
-.v-rating__wrapper span {
-	margin: 0 10px;
 }
 </style>

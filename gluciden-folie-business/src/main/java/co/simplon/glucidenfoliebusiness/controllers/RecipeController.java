@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +21,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import co.simplon.glucidenfoliebusiness.dtos.IngredientCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeIngredientUnityDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeReadDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
-import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeViewDto;
+import co.simplon.glucidenfoliebusiness.entities.Recipe;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
 
@@ -38,34 +40,40 @@ public class RecipeController {
 	}
 
 	@PostMapping
-	public void create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
+	public Recipe create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
+			@RequestParam(value = "difficulty", required = false) String difficulty,
 			@RequestParam("ingredients") String ingredientsJson) throws JsonProcessingException {
+
+		if (difficulty == null || difficulty.trim().isEmpty()) {
+			difficulty = "Facile";
+		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		// ✅ On parse le JSON en liste d’objets
-		List<IngredientCreateDto> ingredients = objectMapper.readValue(ingredientsJson,
-				new TypeReference<List<IngredientCreateDto>>() {
+		List<RecipeIngredientUnityDto> ingredients = objectMapper.readValue(ingredientsJson,
+				new TypeReference<List<RecipeIngredientUnityDto>>() {
 				});
 
-		// Construit la liste des objets IngredientCreateDto
-		// List<IngredientCreateDto> ingredients = new ArrayList<>();
-		// for (int i = 0; i < ingredients.size(); i++)
-		/// ingredients.add(new IngredientCreateDto(ingredients));
-		// ingredients.add(new IngredientCreateDto(ingredientsNames.get(i),
-		// quantities.get(i), unities.get(i)));
+		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, difficulty, ingredients);
+		return recipeService.create(recipeCreateDto);
 
-		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, ingredients);
-		recipeService.create(recipeCreateDto);
 	}
 
 	@GetMapping
-	Collection<RecipeViewDto> getAll() {
+	Collection<Recipe> getAll() {
+		System.out.println("GET /recipes reçu");
 		return recipeService.getAll();
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<RecipeReadDto> getOne(@PathVariable Long id) {
+		RecipeReadDto dto = recipeService.getOne(id);
+		return ResponseEntity.ok(dto);
 	}
 
 	// Si appel réussi on renvoie un code 204
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@Transactional
 	@DeleteMapping("/{id}")
 	void deleteOne(@PathVariable("id") Long id) {
 		recipeService.deleteOne(id);
@@ -73,25 +81,49 @@ public class RecipeController {
 
 	@PutMapping("/{id}")
 	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
-			@RequestParam(value = "picture", required = false) MultipartFile picture) {
-		// Crée un DTO avec les données reçues
-		RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture);
-		recipeService.updateOne(id, recipeUpdateDto);
-	}
+			@RequestParam(value = "difficulty", required = false) String difficulty,
+			@RequestParam(value = "ingredients", required = false) String ingredientsJson,
+			@RequestParam(value = "picture", required = false) MultipartFile picture) throws JsonProcessingException {
+		try {
+			List<RecipeIngredientUnityDto> ingredients = null;
+			if (ingredientsJson != null && !ingredientsJson.isEmpty()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				ingredients = objectMapper.readValue(ingredientsJson, new TypeReference<>() {
+				});
+			}
+			;
 
-	@GetMapping("/{id}")
-	RecipeViewDto getOne(@PathVariable("id") Long id) {
-		return recipeService.getOne(id);
+			// Crée un DTO avec les données reçues
+			RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture, difficulty, ingredients);
+			recipeService.updateOne(id, recipeUpdateDto);
+
+		} catch (
+
+		JsonProcessingException e) {
+			throw new RuntimeException("Erreur lors du parsing des ingrédients JSON", e);
+		}
 	}
 
 	// Nouvelle méthode pour ajouter un ingrédient à une recette
 	@PostMapping("/{recipeId}/addIngredient")
-	public ResponseEntity<Void> addIngredientToRecipe(@PathVariable Long recipeId, @RequestParam Long ingredientId,
+	public ResponseEntity<String> addIngredientToRecipe(@PathVariable Long recipeId, @RequestParam Long ingredientId,
 			@RequestParam Double quantity) {
-		// Appel du service pour ajouter l'ingrédient à la recette
-		recipeService.addIngredientToRecipe(recipeId, ingredientId, quantity);
+		try {
+			// Appel du service pour ajouter l'ingrédient à la recette
+			boolean success = recipeService.addIngredientToRecipe(recipeId, ingredientId, quantity);
 
-		// Réponse de succès
-		return ResponseEntity.ok().build();
+			// Vérifie si l'ingrédient a été correctement ajouté
+			if (success) {
+				return ResponseEntity.status(HttpStatus.OK).body("Ingrédient ajouté avec succès.");
+			} else {
+				// Si la recette ou l'ingrédient n'existe pas, on renvoie une erreur 404
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Recette ou ingrédient introuvable.");
+			}
+		} catch (Exception e) {
+			// En cas d'erreur interne, renvoie un code 500 avec un message d'erreur
+			// générique
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Erreur lors de l'ajout de l'ingrédient.");
+		}
 	}
 }

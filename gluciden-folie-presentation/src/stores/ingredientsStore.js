@@ -3,7 +3,6 @@ import apiClient from "@/api/axiosConfig";
 
 export const useIngredientsStore = defineStore("ingredients", {
   state: () => ({
-    //ingredientList: ["Farine", "Maizena", "Sucre", "Lait", "Chocolat noir", "Oeuf"],
     ingredientsList: [],
     unitiesList: [],
   }),
@@ -24,18 +23,17 @@ export const useIngredientsStore = defineStore("ingredients", {
       try {
         const response = await apiClient.get("/unities");
         this.unitiesList = response.data;
-        console.log("Unities récupérées :", this.unitiesList);
       } catch (error) {
         console.error("Erreur lors de la récupération des unités:", error);
       }
     },
     // Ajouter un nouvel ingrédients
-    async addIngredient(ingredientName, quantity, unity) {
+    async addIngredient(name, quantity, unity) {
       try {
         const data = {
-          ingredientName: ingredientName, // Nom de l'ingrédient
-          quantity: quantity, // Quantité
-          unity: unity, // Unité
+          name: name,
+          quantity: quantity,
+          unity: unity,
         };
 
         const response = await apiClient.post("/ingredients", data, {

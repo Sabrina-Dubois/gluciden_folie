@@ -2,22 +2,22 @@
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
 		<v-card class="recipeForm" max-width="800px">
-			{{ form }}
-			<!-- Formulaire pour créer une recette -->
+		
+			<!-- Formulaire création -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
-					v-model="form.recipeName"
+					v-model="form.name"
 					:label="$t('create_recipe.recipe.name') + ' *'"
-					:error="v$.form.recipeName.$error"
-					:error-messages="recipeNameErrors"
+					:error="v$.form.name.$error"
+					:error-messages="nameErrors"
 					variant="underlined"
 					hide-details="auto"
 				></v-text-field>
 
 				<h3>{{ $t("create_recipe.picture") }}</h3>
 
-				<!-- Afficher l'image existante ou nouvelle -->
+				<!-- Image existante -->
 				<v-img
 					v-if="imagePreview"
 					:src="imagePreview"
@@ -27,151 +27,40 @@
 					rounded=""
 				></v-img>
 
-				<!-- Champs nouvelle image -->
+				<!-- Nouvelle image -->
 				<v-file-input
-					v-model="form.recipePicture"
+					v-model="form.picture"
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
-					:error="v$.form.recipePicture.$error"
-					:error-messages="recipePictureErrors"
+					:error="v$.form.picture.$error"
+					:error-messages="pictureErrors"
 					class="required-field"
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
-					></v-file-input>
+				></v-file-input>
 
-				<!-- Nombre de portions -->
-				<!-- <h3 class="section-title portions-title"> -->
-				<!-- Nombre de portion{{ $t("create_recipe.portions") }}
-				</h3>
-				<v-text-field
-					v-model="numberOfPortions"
-					type="number"
-					label="Nombre de portions"
-					hide-details
-					variant="underlined"
-				></v-text-field> -->
-
-				<!-- <h3>Temps de préparation</h3>
-				<v-container>
-					<v-row>
-						<v-text-field
-							class="timeCook"
-							v-model="hourTime"
-							label="Heures"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-						<v-text> : </v-text>
-						<v-text-field
-							class="timeCook"
-							v-model="minuteTime"
-							label="Minutes"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-					</v-row>
-				</v-container> -->
-				<!-- <h3>Temps de cuisson</h3>
-				<v-container>
-					<v-row>
-						<v-text-field
-							class="timeCook"
-							v-model="hourTime"
-							label="Heures"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-						<v-text> : </v-text>
-						<v-text-field
-							class="timeCook"
-							v-model="minuteTime"
-							label="Minutes"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-					</v-row>
-				</v-container> -->
-
-				<!-- <h3 class="text-h6 mb-2">Type de cuisson</h3>
-				<v-container class="mx-auto" max-width="400">
-					<v-chip-group v-model="amenities" column multiple>
-						<v-chip text="Sans cuisson" variant="outlined" filter></v-chip>
-						<v-chip text="Micro-onde" variant="outlined" filter></v-chip>
-						<v-chip text="Four" variant="outlined" filter></v-chip>
-						<v-chip text="Poêle" variant="outlined" filter></v-chip>
-						<v-chip text="Vapeur" variant="outlined" filter></v-chip>
-					</v-chip-group>
-				</v-container> -->
-
-				<!-- <v-container class="boo pa-0" fluid>
-					<v-row class="d-flex">
-						<v-col
-							v-for="(cook, index) in cooks"
-							:key="index"
-							cols="12"
-							md="3"
-							no-gutters
-							@click="selectCook(index)"
-						>
-							<v-card>
-								<v-icon v-if="cook.icon">
-									{{ cook.icon }}
-								</v-icon>
-								<v-card-subtitle class="text-center">
-									{{ cook.name }}
-								</v-card-subtitle>
-							</v-card>
-						</v-col>
-					</v-row>
-				</v-container> -->
-
-				<!-- <h3>Difficultés</h3>
+				<!-- Difficultés -->
+				<h3>{{ $t("create_recipe.difficulty") }}</h3>
 				<div class="text-center">
 					<v-rating
-						v-model="rating"
-						:item-labels="labelsDifficulty"
-						length="4"
+						v-model="form.difficulty"
+						:length="4"
+						:error="v$.form.difficulty.$error"
+						:error-messages="difficultyErrors"
 						empty-icon="mdi-circle-outline"
 						full-icon="mdi-circle"
 						hover
+						color="green"
+						dense
 					>
-						<template v-slot:item-label="props">
-							<span>
-								{{ props.label }}
-							</span>
-						</template>
 					</v-rating>
-				</div> -->
+				</div>
 
-				<!-- <h3>Coûts</h3>
-				<div class="text-center">
-					<v-rating
-						v-model="rating"
-						:item-labels="labelsCost"
-						length="3"
-						empty-icon="mdi-circle-outline"
-						full-icon="mdi-circle"
-						hover
-					>
-						<template v-slot:item-label="props">
-							<span>
-								{{ props.label }}
-							</span>
-						</template>
-					</v-rating>
-				</div> -->
-
-				<h3>Choix des ingrédients</h3>
-				<Ingredients
-				v-model:ingredients="form.ingredients" />
-
-				<!-- <h3>Commentaires</h3>
-				<v-textarea
-					label="Ecrit ton commentaire"
-					variant="underlined"
-				></v-textarea> -->
+				<!-- Ingrédients -->
+				<h3>{{ $t("create_recipe.ingredients") }}</h3>
+				<Ingredients v-model:ingredients="form.ingredients" />
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
@@ -196,9 +85,10 @@ export default {
 	data() {
 		return {
 			form: {
-				recipeName: "",
-				recipePicture: null,
-				ingredients:[],
+				name: "",
+				picture: null,
+				ingredients: [],
+				difficulty: null,
 			},
 			imagePreview: null,
 			v$: null,
@@ -210,27 +100,23 @@ export default {
 	},
 	created() {
 		this.v$ = useVuelidate();
-
-	},
-	mounted(){
-console.log("validation: ", this.v$);
 	},
 
 	computed: {
-		recipeNameErrors() {
-			if (!this.v$.form.recipeName.$error) {
+		nameErrors() {
+			if (!this.v$.form.name.$error) {
 				return [];
 			}
 			const errors = [];
-			const rules = this.v$.form.recipeName;
+			const rules = this.v$.form.name;
 			if (rules.required.$invalid) errors.push(messages.required);
 			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
 			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
 			return errors;
 		},
-		recipePictureErrors() {
+		pictureErrors() {
 			const errors = [];
-			const rules = this.v$.form.recipePicture;
+			const rules = this.v$.form.picture;
 
 			if (rules.$error) {
 				if (rules.required.$invalid) errors.push(messages.required);
@@ -240,44 +126,67 @@ console.log("validation: ", this.v$);
 
 			return errors;
 		},
+		difficultyErrors() {
+			if (!this.v$.form.difficulty.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.form.difficulty;
+			if (rules.required.$invalid) errors.push(messages.required);
+			return errors;
+		},
 	},
 
 	methods: {
 		handleFileUpload(event) {
 			const file = event.target.files[0];
 			if (file) {
-				this.recipePicture = file;
+				this.form.picture = file;
 				this.imagePreview = URL.createObjectURL(file);
+			} else {
+				this.imagePreview = null;
 			}
 		},
-
 		async addRecipe() {
 			this.submitted = true;
 
-			// On valide le formulaire ici
 			await this.v$.$validate();
 
-			// Si le formulaire est invalide, on arrête la soumission
 			if (this.v$.$invalid) {
-				console.log("Formulaire invalide", this.v$.$errors);
+				console.log(
+					"Formulaire invalide",
+					JSON.parse(JSON.stringify(this.v$.$errors))
+				);
 				return;
 			}
+			if (
+				!Array.isArray(this.form.ingredients) ||
+				this.form.ingredients.length === 0
+			) {
+				return; 
+			}
+			const difficultyLabels = ["Facile", "Moyenne", "Difficile", "Expert"];
+			const difficultyText =
+				this.form.difficulty &&
+				this.form.difficulty >= 1 &&
+				this.form.difficulty <= 4
+					? difficultyLabels[this.form.difficulty - 1]
+					: "Non précisée";
+
 			try {
 				const recipesStore = useRecipesStore();
-				const response = await recipesStore.addRecipe(this.form);
 
-				if (response) {
-					this.recipeName = "";
-					this.recipePicture = null;
-					this.imagePreview = null;
-					this.submitted = false;
-					this.$router.push({ name: "recipesList" });
-				} else {
-					console.error("Erreur lors de la création de la recette");
-				}
+				await recipesStore.addRecipe({
+					name: this.form.name,
+					picture: this.form.picture,
+					difficulty: difficultyText,
+					ingredientList: this.form.ingredients,
+				});
 			} catch (error) {
 				console.error("Erreur lors de la création de la recette :", error);
 			}
+			this.$router.push({ name: "recipesList" });
+
 		},
 	},
 };

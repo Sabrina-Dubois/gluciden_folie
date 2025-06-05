@@ -5,13 +5,13 @@
 				<h4>{{ $t("footer.notices") }}</h4>
 			</div>
 
-			<div class="footer-row">
+			<ul class="footer-row">
 				<li><a href="/about">{{ $t("footer.about") }}</a></li>
 				<li><a href="/privacy">{{ $t("footer.confidentiality") }}</a></li>
 				<li><a href="/terms">{{ $t("footer.condition") }}</a></li>
 				<li><a href="/sitemap">{{ $t("footer.map") }}</a></li>
 				<li><a href="/contact">{{ $t("footer.contact") }}</a></li>
-			</div>
+			</ul>
 
 			<div class="footer-row">
 				<p>&copy; {{ currentYear }} {{ $t("footer.copyright") }}</p>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+
 export default {
 	name: "Footer",
 	data() {
@@ -34,16 +35,13 @@ export default {
 <style>
 .custom-footer {
 	background-color: #d3beb1 !important;
-	display: flex;
+	 display: flex;
+	 flex-direction: column; 
 	align-items: center;
-	justify-content: center;
-	padding: 0 20px;
-	min-height: 100px;
-	justify-content: space-between;
-	width: 100%;
+	text-align: center;
+	 padding: 20px;
+	 width: 100%;
 }
-
-
 
 .footer-row {
 	text-align: center;
@@ -64,11 +62,7 @@ export default {
 	text-decoration: underline;
 }
 
-.footer-row h4 {
-	margin: 0;
-	color: #5d827f;
-}
-
+.footer-row h4,
 .footer-row p {
 	font-size: 15px;
 	margin: 0;

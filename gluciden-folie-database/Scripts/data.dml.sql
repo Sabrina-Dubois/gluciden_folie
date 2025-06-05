@@ -17,29 +17,13 @@ INSERT INTO t_roles (role_name, role_default) VALUES
 UPDATE t_accounts SET id_role = (SELECT id FROM t_roles WHERE role_name = 'ADMIN') 
 WHERE username = 'dubois.sabrina84@gmail.com';
 
--- EXEMPLE DE COMPTE USER
-INSERT INTO t_accounts (username, password, id_role) VALUES
-(
-    'user@example.com', 
-    '$2a$10$N9qo8uLOickgx2ZMRZoMy.Mrq4L0LQtpjXbYgP9sV7.T6u1Q1YjKO', -- "user123" encodé
-    (SELECT id FROM t_roles WHERE role_name = 'USER')
-);
-
 DELETE FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com'
 
 -- Insérer des comptes utilisateurs
-INSERT INTO t_accounts (username, PASSWORD,id_role)
+INSERT INTO t_accounts (username, password,id_role)
 VALUES 
     ('dubois.sabrina84@gmail.com', '$2a$10$uUwwwknqP0kGhlg13/Is0u9h6ETQHSEjQ44ueedx7Ohz745g7UnTy',2);
    
-   INSERT INTO t_roles (name, role_default) VALUES 
-('USER', true),
-('ADMIN', false);
-   
-INSERT INTO t_accounts (username, PASSWORD,id_role)
-VALUES 
-    ('dubois.sabrina84@gmail.com', '$2a$10$YtnVl3NuH/Wwf5YC0FTiBuS3teQxn2BpOuqCwYmlQCrXZzGAhJPuu',2);
-
 -- Insérer des catégories
 INSERT INTO t_categories (category_name, id_account)
 VALUES 

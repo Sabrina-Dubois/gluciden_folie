@@ -10,6 +10,6 @@ import co.simplon.glucidenfoliebusiness.entities.Ingredient;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
-	Optional<Ingredient> findByIngredientNameIgnoreCase(String ingredientName);
+	Optional<Ingredient> findByNameIgnoreCase(String name);
 
 }

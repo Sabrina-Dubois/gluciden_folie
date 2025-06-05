@@ -97,6 +97,15 @@ h3 {
 	color: #b00020 !important;
 }
 
+/* *** Mobile First *** */
+@media (min-width: 769px) {
+	.custom-footer {
+		flex-direction: row;
+		justify-content: space-between;
+		padding: 20px;
+	}
+}
+
 }
 
 

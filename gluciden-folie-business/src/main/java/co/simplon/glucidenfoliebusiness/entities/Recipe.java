@@ -1,7 +1,11 @@
 package co.simplon.glucidenfoliebusiness.entities;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,24 +25,45 @@ public class Recipe extends AbstractEntity {
 	@Column(name = "recipe_picture")
 	private String picture;
 
+	@Column(name = "difficulty")
+	private String difficulty;
+
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "t_recipes_categories", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_category"))
-	private Set<Category> categories = new HashSet<>();
 
-	@OneToMany(mappedBy = "recipeId")
-	private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
+	private Set<Category> categories = new HashSet<>();
 
 	@ManyToOne
 	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
+	@JsonBackReference
 	private Account account;
+
+	public Recipe() {
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Recipe recipe))
+			return false;
+		return Objects.equals(getId(), recipe.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId());
+	}
 
 	@Override
 	public String toString() {
-		return String.format("Recipe{name='%s', picture='%s', categories=%s, username='%s'}", name, picture, categories,
-				account);
+		return String.format("Recipe{id=%d,name='%s', picture='%s',difficulty='%s', categories=%s, account='%s'}",
+				getId(), name, picture, difficulty, categories, account);
 	}
 
-	// Getters & setters
+	// *** Getters & setters ***
+
 	public String getName() {
 		return name;
 	}
@@ -64,12 +88,12 @@ public class Recipe extends AbstractEntity {
 		this.categories = categories;
 	}
 
-	public Set<RecipeIngredient> getRecipeIngredients() {
-		return recipeIngredients;
+	public String getDifficulty() {
+		return difficulty;
 	}
 
-	public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
-		this.recipeIngredients = recipeIngredients;
+	public void setDifficulty(String difficulty) {
+		this.difficulty = difficulty;
 	}
 
 	public Account getAccount() {

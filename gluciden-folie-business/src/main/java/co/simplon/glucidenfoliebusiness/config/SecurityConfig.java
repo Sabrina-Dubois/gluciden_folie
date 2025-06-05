@@ -98,6 +98,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 			List<GrantedAuthority> authorities = new ArrayList<>();
 			if (roleClaim != null) {
 				authorities.add(new SimpleGrantedAuthority(roleClaim));
+				authorities.add(new SimpleGrantedAuthority(roleClaim.replace("ROLE_", "")));
 			}
 			return new JwtAuthenticationToken(jwt, authorities);
 		};

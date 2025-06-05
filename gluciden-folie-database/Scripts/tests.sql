@@ -1,16 +1,16 @@
 SELECT * FROM t_recipes r;
-
 SELECT * FROM t_categories c ;
-
 SELECT * FROM t_recipes_categories rc ;
-
 SELECT * FROM t_accounts a ;
-
 SELECT * FROM t_ingredients i;
-
+SELECT * FROM t_recipes_ingredients_unities riu ;
 SELECT * FROM t_unities u ;
-
 SELECT * FROM t_roles;
+
+SELECT column_name FROM information_schema.columns WHERE table_name = 't_categories';
+
+SELECT * FROM information_schema.columns WHERE table_name = 't_categories';
+
 
 -- Recette
 SELECT * 
@@ -19,20 +19,57 @@ WHERE r.username NOT IN (SELECT a.username FROM t_accounts a);
 
 --
 
-SELECT r.id AS recipe_id, r.recipe_name, r.recipe_picture, i.ingredient_name, ri.quantity
-FROM t_recipes r
-JOIN t_recipes_ingredients ri ON r.id = ri.id_recipe
-JOIN t_ingredients i ON ri.id_ingredient = i.id;
+-- Voir les colonnes de la table t_ingredients
+SELECT column_name 
+FROM information_schema.columns 
+WHERE table_name = 't_ingredients';
+SELECT * 
+FROM information_schema.columns 
+WHERE table_name = 't_categories';
 
-SELECT r.id AS recipe_id, 
-       r.recipe_name, 
-       r.recipe_picture, 
-       i.ingredient_name, 
-       ri.quantity, 
-       ri.unity AS unity
+SELECT 
+    r.id AS recipe_id,
+    r.recipe_name,
+    r.difficulty,
+    r.recipe_picture,
+    i.ingredient_name,
+    riu.quantity,
+    u.unity_name
 FROM t_recipes r
-JOIN t_recipes_ingredients ri ON r.id = ri.id_recipe
-JOIN t_ingredients i ON ri.id_ingredient = i.id;
+LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+LEFT JOIN t_ingredients i ON riu.id_ingredient = i.id
+LEFT JOIN t_unities u ON riu.id_unity = u.id
+ORDER BY r.id, i.ingredient_name;
+
+SELECT 
+    r.id AS recipe_id,
+    r.recipe_name,
+    r.difficulty,
+    r.recipe_picture,
+    riu.id_ingredient,
+    riu.quantity,
+    riu.id_unity
+FROM t_recipes r
+LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+ORDER BY r.id, riu.id_ingredient;
+
+SELECT 
+	r.id AS recipe_id,
+	r.recipe_namae,
+	r.diffuculty,
+	r.recipe_picture,
+	a.username AS author,
+	JSON_AGG(JSON_BUILD_OBJECT(
+		'ingredient', i.ingredient_name,
+		'quantity', rui.quantity,
+		'unity', u.unity_name
+		) ORDER BY i.ingredient_name) AS ingredients
+	FROM t_recipes r
+	JOIN t_accounts a ON r.id_account = a.id,
+LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+LEFT JOIN t_ingredients i ON riu.id_ingredient = i.id
+GROUP BY r.id, r.recipe_name, r.difficulty, r.recipe_picture, a.username
+ORDER BY r.id;
 
 
 SELECT * 
@@ -48,12 +85,6 @@ WHERE username IS NULL OR username = '';
 SELECT * 
 FROM information_schema.table_constraints
 WHERE table_name = 't_recipes' AND constraint_type = 'FOREIGN KEY';
-
--- Sélectionner le compte par utilisateur
-SELECT * 
-FROM t_accounts a
-WHERE username = 'sss@sss.com';
-
 -- 
 
 SELECT * FROM t_accounts;

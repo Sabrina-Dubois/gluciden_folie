@@ -12,8 +12,7 @@ const apiClient = axios.create({
 // Intercepteur -> ajoute Token automatique
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("Intercepting request: ", config.url);
-    const token = localStorage.getItem("jwt"); // Récupérer le token depuis localStorage
+    const token = localStorage.getItem("jwt");
     if (token) {
       if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -34,7 +33,6 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response, // Si la réponse est valide, on la renvoie
   async (error) => {
-    console.log("Intercepting response error: ", error.response?.status);
     if (error.response && error.response.status === 401) {
       console.log("Erreur 401 : Jeton invalide ou expiré.");
       // Supprimer le jeton si il est invalide ou expiré

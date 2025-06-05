@@ -1,7 +1,7 @@
 <template>
 	<v-container>
-		<!-- Liste des ingrédients ajoutés en Chips -->
-		<div>
+		<!-- Chips des ingrédients -->
+		<div v-if="unitiesUnique.length">
 			<v-chip-group :key="ingredients.length">
 				<v-chip
 					v-for="(ingredient, index) in ingredients"
@@ -10,10 +10,9 @@
 					closable
 					@click:close="deleteIngredient(index)"
 				>
-					{{ ingredient.ingredientName }} : {{ ingredient.quantity }}
-					{{ unitiesUnique.find((el) => el.id === ingredient.unity).name }}
+					{{ ingredient.ingredient.name }} : {{ ingredient.quantity }}
+					{{ getUnityName(ingredient.unityId) }}
 				</v-chip>
-				<!-- <v-chip closable @click:close="deleteIngredient(index)"> hello </v-chip> -->
 			</v-chip-group>
 		</div>
 
@@ -22,44 +21,53 @@
 			<!-- Ingrédient -->
 			<v-col cols="12" md="6">
 				<v-combobox
-					v-model="newIngredient.ingredientName"
+					v-model="newIngredient.name"
 					:items="ingredientsList"
 					label="Ingrédients"
 					variant="underlined"
 					hide-details
-				></v-combobox>
+					clearable
+					:error="v$.name.$error"
+					:error-messages="nameErrors"
+				/>
 			</v-col>
 
 			<!-- Quantité -->
 			<v-col cols="6" md="3">
 				<v-text-field
-					v-model="newIngredient.quantity"
+					v-model.number="newIngredient.quantity"
 					label="Quantité"
 					variant="underlined"
 					type="number"
-				></v-text-field>
+					min="0"
+					clearable
+					:error="v$.quantity.$error"
+					:error-messages="quantityErrors"
+				/>
 			</v-col>
 
 			<!-- Unité -->
 			<v-col cols="6" md="2">
 				<v-combobox
-					v-model="newIngredient.unity"
+					v-model="newIngredient.unityId"
 					:items="unitiesUnique"
 					item-title="name"
 					item-value="id"
-					:return-object="false"
 					label="Unité"
 					variant="underlined"
-				></v-combobox>
+					clearable
+					:error="v$.unityId.$error"
+					:error-messages="unityIdErrors"
+				/>
 			</v-col>
 
-			<!-- Icône Ajouter (Alignée à droite) -->
+			<!-- Bouton Ajouter -->
 			<v-col cols="12" md="1" class="d-flex align-center justify-end">
 				<v-icon
 					color="primary"
 					class="add-icon"
-					@click="addIngredient"
 					:class="{ 'icon-disabled': !canAdd }"
+					@click="addIngredient"
 				>
 					mdi-plus-circle
 				</v-icon>
@@ -71,6 +79,9 @@
 <script>
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { useIngredientsStore } from "@/stores/ingredientsStore.js";
+import { ingredientValidation } from "../utils/validationRules.js";
+import useVuelidate from "@vuelidate/core";
+import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "ingredients",
@@ -78,6 +89,7 @@ export default {
 		ingredients: {
 			type: Array,
 			default: () => [],
+			required: true,
 		},
 	},
 	data() {
@@ -85,59 +97,104 @@ export default {
 			ingredientsStore: useIngredientsStore(),
 			recipesStore: useRecipesStore(),
 			newIngredient: {
-				ingredientName: "",
-				quantity: "",
-				unity: "",
+				name: "",
+				quantity: null,
+				unityId: null,
 			},
-			// ingredients: [],
-			//unities: [], // Options pour l'unité
+			v$: null,
 		};
 	},
+	validations() {
+		return ingredientValidation;
+	},
 	computed: {
-		//acces au store
 		ingredientsList() {
 			return this.recipesStore.ingredientList;
 		},
 		unitiesUnique() {
-			// return this.ingredientsStore.unitiesList.map((unity) => unity.name);
 			return this.ingredientsStore.unitiesList;
 		},
 		canAdd() {
-			// Vérifie si les champs sont tous remplis avant d'ajouter un ingrédient
 			return (
-				this.newIngredient.ingredientName &&
-				this.newIngredient.quantity &&
-				this.newIngredient.unity
+				this.newIngredient.name &&
+				this.newIngredient.quantity > 0 &&
+				this.newIngredient.unityId !== null
 			);
 		},
-		canCreate() {
-			return this.ingredients.length > 0;
+		nameErrors() {
+			if (!this.v$.name.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.name;
+			if (rules.required.$invalid) errors.push(messages.required);
+			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
+			if (rules.maxLength.$invalid) errors.push(messages.maxLength(25));
+			return errors;
+		},
+		quantityErrors() {
+			const errors = [];
+			const rules = this.v$.quantity;
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.numeric?.$invalid) errors.push(messages.numeric);
+				if (rules.positive?.$invalid) errors.push(messages.positiveNumber);
+			}
+
+			return errors;
+		},
+		unityIdErrors() {
+			if (!this.v$.unityId.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.unityId;
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(messages.required);
+			}
+			return errors;
 		},
 	},
 	created() {
-		this.ingredientsStore.fetchUnities(); // ✅ Charge les unités dès que le composant est monté
+		this.ingredientsStore.fetchUnities();
+		this.v$ = useVuelidate(ingredientValidation, this.newIngredient);
 	},
 	methods: {
+		getUnityName(unityData) {
+			if (!unityData) return "?";
+
+			// Si unityData est un objet (ex: {id: 1, name: "g"}), on extrait l'id
+			const unityId = typeof unityData === "object" ? unityData.id : unityData;
+
+			const unity = this.unitiesUnique.find((u) => u.id === unityId);
+			return unity ? unity.name : "?";
+		},
 		addIngredient() {
-			// Ajoute l'ingrédient à la liste si tous les champs sont valides
-			if (this.canAdd) {
-				//this.ingredients.push({ ...this.newIngredient });
-				// this.ingredientsStore.addIngredient({
-				// name: this.newIngredient.name,
-				// quantity: this.newIngredient.quantity,
-				// unity: this.newIngredient.unity,
-				// }); // Réinitialise le formulaire après ajout
-				let updatedIng = [...this.ingredients, this.newIngredient];
-				this.$emit("update:ingredients", updatedIng);
-				this.newIngredient = { ingredientName: "", quantity: "", unity: "" };
-			}
+			if (!this.canAdd) return;
+
+			// On extrait l'id de l'unité si c'est un objet
+			const unityId =
+				typeof this.newIngredient.unityId === "object"
+					? this.newIngredient.unityId.id
+					: this.newIngredient.unityId;
+
+			const newIng = {
+				ingredient: { name: this.newIngredient.name },
+				quantity: this.newIngredient.quantity,
+				unityId,
+			};
+
+			const updatedIngredients = [...this.ingredients, newIng];
+			this.$emit("update:ingredients", updatedIngredients);
+
+			// Réinitialiser le formulaire
+			this.newIngredient = { name: "", quantity: null, unityId: null };
 		},
 		deleteIngredient(index) {
-			// Supprime un ingrédient de la liste
-			// this.ingredients.splice(index, 1);
-			let updatedIng = [...this.ingredients];
-			updatedIng.splice(index, 1);
-			this.$emit("update:ingredients", updatedIng);
+			const updatedIngredients = [...this.ingredients];
+			updatedIngredients.splice(index, 1);
+			this.$emit("update:ingredients", updatedIngredients);
 		},
 	},
 };
@@ -146,12 +203,16 @@ export default {
 <style scoped>
 .add-icon {
 	color: #5d827f !important;
+	cursor: pointer;
+}
+.icon-disabled {
+	color: gray !important;
+	cursor: not-allowed;
 }
 .v-chip,
 .v-text-field input {
 	color: #5d827f;
 }
-
 .v-text-field {
 	color: #5d827f;
 }

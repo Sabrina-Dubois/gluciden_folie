@@ -1,28 +1,39 @@
 <template>
-	<v-container class="recipe-details-container" fluid>
-		<v-card class="d-flex mx-auto my-auto">
-			<h1 v-if="recipe?.name">{{ recipe.name }}</h1>
+	<v-container fluid>
+		<v-card class="mx-auto my-5 pa-4" max-width="600">
+			<div v-if="recipe">
+				<h1>{{ recipe.name }}</h1>
+				<img
+					v-if="recipe.picture"
+					:src="recipePictureUrl"
+					class="recipe-picture"
+					alt="Recipe Picture"
+					height="300px"
+				/>
 
-			<v-img
-				:key="recipe?.picture + recipe?.id"
-				:src="recipeImageUrl"
-				class="recipe-image"
-				height="300px"
-				contain
-			></v-img>
-			<p>Portions </p>
-			<p>Temps de préparation </p>
-			<p>Temps de cuisson </p>
-			<h3>Ingrédients :</h3>
-			
-			<h3>Instructions :</h3>
-			<v-btn
-				class="custom-btn"
-				ml-5
-				rounded=""
-				@click="$router.push({ name: 'recipesList' })"
-				>Retour à la liste</v-btn
-			>
+				<h3>Ingrédients :</h3>
+				<v-chip-group column>
+					<v-chip
+						v-for="ingredient in recipe.ingredients"
+						:key="ingredient.id"
+						class="my-1"
+						color="primary"
+						text-color="white"
+						outlined
+					>
+						{{ ingredient.name }} - {{ ingredient.quantity }}
+						{{ getUnityName(ingredient.unityId) }}
+					</v-chip>
+				</v-chip-group>
+			</div>
+
+			<div v-else>
+				<p>Chargement de la recette...</p>
+			</div>
+
+			<v-btn @click="$router.push({ name: 'recipesList' })" class="mt-4">
+				Retour à la liste
+			</v-btn>
 		</v-card>
 	</v-container>
 </template>
@@ -32,32 +43,48 @@ import apiClient from "@/api/axiosConfig";
 
 export default {
 	name: "recipeDetails",
-	props: ["id"],
 	data() {
 		return {
 			recipe: null,
+			unitiesList: [],
 		};
 	},
-
 	computed: {
-		recipeImageUrl() {
+		recipePictureUrl() {
 			if (this.recipe && this.recipe.picture) {
-				return `/images/${this.recipe.picture}?t=${new Date().getTime()}`;
+				return `/images/${this.recipe.picture}?t=${Date.now()}`;
 			}
 			return "";
 		},
 	},
-	async created() {
+	async mounted() {
+		const id = this.$route.params.id;
+		await this.fetchUnities(); 
+
 		try {
-			const response = await apiClient.get(`/recipes/${this.id}`);
-			this.recipe = { ...response.data };
-			console.log("hello: ", this.recipe);
+			const response = await apiClient.get(`/recipes/${id}`);
+			this.recipe = response.data;
 		} catch (error) {
-			console.error("Erreur lors du chargement de la recette :", error);
+			console.error("❌ Erreur lors du chargement de la recette :", error);
 		}
+	},
+	methods: {
+		getUnityName(unityId) {
+			const unity = this.unitiesList.find((u) => u.id === unityId);
+			return unity ? unity.name : "";
+		},
+		async fetchUnities() {
+			try {
+				const response = await apiClient.get("/unities");
+				this.unitiesList = response.data;
+			} catch (error) {
+				console.error("Erreur lors du chargement des unités :", error);
+			}
+		},
 	},
 };
 </script>
+
 
 <style scoped>
 .recipe-details {
@@ -65,8 +92,10 @@ export default {
 	margin: auto;
 	padding: 20px;
 }
-.recipe-image {
+.recipe-picture {
 	margin: 20px 0;
+	object-fit: cover;
+	border-radius: 8px;
 }
 
 /* *** Boutons *** */
@@ -74,5 +103,15 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
+}
+
+/* *** Chips *** */
+.v-chip,
+.v-text-field input {
+	color: #5d827f;
+}
+
+.v-text-field {
+	color: #5d827f;
 }
 </style>

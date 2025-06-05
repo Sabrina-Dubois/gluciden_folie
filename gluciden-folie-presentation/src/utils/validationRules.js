@@ -1,4 +1,4 @@
-import { required, minLength, maxLength, helpers } from "@vuelidate/validators";
+import { required, minLength, maxLength, helpers, numeric } from "@vuelidate/validators";
 import { messages } from "./validationMessages.js";
 
 // Validation champs obligatoires
@@ -10,20 +10,36 @@ export const lengthRules = (min, max) => ({
   maxLength: helpers.withMessage(messages.maxLength(max), maxLength(max)),
 });
 
-// Validation taille image
-const validImageSize = helpers.withMessage(
-  messages.validImageSize,
-  (value) => !value || (value instanceof File && value.size <= 5242880)
-); // 5 mo en octets => 5 * 1024 * 1024 = 5242880 octets
+// Quantités
+export const positiveNumber = helpers.withMessage(
+  messages.positiveNumber,
+  (value) => Number(value) > 0
+)
 
-// Validation type image
+// ✅ Accepte les fichiers OU les strings existants (nom de l'image existante)
 const validImageType = helpers.withMessage(
   messages.validImageType,
   (value) =>
-    !value || // Pas d'image = pas d'erreur
-    (value instanceof File && // Vérifie le type seulement si c'est un fichier
-      (value.type === "image/png" || value.type === "image/jpeg"))
+    !value ||
+    typeof value === "string" || // image existante déjà en BDD
+    (value instanceof File && (value.type === "image/jpeg" || value.type === "image/png"))
 );
+
+// ✅ Pareil ici, accepte aussi les strings (pas de size à valider pour elles)
+const validImageSize = helpers.withMessage(
+  messages.validImageSize,
+  (value) =>
+    !value ||
+    typeof value === "string" || // on ne vérifie pas la taille si image déjà présente
+    (value instanceof File && value.size <= 5242880)
+);
+
+// ✅ Le champ est requis si ni fichier ni nom de fichier
+const requiredIfNoImage = helpers.withMessage(messages.required, (value) => {
+  if (typeof value === "string" && value.trim() !== "") return true;
+  if (value instanceof File) return true;
+  return false;
+});
 
 // Validation adresse email
 const validEmail = helpers.withMessage(messages.validEmail, (value) =>
@@ -38,17 +54,35 @@ const validPassword = helpers.withMessage(
 
 export const recipeValidation = {
   form: {
-    recipeName: {
+    name: {
       required: requiredField,
       ...lengthRules(4, 100),
     },
-    recipePicture: {
-      required: requiredField,
+    picture: {
+      required: requiredIfNoImage,
       validImageType,
       validImageSize,
     },
+    difficulty: {
+      required: requiredField,
+    },
   },
 };
+export const ingredientValidation = {
+  name: {
+    required: requiredField,
+    ...lengthRules(4, 25),
+  },
+  quantity: {
+    required: requiredField,
+    numeric,
+    positiveNumber,
+  },
+  unityId: {
+    required: requiredField,
+  },
+};
+
 export const categoryValidation = {
   categoryName: {
     required: requiredField,

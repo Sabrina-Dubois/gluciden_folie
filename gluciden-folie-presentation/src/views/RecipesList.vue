@@ -10,8 +10,9 @@
 						v-for="recipe in sortedRecipes"
 						:key="recipe.name"
 						cols="12"
+						sm="6"
 						md="3"
-						class="d-flex justify-center ml-4"
+						class="d-flex justify-center"
 					>
 						<v-card
 							class="recip-card d-flex flex-column align-center"
@@ -27,7 +28,7 @@
 								cover
 								rounded=""
 							>
-								<v-card-title class="text-white">
+								<v-card-title class="title-recipe">
 									{{ recipe.name }}
 								</v-card-title>
 							</v-img>
@@ -50,6 +51,7 @@
 </template>
 
 <script scoped>
+import apiClient from "../api/axiosConfig";
 import { useRecipesStore } from "@/stores/recipesStore";
 import RecipeDetails from "./RecipeDetails.vue";
 
@@ -57,7 +59,9 @@ export default {
 	name: "recipesList",
 	components: RecipeDetails,
 	data() {
-		return {};
+		return {
+			recipesStore: useRecipesStore(), // on instancie une fois dans data
+		};
 	},
 	//regarder
 	mounted() {
@@ -65,10 +69,13 @@ export default {
 	},
 	computed: {
 		recipes() {
-			const recipesStore = useRecipesStore();
-			return recipesStore.recipes; // Utilise directement les recettes du store
+			return this.recipesStore.recipes;
 		},
 		sortedRecipes() {
+			if (!Array.isArray(this.recipes)) {
+				console.error("recipes n'est pas un tableau", this.recipes);
+				return []; // Retourne un tableau vide si ce n'est pas un tableau
+			}
 			return this.recipes
 				.filter((recipe) => recipe.name) // Filtrer les recettes sans nom
 				.sort((a, b) => a.name.localeCompare(b.name));
@@ -81,14 +88,22 @@ export default {
 
 	methods: {
 		async fetchRecipes() {
-			const recipesStore = useRecipesStore();
-			await recipesStore.fetchRecipes(); // Synchronisation avec le store
+			try {
+				await this.recipesStore.fetchRecipes(); // appel unique
+			} catch (error) {
+				console.error("Erreur lors de la récupération des recettes :", error);
+			}
 		},
 
 		async deleteRecipe(recipeId) {
-			const recipesStore = useRecipesStore();
-			await recipesStore.deleteRecipe(recipeId);
-			this.fetchRecipes();
+			try {
+				await this.recipesStore.deleteRecipe(recipeId);
+
+				// Après suppression, on rafraîchit la liste des recettes dans le store
+				await this.recipesStore.fetchRecipes();
+			} catch (error) {
+				console.error("Erreur lors de la suppression :", error);
+			}
 		},
 		//renvoyer vers la page update
 		updateRecipe(recipeId) {
@@ -119,7 +134,9 @@ export default {
 	margin: 0px 00px;
 	background-color: #f5ede8;
 }
-
+.title-recipe {
+	color: #5d827f;
+}
 .v-btn:hover,
 .v-btn--active {
 	background-color: #5d827f;
@@ -147,5 +164,12 @@ export default {
 }
 .Recip-list-container {
 	background-color: #f5ede8;
+}
+
+.recipe-picture {
+	width: 200px;
+	height: 200px;
+	object-fit: cover; /* image couvre toute la surface sans déformation */
+	border-radius: 8px;
 }
 </style>

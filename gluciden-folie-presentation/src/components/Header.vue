@@ -77,12 +77,14 @@
 		</router-link>
 
 		<!-- Titre -->
-		<v-app-bar-title class="title">Glucid'en Folie</v-app-bar-title>
+		<v-app-bar-title class="title hidden-sm-and-down"
+			>Glucid'en Folie</v-app-bar-title
+		>
 
 		<!-- Barre de recherche -->
 		<v-text-field
 			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
-			class="custom-text-field"
+			class="custom-text-field hidden-sm-and-down"
 			append-inner-icon="mdi-magnify"
 			density="compact"
 			label="Je cherche : un ingrédient, une recette..."
@@ -91,18 +93,35 @@
 			single-line
 		></v-text-field>
 
+		<!-- Loupe visible seulement en mobile -->
+		<v-btn
+			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
+			icon
+			class="hidden-md-and-up"
+		>
+			<v-icon>mdi-magnify</v-icon>
+		</v-btn>
+
 		<v-spacer></v-spacer>
 
 		<!-- Connexion ou déconnexion -->
 		<v-btn
 			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
 			@click="goToConnection"
-			class="connexion"
+			class="connexion hidden-sm-and-down"
 			ml-5
 			rounded=""
 			prepend-icon="mdi-account"
 		>
 			{{ isAuthenticated ? "Se déconnecter" : "Se connecter" }}
+		</v-btn>
+		<v-btn
+			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
+			@click="goToConnection"
+			icon
+			class="hidden-md-and-up"
+		>
+			<v-icon>mdi-account</v-icon>
 		</v-btn>
 	</v-app-bar>
 </template>
@@ -128,17 +147,16 @@ export default {
 				// On prend la partie payload (index 1) qui contient les infos utilisateur
 				//token.split(".") : Cette méthode découpe le token en trois parties (header, payload, signature).
 
-//token.split(".")[1] : Cela récupère la partie payload du token (la deuxième section).
+				//token.split(".")[1] : Cela récupère la partie payload du token (la deuxième section).
 
-//atob() : Cette fonction est utilisée pour décoder la chaîne en base64 et la convertir en texte lisible.
+				//atob() : Cette fonction est utilisée pour décoder la chaîne en base64 et la convertir en texte lisible.
 				const payload = JSON.parse(atob(token.split(".")[1]));
 				// Solution 1 (si vous utilisez la claim "role")
 				// 4. Vérifie si le tableau 'roles' contient 'ROLE_ADMIN'
 				// Le ?. est l'opérateur de chaînage optionnel (évite les erreurs si roles est undefined)
-				return payload.role === "ROLE_ADMIN" || payload.roles?.includes("ROLE_ADMIN");
-
-				
-				
+				return (
+					payload.role === "ROLE_ADMIN" || payload.roles?.includes("ROLE_ADMIN")
+				);
 			} catch {
 				return false;
 			}
@@ -247,7 +265,7 @@ export default {
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 /* *** Liste *** */
-.v-list{
+.v-list {
 	justify-items: start;
 }
 .v-list-item {
