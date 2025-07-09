@@ -1,23 +1,30 @@
-# 🍰 Glucid'en Folie - Application de Recettes de Desserts Gourmands & Adaptés
+# 🍰 🧁 Glucid'en Folie - Application de Recettes de Desserts Gourmands & Adaptés
 
 Bienvenue sur Glucid'en Folie, une application web dédiée aux passionnés de pâtisserie soucieux de leur santé ou ayant des intolérances alimentaires (gluten, lactose, sucre, etc.).
 Découvrez, partagez et sauvegardez vos recettes de desserts préférées — 100 % plaisir, 0 % frustration !
+
+![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
+![Vuetify](https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=AEDDFF)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 
 ---
 
 ## 🔧 Technologies utilisées
 
 ### Frontend
-- [Vue.js](https://vuejs.org/)  
-- [Vuetify](https://vuetifyjs.com/)  
-- [Pinia](https://pinia.vuejs.org/) – pour la gestion d’état  
-- Vue Router
+- [Vue.js 3](https://vuejs.org/)
+- [Vuetify 3](https://vuetifyjs.com/)
+- [Pinia](https://pinia.vuejs.org/)
+- [Vue Router](https://router.vuejs.org/)
+- Vite (serveur de développement)
 
 ### Backend
-- Java 17  
-- Spring Boot  
-- Spring Data JPA  
-- Base de données relationnelle (ex : PostgreSQL ou MySQL)
+- Java 17
+- Spring Boot 3
+- Spring Data JPA
+- Spring Security
+- Base de données : PostgreSQL 
 
 ---
 
@@ -108,28 +115,24 @@ Le projet est organisé avec les dossiers typiques d'un projet Vue.js, incluant 
 Si vous avez besoin de plus de détails, n'hésitez pas à explorer directement le code.
 ```
 gluciden-folie/
-├── node_modules/            # Dépendances installées via npm
-├── public/                  # Fichiers statiques accessibles publiquement
-│   ├── favicon.ico          # Icône de la page
-│   └── index.html           # Page HTML principale
-├── src/                     # Répertoire principal pour le code source
-│   ├── assets/              # Fichiers statiques comme les images, icônes, etc.
-│   │   └── images/          # Images utilisées dans le projet (ex : logo)
-│   ├── components/          # Composants Vue réutilisables
-│   │   ├── Header.vue       # Composant de la barre de navigation
-│   │   ├── Footer.vue       # Composant de pied de page
-│   │   └── RecipeCard.vue   # Composant pour afficher une carte de recette
-│   ├── views/               # Vues (pages) principales de l'application
-│   │   ├── RecipesList.vue  # Page listant toutes les recettes
-│   │   ├── CreateRecipe.vue # Page pour créer une nouvelle recette
-│   │   └── UpdateRecipe.vue # Page pour modifier une recette existante
-│   ├── router/              # Configuration du routeur Vue
-│   │   └── index.js         # Définition des routes de l'application
-│   ├── store/               # Gestion de l'état global avec Vuex
-│   │   └── index.js         # Configuration et modules Vuex
-│   ├── App.vue              # Composant racine de l'application
-│   └── main.js              # Point d'entrée principal de l'application
-├── .gitignore               # Fichiers et dossiers à
+├── gluciden-folie-business/
+│   └── index.html
+├── gluciden-folie-database/
+├── gluciden-folie-presentation/
+│   └── public/
+│   │   └── Images
+│   └── src/
+│   │   └── assets/
+│   │   └── components/
+│   │   └── i18n/
+│   │   └── router/
+│   │   │   └── index.js
+│   ├── store/  
+│   │   └── views/
+│   ├── App.vue
+│   ├── Main.js
+│   └── package.json
+├── .gitignore  
 ```
 
 ---
@@ -144,4 +147,71 @@ gluciden-folie/
 
 ## Contact
 Pour toute question ou suggestion, vous pouvez me contacter à ...
+
+
+
+
+
+## 🎬 Démo
+
+🧪 Une version de démonstration sera disponible prochainement ici :  
+👉 [https://glucidenfolie.app](https://glucidenfolie.app) *(lien fictif, à remplacer)*
+
+### 📸 Aperçu de l'application
+> *(Ajoute une image quand tu veux, par ex. dans `/public/banner.png`)*
+
+![Glucid'en Folie - Aperçu](public/banner.png)
+
+---
+
+## 🚀 Fonctionnalités principales
+
+- 🔍 Recherche de recettes par nom, ingrédient ou catégorie
+- 📝 Ajout, édition et suppression de recettes
+- ❤️ Favoris
+- ⭐ Notation et 💬 commentaires
+- 🧑‍🤝‍🧑 Gestion des utilisateurs avec rôles (admin / utilisateur)
+- ⚠️ Filtrage par intolérances alimentaires
+
+---
+
+## 🧩 Technologies utilisées
+
+### Frontend
+- [Vue.js 3](https://vuejs.org/)
+- [Vuetify 3](https://vuetifyjs.com/)
+- [Pinia](https://pinia.vuejs.org/)
+- [Vue Router](https://router.vuejs.org/)
+- Vite (serveur de développement)
+
+### Backend
+- Java 17
+- Spring Boot 3
+- Spring Data JPA
+- Spring Security
+- Base de données : PostgreSQL ou MySQL
+- Envoi d’emails (validation de compte)
+
+---
+
+## 🛠️ Installation locale
+
+### 1. Cloner le projet
+```bash
+git clone https://github.com/Sabrina-Dubois/gluciden_folie.git
+cd gluciden_folie
+
+
+📌 To-do (prochaines améliorations)
+ Ajout de filtres dynamiques (gluten, lactose, etc.)
+
+ Gestion des images (upload)
+
+ Interface admin complète
+
+ Historique des recettes vues
+
+ Version mobile PWA
+
+
 
