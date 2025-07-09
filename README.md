@@ -1,12 +1,28 @@
-# Glucid'en Folie - Application de Recettes de Desserts
-Bienvenue sur Glucid'en Folie, une application web pour vous faire partager des recettes de desserts spécifiques à certaines intolérences alimentaires.
+# 🍰 Glucid'en Folie - Application de Recettes de Desserts Gourmands & Adaptés
 
-Cette application est construite avec Vue.js et Vuetify.
-![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
-![Vuetify](https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=AEDDFF)
+Bienvenue sur Glucid'en Folie, une application web dédiée aux passionnés de pâtisserie soucieux de leur santé ou ayant des intolérances alimentaires (gluten, lactose, sucre, etc.).
+Découvrez, partagez et sauvegardez vos recettes de desserts préférées — 100 % plaisir, 0 % frustration !
+
+---
+
+## 🔧 Technologies utilisées
+
+### Frontend
+- [Vue.js](https://vuejs.org/)  
+- [Vuetify](https://vuetifyjs.com/)  
+- [Pinia](https://pinia.vuejs.org/) – pour la gestion d’état  
+- Vue Router
+
+### Backend
+- Java 17  
+- Spring Boot  
+- Spring Data JPA  
+- Base de données relationnelle (ex : PostgreSQL ou MySQL)
+
+---
 
 
-## 1) Table des matières
+## 📚 Sommaire
 - Aperçu du projet
 - Fonctionnalités
 - Installation
@@ -14,22 +30,30 @@ Cette application est construite avec Vue.js et Vuetify.
 - Structure du projet
 - Contact
 
-## 2) Aperçu du projet
-Glucid'en Folie est conçu pour les amateurs de desserts qui ont des intolérences alimentaires ou pour les personnes gourmandes faisant attention à leur ligne.
-Il vous permet de rechercher des recettes par ingrédients, par nom ou catégories.
-L'application utilise une architecture front-end moderne avec ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
-![Vuetify](https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=AEDDFF) pour offrir une interface utilisateur élégante et réactive.
+---
 
+## 🎯 Aperçu du projet
+Glucid'en Folie a été pensé pour :
+- Les personnes souffrant d’intolérances (gluten, lactose, etc.)
+- Les personnes surveillant leur consommation de sucre
+- Les gourmands souhaitant des alternatives plus saines
 
-## 3) Fonctionnalités
+Grâce à une interface moderne, intuitive et responsive construite avec ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)  et ![Vuetify](https://img.shields.io/badge/Vuetify-1867C0?style=for-the-badge&logo=vuetify&logoColor=AEDDFF) pour offrir une interface utilisateur élégante et réactive., vous pouvez explorer un catalogue de recettes, les filtrer selon vos envies, et même les noter ou commenter.
+
+---
+
+## ⚙️ Fonctionnalités
+
 - Liste des recettes : Consultez toutes vos recettes en un coup d'œil
-- Recherche : Trouvez des recettes en fonction d'ingrédients spécifiques
-- Favoris : Marquez vos recettes préférées pour y accéder rapidement
-- Note : Notez les recettes sur votre expérience
+- Détails des recettes
+- Recherche : Trouvez des recettes en fonction d'ingrédients spécifiques (a venir)
+- Favoris : Marquez vos recettes préférées pour y accéder rapidement(a venir)
+- Note : Notez les recettes sur votre expérience (venir)
 - Commentaire : Ajoutez vos commentaires
 
+---
 
-## 4) Installation
+## 🚀 Installation
 
 ### Prérequis
 ![Terminal](https://badgen.net/badge/icon/terminal?icon=terminal&label)
@@ -38,17 +62,18 @@ L'application utilise une architecture front-end moderne avec ![Vue.js](https://
 
 Vue CLI
 
-### Étapes d'installation
-- Clonez le dépôt GitHub sur votre machine locale :
+### 📥 Étapes d'installation
+
+### 1. Cloner le dépôt GitHub sur votre machine locale 
 zsh
 ```
 git clone https://github.com/Sabrina-Dubois/gluciden_folie.git
 ```
-
+### 2.  Lancer le frontend (Vue.js)
 - Accédez au répertoire du projet :
 zsh
 ```
-cd gluciden-folie
+cd gluciden-folie/
 ```
 - Installez les dépendances du projet :
 zsh
@@ -63,13 +88,21 @@ npm run dev
 ```
 - Ouvrez votre navigateur et accédez à http://localhost:5173
 
-## 5) Utilisation
+### 3.  Lancer le backend (Spring Boot)
+- Ouvrir le projet Java dans un IDE (ex: Eclipse ou IntelliJ)
+- Lancer l’application Application.java (Spring Boot)
+- Vérifiez que la base de données est bien configurée dans application.properties
+
+---
+
+## 🧁 Utilisation
 Ajouter une recette : Naviguez vers "Ajouter une recette" via la barre de navigation, remplissez les informations nécessaires, puis enregistrez.
 Modifier une recette : Sélectionnez une recette dans la liste, cliquez sur "Modifier", puis mettez à jour les informations.
 Rechercher une recette : Utilisez la barre de recherche pour trouver des recettes par ingrédients ou noms de plats.
 
+---
 
-## 6) Structure du projet
+## Structure du projet
 Le projet est organisé avec les dossiers typiques d'un projet Vue.js, incluant les composants, les vues, et les assets. 
 
 Si vous avez besoin de plus de détails, n'hésitez pas à explorer directement le code.
@@ -99,6 +132,16 @@ gluciden-folie/
 ├── .gitignore               # Fichiers et dossiers à
 ```
 
-## 7) Contact
+---
+
+## 🧪 Environnement de développement
+- Node.js ≥ 14
+- JDK 17
+- Vue CLI
+- Base de données locale (PostgreSQL)
+
+---
+
+## Contact
 Pour toute question ou suggestion, vous pouvez me contacter à ...
 
