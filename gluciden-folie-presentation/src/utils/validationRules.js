@@ -71,7 +71,7 @@ export const recipeValidation = {
 export const ingredientValidation = {
   name: {
     required: requiredField,
-    ...lengthRules(4, 25),
+    ...lengthRules(3, 25),
   },
   quantity: {
     required: requiredField,

@@ -6,6 +6,7 @@ SELECT * FROM t_ingredients i;
 SELECT * FROM t_recipes_ingredients_unities riu ;
 SELECT * FROM t_unities u ;
 SELECT * FROM t_roles;
+SELECT * FROM t_steps;
 
 SELECT column_name FROM information_schema.columns WHERE table_name = 't_categories';
 
@@ -54,28 +55,72 @@ LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
 ORDER BY r.id, riu.id_ingredient;
 
 SELECT 
-	r.id AS recipe_id,
-	r.recipe_namae,
-	r.diffuculty,
-	r.recipe_picture,
-	a.username AS author,
-	JSON_AGG(JSON_BUILD_OBJECT(
-		'ingredient', i.ingredient_name,
-		'quantity', rui.quantity,
-		'unity', u.unity_name
-		) ORDER BY i.ingredient_name) AS ingredients
-	FROM t_recipes r
-	JOIN t_accounts a ON r.id_account = a.id,
+    r.id AS recipe_id,
+    r.recipe_name,
+    r.difficulty,
+    r.recipe_picture,
+    a.username AS author,
+    JSON_AGG(JSON_BUILD_OBJECT(
+        'ingredient', i.ingredient_name,
+        'quantity', riu.quantity,
+        'unity', u.unity_name
+    ) ORDER BY i.ingredient_name) AS ingredients
+FROM t_recipes r
+JOIN t_accounts a ON r.id_account = a.id
 LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
 LEFT JOIN t_ingredients i ON riu.id_ingredient = i.id
+LEFT JOIN t_unities u ON riu.id_unity = u.id
 GROUP BY r.id, r.recipe_name, r.difficulty, r.recipe_picture, a.username
 ORDER BY r.id;
 
+SELECT 
+    r.id AS recipe_id,
+    r.recipe_name,
+    r.difficulty,
+    r.recipe_picture,
+    a.username AS author,
+    JSON_AGG(JSON_BUILD_OBJECT(
+        'ingredient', i.ingredient_name,
+        'quantity', riu.quantity,
+        'unity', u.unity_name
+    ) ORDER BY i.ingredient_name) AS ingredients
+FROM t_recipes r
+JOIN t_accounts a ON r.id_account = a.id
+JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+JOIN t_ingredients i ON riu.id_ingredient = i.id
+JOIN t_unities u ON riu.id_unity = u.id
+WHERE r.id IN (
+    SELECT r_sub.id
+    FROM t_recipes r_sub
+    JOIN t_recipes_ingredients_unities riu_sub ON r_sub.id = riu_sub.id_recipe
+    JOIN t_ingredients i_sub ON riu_sub.id_ingredient = i_sub.id
+    WHERE LOWER(i_sub.ingredient_name) = 'farine'
+)
+GROUP BY r.id, r.recipe_name, r.difficulty, r.recipe_picture, a.username
+ORDER BY r.id;
 
-SELECT * 
-FROM t_recipes_ingredients ri
-JOIN t_recipes r ON r.id = ri.id_recipe
-JOIN t_ingredients i ON i.id = ri.id_ingredient;
+-- 1 ingrédient farine --
+SELECT r.id, r.recipe_name
+FROM t_recipes r
+JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+JOIN t_ingredients i ON i.id = riu.id_ingredient
+GROUP BY r.id, r.recipe_name
+HAVING COUNT(*) = 1 AND LOWER(MAX(i.ingredient_name)) = 'Farine';
+
+-- avec farine --
+SELECT DISTINCT r.recipe_name
+FROM t_recipes r
+JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+JOIN t_ingredients i ON i.id = riu.id_ingredient
+WHERE LOWER(i.ingredient_name) = 'farine';
+
+SELECT r.id, r.recipe_name
+FROM t_recipes r
+JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
+JOIN t_ingredients i ON i.id = riu.id_ingredient
+GROUP BY r.id, r.recipe_name
+HAVING COUNT(*) = 1 AND LOWER(MAX(i.ingredient_name)) = 'farine';
+
 
 SELECT * 
 FROM t_recipes r

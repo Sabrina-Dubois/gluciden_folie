@@ -4,7 +4,6 @@
 		<v-card class="d-flex mx-auto my-auto">
 			<v-container fluid>
 				<v-row dense>
-					<!-- {{ recipes }} -->
 					<!-- Card image & boutons -->
 					<v-col
 						v-for="recipe in sortedRecipes"
@@ -51,7 +50,6 @@
 </template>
 
 <script scoped>
-import apiClient from "../api/axiosConfig";
 import { useRecipesStore } from "@/stores/recipesStore";
 import RecipeDetails from "./RecipeDetails.vue";
 

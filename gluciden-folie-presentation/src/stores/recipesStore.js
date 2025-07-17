@@ -22,7 +22,7 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
     // Ajouter une nouvelle recette
-    async addRecipe({ name, picture, difficulty, ingredientList }) {
+    async addRecipe({ name, picture, difficulty, ingredientList,steps }) {
       try {
         // Validation des ingrédients
         ingredientList.forEach((ingredient) => {
@@ -43,6 +43,7 @@ export const useRecipesStore = defineStore("recipes", {
         formData.append("name", name);
         formData.append("difficulty", difficulty);
         formData.append("ingredients", JSON.stringify(ingredientList));
+        formData.append("steps", JSON.stringify(steps));
 
         const response = await apiClient.post("/recipes", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -111,3 +112,4 @@ export const useRecipesStore = defineStore("recipes", {
     },
   },
 });
+

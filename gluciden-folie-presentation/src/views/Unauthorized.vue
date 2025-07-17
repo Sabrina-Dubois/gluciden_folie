@@ -5,8 +5,7 @@
 	</div>
 </template>
 
-<script setup>
-// Pas besoin de logique JS ici pour le moment
+<script>
 </script>
 
 <style scoped>

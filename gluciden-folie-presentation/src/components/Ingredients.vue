@@ -23,7 +23,7 @@
 				<v-combobox
 					v-model="newIngredient.name"
 					:items="ingredientsList"
-					label="Ingrédients"
+					:label="$t('ingredients.label') + ' *'"
 					variant="underlined"
 					hide-details
 					clearable
@@ -36,7 +36,7 @@
 			<v-col cols="6" md="3">
 				<v-text-field
 					v-model.number="newIngredient.quantity"
-					label="Quantité"
+					:label="$t('ingredients.quantity.label') + ' *'"
 					variant="underlined"
 					type="number"
 					min="0"
@@ -53,7 +53,7 @@
 					:items="unitiesUnique"
 					item-title="name"
 					item-value="id"
-					label="Unité"
+					:label="$t('ingredients.unity.label') + ' *'"
 					variant="underlined"
 					clearable
 					:error="v$.unityId.$error"
@@ -170,7 +170,10 @@ export default {
 			const unity = this.unitiesUnique.find((u) => u.id === unityId);
 			return unity ? unity.name : "?";
 		},
-		addIngredient() {
+		async addIngredient() {
+			await this.v$.$validate();
+
+			if (this.v$.$invalid) return;
 			if (!this.canAdd) return;
 
 			// On extrait l'id de l'unité si c'est un objet

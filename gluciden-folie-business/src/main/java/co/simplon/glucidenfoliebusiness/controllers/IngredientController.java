@@ -22,7 +22,7 @@ public class IngredientController {
 		this.ingredientService = ingredientService;
 	}
 
-	@PostMapping // methode -> point acces pour grer rq http
+	@PostMapping // methode -> point acces pour gérer rq http
 	void create(@Valid @RequestBody IngredientCreateDto ingDto) {
 		ingredientService.createOrGet(ingDto);
 	}

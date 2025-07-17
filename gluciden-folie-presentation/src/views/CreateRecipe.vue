@@ -2,7 +2,6 @@
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
 		<v-card class="recipeForm" max-width="800px">
-		
 			<!-- Formulaire création -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
@@ -43,7 +42,7 @@
 
 				<!-- Difficultés -->
 				<h3>{{ $t("create_recipe.difficulty") }}</h3>
-				<div class="text-center">
+				<div class="custom-rating">
 					<v-rating
 						v-model="form.difficulty"
 						:length="4"
@@ -52,7 +51,6 @@
 						empty-icon="mdi-circle-outline"
 						full-icon="mdi-circle"
 						hover
-						color="green"
 						dense
 					>
 					</v-rating>
@@ -61,6 +59,11 @@
 				<!-- Ingrédients -->
 				<h3>{{ $t("create_recipe.ingredients") }}</h3>
 				<Ingredients v-model:ingredients="form.ingredients" />
+
+				<!-- Étapes -->
+				<div>
+					<RecipeSteps v-model:steps="form.steps" />
+				</div>
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
 					{{ $t("create_recipe.button") }}
@@ -76,11 +79,13 @@ import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
+import RecipeSteps from "@/components/RecipeSteps.vue";
 
 export default {
 	name: "createRecipe",
 	components: {
 		Ingredients,
+		RecipeSteps,
 	},
 	data() {
 		return {
@@ -89,6 +94,7 @@ export default {
 				picture: null,
 				ingredients: [],
 				difficulty: null,
+				steps: [],
 			},
 			imagePreview: null,
 			v$: null,
@@ -163,7 +169,7 @@ export default {
 				!Array.isArray(this.form.ingredients) ||
 				this.form.ingredients.length === 0
 			) {
-				return; 
+				return;
 			}
 			const difficultyLabels = ["Facile", "Moyenne", "Difficile", "Expert"];
 			const difficultyText =
@@ -181,12 +187,12 @@ export default {
 					picture: this.form.picture,
 					difficulty: difficultyText,
 					ingredientList: this.form.ingredients,
+					steps: this.form.steps,
 				});
 			} catch (error) {
 				console.error("Erreur lors de la création de la recette :", error);
 			}
 			this.$router.push({ name: "recipesList" });
-
 		},
 	},
 };
@@ -212,6 +218,10 @@ export default {
 	max-width: auto;
 	margin-bottom: 30px;
 	padding-left: 20px;
+	color: #5d827f;
+}
+
+.custom-rating{
 	color: #5d827f;
 }
 

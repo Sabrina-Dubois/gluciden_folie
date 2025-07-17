@@ -1,6 +1,8 @@
 package co.simplon.glucidenfoliebusiness.entities;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,10 +31,12 @@ public class Recipe extends AbstractEntity {
 	@Column(name = "difficulty")
 	private String difficulty;
 
+	@OneToMany(mappedBy = "recipe")
+	private List<Step> steps = new ArrayList<>();
+
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "t_recipes_categories", joinColumns = @JoinColumn(name = "id_recipe"), inverseJoinColumns = @JoinColumn(name = "id_category"))
-
 	private Set<Category> categories = new HashSet<>();
 
 	@ManyToOne
@@ -102,6 +107,14 @@ public class Recipe extends AbstractEntity {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public List<Step> getSteps() {
+		return steps;
+	}
+
+	public void setSteps(List<Step> steps) {
+		this.steps = steps;
 	}
 
 }

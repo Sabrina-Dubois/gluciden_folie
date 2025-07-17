@@ -20,5 +20,6 @@ public record RecipeCreateDto(
 				MediaType.IMAGE_JPEG_VALUE,
 				MediaType.IMAGE_PNG_VALUE }) @FileSize(max = FileSize.TWO_MB) MultipartFile picture,
 		@NotBlank(message = "La difficulté est obligatoire") String difficulty,
-		@NotNull @NotEmpty List<RecipeIngredientUnityDto> ingredients){
+		@NotNull @NotEmpty List<RecipeIngredientUnityDto> ingredients, List<StepCreateDto> steps){
+
 }

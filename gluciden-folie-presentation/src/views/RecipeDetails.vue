@@ -1,6 +1,6 @@
 <template>
 	<v-container fluid>
-		<v-card class="mx-auto my-5 pa-4" max-width="600">
+		<v-card class="mx-auto my-5 pa-4" max-width="800">
 			<div v-if="recipe">
 				<h1>{{ recipe.name }}</h1>
 				<img
@@ -25,6 +25,19 @@
 						{{ getUnityName(ingredient.unityId) }}
 					</v-chip>
 				</v-chip-group>
+
+				<h3>Étapes :</h3>
+				<v-card class="step-card" variant="outlined">
+					<v-list>
+						<v-list-item v-for="(step, index) in recipe.steps" :key="index">
+							<v-list-item-content class="step-content">
+								<v-list-item-title
+									>{{ step.number }} . {{ step.description }}</v-list-item-title
+								>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-card>
 			</div>
 
 			<div v-else>
@@ -59,7 +72,7 @@ export default {
 	},
 	async mounted() {
 		const id = this.$route.params.id;
-		await this.fetchUnities(); 
+		await this.fetchUnities();
 
 		try {
 			const response = await apiClient.get(`/recipes/${id}`);
@@ -105,8 +118,19 @@ export default {
 	color: #d3beb1;
 }
 
+/* *** Card *** */
+.step-card {
+	border-radius: 12px;
+	border: 2px solid #d3beb1;
+}
+
+.step-content {
+	text-align: left;
+}
+
 /* *** Chips *** */
 .v-chip,
+.v-list-item-title,
 .v-text-field input {
 	color: #5d827f;
 }

@@ -68,6 +68,25 @@
     },
     "button": "Save"
   },
+  "ingredients": {
+    "label": "Ingrédients",
+    "quantity": {
+      "label": "Quantity"
+    },
+    "unity": {
+      "label": "Unity"
+    }
+  },
+  "steps": {
+    "title": "Recipe steps",
+    "card-title": "Step",
+    "label": "Step description",
+    "button": "Add a step",
+    "instructions": {
+      "title": "Step instructions",
+      "label": "Resume steps instructions"
+    }
+  },
   "create_category": {
     "title": "Create a new category",
     "category": {

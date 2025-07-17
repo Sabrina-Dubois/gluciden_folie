@@ -25,6 +25,7 @@ import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeCreateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeIngredientUnityDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeReadDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
+import co.simplon.glucidenfoliebusiness.dtos.recipe.StepCreateDto;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
@@ -42,7 +43,8 @@ public class RecipeController {
 	@PostMapping
 	public Recipe create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
 			@RequestParam(value = "difficulty", required = false) String difficulty,
-			@RequestParam("ingredients") String ingredientsJson) throws JsonProcessingException {
+			@RequestParam("ingredients") String ingredientsJson,
+			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {
 
 		if (difficulty == null || difficulty.trim().isEmpty()) {
 			difficulty = "Facile";
@@ -50,11 +52,19 @@ public class RecipeController {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
+		// Désérialisation des ingrédients
 		List<RecipeIngredientUnityDto> ingredients = objectMapper.readValue(ingredientsJson,
 				new TypeReference<List<RecipeIngredientUnityDto>>() {
 				});
 
-		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, difficulty, ingredients);
+		// Désérialisation des étapes
+		List<StepCreateDto> steps = List.of(); // Liste vide par défaut
+		if (stepsJson != null && !stepsJson.trim().isEmpty()) {
+			steps = objectMapper.readValue(stepsJson, new TypeReference<List<StepCreateDto>>() {
+			});
+		}
+
+		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, difficulty, ingredients, steps);
 		return recipeService.create(recipeCreateDto);
 
 	}

@@ -4,10 +4,10 @@
     "list_recipes": "Liste des recettes",
     "create_recipe": "Créer une recette",
     "update_recipe": "Modifier une recette",
-    "list_categories": "Liste des catègories",
+    "list_categories": "Liste des catégories",
     "button": "Connexion",
-    "create-category": "Créer une catègorie",
-    "update_category": "Update ne catègorie"
+    "create-category": "Créer une catégorie",
+    "update_category": "Update ne catégorie"
   },
   "home": {
     "title": "Bienvenue sur GLUCID'EN FOLIE",
@@ -42,7 +42,7 @@
     "picture": "Photo",
     "label": "Télécharger la photo",
     "difficulty": "Difficultés",
-    "ingredients" : "Choix des ingrédients",
+    "ingredients": "Choix des ingrédients",
     "button": "Créer"
   },
   "recipe_list": {
@@ -68,6 +68,25 @@
     },
     "button": "Enregistrer"
   },
+  "ingredients": {
+    "label": "Ingrédients",
+    "quantity": {
+      "label": "Quantité"
+    },
+    "unity": {
+      "label": "Unité"
+    }
+  },
+  "steps": {
+    "title":"Étapes de la recette",
+    "card-title": "Étape",
+    "label": "Description de l'étape",
+    "button": "Ajouter une étape",
+    "instructions": {
+      "title": "Instructions complètes",
+      "label":"Résumé des étapes"
+    }
+  },
   "create_category": {
     "title": "Créer une nouvelle catégorie",
     "category": {
@@ -92,7 +111,7 @@
       "label": "Nom de la catégorie"
     },
     "picture": "Photo",
-    "label": "Tèlèchager la photo",
+    "label": "Téléchager la photo",
 
     "button": "Enregistrer"
   },
@@ -105,12 +124,12 @@
     "text": "Vous êtes sur la page de test. Vous pouvez naviguer vers d'autres pages via la barre de navigation."
   },
   "footer": {
-    "notices" : "Mentions lègales",
-    "about" : "A propos",
-    "confidentiality" : "Politique de confidentialitè",
-    "condition" : "Conditions d'utilisation",
-    "map" : "Plan du site",
-    "contact" : "Contact",
-    "copyright": "GLUCID'EN FOLIE. Tous droits rèservès."
+    "notices": "Mentions légales",
+    "about": "A propos",
+    "confidentiality": "Politique de confidentialité",
+    "condition": "Conditions d'utilisation",
+    "map": "Plan du site",
+    "contact": "Contact",
+    "copyright": "GLUCID'EN FOLIE. Tous droits réservés."
   }
 }

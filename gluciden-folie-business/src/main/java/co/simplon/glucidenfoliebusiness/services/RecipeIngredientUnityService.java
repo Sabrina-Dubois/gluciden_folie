@@ -58,7 +58,7 @@ public class RecipeIngredientUnityService {
 
 		// Recherche si relation existe déjà
 		RecipeIngredientUnity entity = recipeIngredientUnityRepo.findById(id)
-				.orElse(new RecipeIngredientUnity(recipe, ingredient.getId(), unity, quantity));
+				.orElse(new RecipeIngredientUnity(recipe, ingredient, unity, quantity));
 
 		// Mise à jour de la quantité
 		entity.setQuantity(quantity);
