@@ -28,7 +28,8 @@ WHERE recipe_name IN (
     'Chocolat chaud au lait de noisette',
     'Crêpes healthy sans gluten'
 );
-
+ 
+ 
 -- ************  Cookies healthy aux flocons d'avoine ************ 
 DO $$
 DECLARE 
@@ -42,9 +43,19 @@ BEGIN
     '9be1669d-dc4c-45be-98d6-10d9996c60d5.jpg',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
-  RETURNING id INTO r_id;
-
-  -- 2. Lie les ingrédients
+ RETURNING id INTO r_id;
+ -- 2.1. Insère les ingrédients s'ils n'existent pas déjà
+  INSERT INTO t_ingredients (ingredient_name)
+  SELECT x FROM (VALUES 
+    ('Flocons d''avoine'),
+    ('Banane mûre'),
+    ('Pépites de chocolat'),
+    ('Beurre de cacahuète')
+  ) AS v(x)
+  WHERE NOT EXISTS (
+    SELECT 1 FROM t_ingredients i WHERE i.ingredient_name = v.x
+  );
+  -- 2.2 Lie les ingrédients
   INSERT INTO t_recipes_ingredients_unities (id_recipe, id_ingredient, quantity, id_unity)
   SELECT 
     r_id,
@@ -60,7 +71,6 @@ BEGIN
     ) AS data(ingredient_name, quantity, unity_name)
   JOIN t_ingredients i ON i.ingredient_name = data.ingredient_name
   JOIN t_unities u ON u.unity_name = data.unity_name;
-
   -- 3. Insère les étapes
   INSERT INTO t_steps (step_number, step_description, id_recipe)
   VALUES 
@@ -87,8 +97,18 @@ BEGIN
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
   RETURNING id INTO r_id;
-
-  -- 2. Lie les ingrédients
+ -- 2.1. Insère les ingrédients s'ils n'existent pas déjà
+  INSERT INTO t_ingredients (ingredient_name)
+  SELECT x FROM (VALUES 
+    ('Chocolat noir'),
+    ('Jus de pois chiche'),
+    ('Édulcorant en poudre'),
+    ('Vanille liquide')
+  ) AS v(x)
+  WHERE NOT EXISTS (
+    SELECT 1 FROM t_ingredients i WHERE i.ingredient_name = v.x
+  );
+  -- 2.2 Lie les ingrédients
   INSERT INTO t_recipes_ingredients_unities (id_recipe, id_ingredient, quantity, id_unity)
   SELECT 
     r_id,
@@ -104,7 +124,6 @@ BEGIN
     ) AS data(ingredient_name, quantity, unity_name)
   JOIN t_ingredients i ON i.ingredient_name = data.ingredient_name
   JOIN t_unities u ON u.unity_name = data.unity_name;
-
   -- 3. Insère les étapes
   INSERT INTO t_steps (step_number, step_description, id_recipe)
   VALUES 
@@ -129,7 +148,6 @@ BEGIN
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
   RETURNING id INTO r_id;
-
   -- 2. Lie les ingrédients
   INSERT INTO t_recipes_ingredients_unities (id_recipe, id_ingredient, quantity, id_unity)
   SELECT 
@@ -146,7 +164,6 @@ BEGIN
     ) AS data(ingredient_name, quantity, unity_name)
   JOIN t_ingredients i ON i.ingredient_name = data.ingredient_name
   JOIN t_unities u ON u.unity_name = data.unity_name;
-
   -- 3. Insère les étapes
   INSERT INTO t_steps (step_number, step_description, id_recipe)
   VALUES 
@@ -167,12 +184,12 @@ BEGIN
   VALUES (
     'Crêpes healthy sans gluten',
     'Facile',
-    '32205151-137c-492d-81f5-d2776bffa91a.jpg',
+    '438c35d6-f07a-464f-b794-92f1aa7328ec.jpg',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
   RETURNING id INTO r_id;
 
-  -- 1.1. Insère les ingrédients s'ils n'existent pas déjà
+  -- 2.1. Insère les ingrédients s'ils n'existent pas déjà
   INSERT INTO t_ingredients (ingredient_name)
   SELECT x FROM (VALUES 
     ('Farine de riz'),
@@ -185,9 +202,7 @@ BEGIN
   WHERE NOT EXISTS (
     SELECT 1 FROM t_ingredients i WHERE i.ingredient_name = v.x
   );
-
-
-  -- 2. Lie les ingrédients
+  -- 2.2 Lie les ingrédients
   INSERT INTO t_recipes_ingredients_unities (id_recipe, id_ingredient, quantity, id_unity)
   SELECT 
     r_id,
@@ -205,7 +220,6 @@ BEGIN
     ) AS data(ingredient_name, quantity, unity_name)
   JOIN t_ingredients i ON i.ingredient_name = data.ingredient_name
   JOIN t_unities u ON u.unity_name = data.unity_name;
-
   -- 3. Insère les étapes
   INSERT INTO t_steps (step_number, step_description, id_recipe)
   VALUES 
@@ -215,3 +229,7 @@ BEGIN
     (4, 'Verser une louche de pâte dans la poêle et cuire chaque face pendant 1 à 2 minutes.', r_id),
     (5, 'Répéter jusqu''à épuisement de la pâte.', r_id);
 END $$;
+
+SELECT ingredient_name FROM t_ingredients WHERE ingredient_name IN ('Flocons d''avoine', 'Banane mûre', 'Pépites de chocolat', 'Beurre de cacahuète');
+SELECT unity_name FROM t_unities WHERE unity_name IN ('g', 'unité', 'c. à soupe');
+

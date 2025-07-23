@@ -1,26 +1,26 @@
 export default [
-    {
-        path: "/",
-        name: "home",
-        component: () => import("../views/Home.vue"),
-    },
-    {
-        path: "/creer-recette",
-        name: "createRecipe",
-        component: () => import("../views/CreateRecipe.vue"),
-        meta: { requiresAdmin: true },
-    },
-    {
-        path: "/modifier-recette/:id",
-        name: "updateRecipe",
-        component: () => import("@/views/UpdateRecipe.vue"),
-        meta: { requiresAdmin: true },
-    },
-    {
-        path: "/liste-recettes",
-        name: "recipesList",
-        component: () => import("@/views/RecipesList.vue"),
-    },
+  {
+    path: "/",
+    name: "home",
+    component: () => import("../views/Home.vue"),
+  },
+  {
+    path: "/creer-recette",
+    name: "createRecipe",
+    component: () => import("../views/CreateRecipe.vue"),
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/modifier-recette/:id",
+    name: "updateRecipe",
+    component: () => import("@/views/UpdateRecipe.vue"),
+    meta: { requiresAdmin: true },
+  },
+  {
+    path: "/liste-recettes",
+    name: "recipesList",
+    component: () => import("@/views/RecipesList.vue"),
+  },
   {
     path: "/recipes/:id",
     name: "recipeDetails",
@@ -48,11 +48,6 @@ export default [
     path: "/unauthorized",
     name: "unauthorized",
     component: () => import("../views/Unauthorized.vue"),
-  },
-  {
-    path: "/test",
-    name: "test",
-    component: () => import("../views/Test.vue"),
   },
   {
     path: "/login",

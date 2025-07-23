@@ -17,6 +17,6 @@ public record RecipeUpdateDto(@NotBlank @Size(max = 100) String name,
 		@FileType(types = {
 				MediaType.IMAGE_JPEG_VALUE,
 				MediaType.IMAGE_PNG_VALUE }) @FileSize(max = FileSize.TWO_MB) MultipartFile picture,
-		@NotBlank String difficulty, List<RecipeIngredientUnityDto> ingredients){
+		@NotBlank String difficulty, List<RecipeIngredientUnityDto> ingredients, List<StepCreateDto> steps){
 
 }

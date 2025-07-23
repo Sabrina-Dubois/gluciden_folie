@@ -39,7 +39,7 @@
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
-					></v-file-input>
+				></v-file-input>
 
 				<!-- Nombre de portions -->
 				<!-- <h3 class="section-title portions-title"> -->
@@ -164,8 +164,7 @@
 				</div> -->
 
 				<h3>Choix des ingrédients</h3>
-				<Ingredients
-				v-model:ingredients="form.ingredients" />
+				<Ingredients v-model:ingredients="form.ingredients" />
 
 				<!-- <h3>Commentaires</h3>
 				<v-textarea
@@ -185,7 +184,7 @@
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+//import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
 
 export default {
@@ -224,9 +223,9 @@ console.log("validation: ", this.v$);
 			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
-			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
 			return errors;
 		},
 		recipePictureErrors() {
@@ -234,9 +233,9 @@ console.log("validation: ", this.v$);
 			const rules = this.v$.form.picture;
 
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
-				if (rules.validImageType.$invalid) errors.push(messages.validImageType);
-				if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
 			}
 
 			return errors;

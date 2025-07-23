@@ -45,6 +45,7 @@
 				<div class="custom-rating">
 					<v-rating
 						v-model="form.difficulty"
+						class="required-field"
 						:length="4"
 						:error="v$.form.difficulty.$error"
 						:error-messages="difficultyErrors"
@@ -52,6 +53,7 @@
 						full-icon="mdi-circle"
 						hover
 						dense
+						@change="v$.form.difficulty.$touch()"
 					>
 					</v-rating>
 				</div>
@@ -62,7 +64,7 @@
 
 				<!-- Étapes -->
 				<div>
-					<RecipeSteps v-model:steps="form.steps" />
+					<Steps v-model:steps="form.steps" />
 				</div>
 
 				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
@@ -77,15 +79,16 @@
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+//import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
-import RecipeSteps from "@/components/RecipeSteps.vue";
+import Steps from "@/components/Steps.vue";
+import i18n from "@/i18n/i18n"; 
 
 export default {
 	name: "createRecipe",
 	components: {
 		Ingredients,
-		RecipeSteps,
+		Steps,
 	},
 	data() {
 		return {
@@ -102,7 +105,11 @@ export default {
 		};
 	},
 	validations() {
-		return recipeValidation;
+		return {
+    form: {
+      ...recipeValidation.form,
+	}
+    }
 	},
 	created() {
 		this.v$ = useVuelidate();
@@ -115,9 +122,9 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
-			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
 			return errors;
 		},
 		pictureErrors() {
@@ -125,9 +132,9 @@ export default {
 			const rules = this.v$.form.picture;
 
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
-				if (rules.validImageType.$invalid) errors.push(messages.validImageType);
-				if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
 			}
 
 			return errors;
@@ -138,7 +145,7 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.difficulty;
-			if (rules.required.$invalid) errors.push(messages.required);
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},

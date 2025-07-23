@@ -93,25 +93,25 @@ public class RecipeController {
 	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
 			@RequestParam(value = "difficulty", required = false) String difficulty,
 			@RequestParam(value = "ingredients", required = false) String ingredientsJson,
-			@RequestParam(value = "picture", required = false) MultipartFile picture) throws JsonProcessingException {
-		try {
-			List<RecipeIngredientUnityDto> ingredients = null;
-			if (ingredientsJson != null && !ingredientsJson.isEmpty()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				ingredients = objectMapper.readValue(ingredientsJson, new TypeReference<>() {
-				});
-			}
-			;
+			@RequestParam(value = "picture", required = false) MultipartFile picture,
+			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {
 
-			// Crée un DTO avec les données reçues
-			RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture, difficulty, ingredients);
-			recipeService.updateOne(id, recipeUpdateDto);
+		ObjectMapper objectMapper = new ObjectMapper(); // Une seule instance ObjectMapper
 
-		} catch (
-
-		JsonProcessingException e) {
-			throw new RuntimeException("Erreur lors du parsing des ingrédients JSON", e);
+		List<RecipeIngredientUnityDto> ingredients = null;
+		if (ingredientsJson != null && !ingredientsJson.isEmpty()) {
+			ingredients = objectMapper.readValue(ingredientsJson, new TypeReference<List<RecipeIngredientUnityDto>>() {
+			});
 		}
+
+		List<StepCreateDto> steps = null;
+		if (stepsJson != null && !stepsJson.isEmpty() && !"undefined".equals(stepsJson)) {
+			steps = objectMapper.readValue(stepsJson, new TypeReference<List<StepCreateDto>>() {
+			});
+		}
+
+		RecipeUpdateDto recipeUpdateDto = new RecipeUpdateDto(name, picture, difficulty, ingredients, steps);
+		recipeService.updateOne(id, recipeUpdateDto);
 	}
 
 	// Nouvelle méthode pour ajouter un ingrédient à une recette

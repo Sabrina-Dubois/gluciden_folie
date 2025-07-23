@@ -11,7 +11,22 @@
 					height="300px"
 				/>
 
-				<h3>Ingrédients :</h3>
+				<!-- Difficultés -->
+				<h3 class="text-center">{{ $t("recipe_details.difficulty") }}</h3>
+				<div class="d-flex justify-center align-center mb-4">
+					<v-rating
+						:model-value="difficultyIndex"
+						readonly
+						length="4"
+						empty-icon="mdi-circle-outline"
+						full-icon="mdi-circle"
+						dense
+						class="custom-rating"
+					/>
+				</div>
+
+				<!-- Ingrédients -->
+				<h3>{{ $t("recipe_details.ingredients") }}</h3>
 				<v-chip-group column>
 					<v-chip
 						v-for="ingredient in recipe.ingredients"
@@ -26,7 +41,8 @@
 					</v-chip>
 				</v-chip-group>
 
-				<h3>Étapes :</h3>
+				<!-- Étapes -->
+				<h3>{{ $t("recipe_details.steps") }}</h3>
 				<v-card class="step-card" variant="outlined">
 					<v-list>
 						<v-list-item v-for="(step, index) in recipe.steps" :key="index">
@@ -41,11 +57,11 @@
 			</div>
 
 			<div v-else>
-				<p>Chargement de la recette...</p>
+				<p>{{ $t("recipe_details.recipe_download") }}</p>
 			</div>
 
 			<v-btn @click="$router.push({ name: 'recipesList' })" class="mt-4">
-				Retour à la liste
+				{{ $t("recipe_details.return_button") }}
 			</v-btn>
 		</v-card>
 	</v-container>
@@ -69,7 +85,12 @@ export default {
 			}
 			return "";
 		},
+		difficultyIndex() {
+			const levels = ["Facile", "Moyenne", "Difficile", "Expert"];
+			return levels.indexOf(this.recipe?.difficulty) + 1;
+		},
 	},
+
 	async mounted() {
 		const id = this.$route.params.id;
 		await this.fetchUnities();
@@ -126,6 +147,11 @@ export default {
 
 .step-content {
 	text-align: left;
+}
+
+/* *** Difficultés *** */
+.custom-rating {
+	color: #5d827f;
 }
 
 /* *** Chips *** */

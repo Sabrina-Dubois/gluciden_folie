@@ -49,7 +49,7 @@
     "title": "Liste des recettes"
   },
   "update_recipe": {
-    "title": "Modifier une nouvelle recette",
+    "title": "Modifier une recette",
     "recipe": {
       "name": "Titre de la recette",
       "label": "Nom de la recette"
@@ -78,14 +78,25 @@
     }
   },
   "steps": {
-    "title":"Étapes de la recette",
+    "title": "Étapes de la recette",
     "card-title": "Étape",
     "label": "Description de l'étape",
     "button": "Ajouter une étape",
     "instructions": {
       "title": "Instructions complètes",
-      "label":"Résumé des étapes"
+      "label": "Résumé des étapes"
     }
+  },
+  "recipe_details": {
+    "picture": {
+      "picture": "Photo",
+      "label": "Télécharger la photo"
+    },
+    "difficulty": "Difficulté",
+    "ingredients": "Ingrédients",
+    "steps": "Étapes de la recette",
+    "recipe_download": "Chargement de la recette...",
+    "return_button": "Retour à la liste"
   },
   "create_category": {
     "title": "Créer une nouvelle catégorie",
@@ -131,5 +142,17 @@
     "map": "Plan du site",
     "contact": "Contact",
     "copyright": "GLUCID'EN FOLIE. Tous droits réservés."
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire.",
+    "numeric": "Ce champ doit être un nombre.",
+    "positiveNumber": "La quantité doit être supérieure à 0.",
+    "minLength": "Le champ doit contenir au moins {min} caractères.",
+    "maxLength": "Le champ ne doit pas dépasser {max} caractères.",
+    "validEmail": "L'adresse e-mail n'est pas valide.",
+    "validPassword": "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.",
+    "requiredImage": "L'image est obligatoire.",
+    "validImageSize": "La taille de l'image ne doit pas dépasser 5 Mo.",
+    "validImageType": "L'image doit être au format PNG ou JPEG."
   }
 }

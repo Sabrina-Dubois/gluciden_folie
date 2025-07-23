@@ -81,7 +81,8 @@ import { useRecipesStore } from "@/stores/recipesStore.js";
 import { useIngredientsStore } from "@/stores/ingredientsStore.js";
 import { ingredientValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+import i18n from "@/i18n/i18n.js";
+//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "ingredients",
@@ -127,9 +128,12 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.name;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
-			if (rules.maxLength.$invalid) errors.push(messages.maxLength(25));
+			if (rules.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid)
+				errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid)
+				errors.push(i18n.global.t("validation.maxLength", { max: 25 }));
 			return errors;
 		},
 		quantityErrors() {
@@ -137,9 +141,12 @@ export default {
 			const rules = this.v$.quantity;
 
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
-				if (rules.numeric?.$invalid) errors.push(messages.numeric);
-				if (rules.positive?.$invalid) errors.push(messages.positiveNumber);
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.numeric?.$invalid)
+					errors.push(i18n.global.t("validation.numeric"));
+				if (rules.positive?.$invalid)
+					errors.push(i18n.global.t("validation.positiveNumber"));
 			}
 
 			return errors;
@@ -151,7 +158,8 @@ export default {
 			const errors = [];
 			const rules = this.v$.unityId;
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
 			}
 			return errors;
 		},

@@ -15,11 +15,12 @@
 			<v-card-text>
 				<v-textarea
 					v-model="localSteps[index].description"
+					class="required-field"
 					:label="$t('steps.label') + ' *'"
 					variant="underlined"
 					rows="1"
 					counter="500"
-					@input="emitSteps"
+					@change="emitSteps"
 					clearable
 				/>
 			</v-card-text>
@@ -44,9 +45,8 @@
 </template>
 
 <script>
-
 export default {
-	name: "RecipeSteps",
+	name: "Steps",
 	props: {
 		steps: {
 			type: Array,
@@ -59,10 +59,23 @@ export default {
 			localSteps: [],
 		};
 	},
-	mounted() {
-		// Initialisation une seule fois
-		this.localSteps = [...this.steps];
+	//mounted() {
+	// Initialisation une seule fois
+	//this.localSteps = [...this.steps];
+	//},
+
+	watch: {
+		steps: {
+			immediate: true,
+			handler(newSteps) {
+				if (!Array.isArray(newSteps)) return;
+				if (JSON.stringify(this.localSteps) !== JSON.stringify(newSteps)) {
+					this.localSteps = [...newSteps];
+				}
+			},
+		},
 	},
+
 	computed: {
 		allStepsText() {
 			return this.localSteps
@@ -74,6 +87,7 @@ export default {
 	methods: {
 		addStep() {
 			this.localSteps.push({ description: "" });
+			console.log("Après push :", this.localSteps);
 			this.emitSteps();
 		},
 		removeStep(index) {
@@ -82,12 +96,13 @@ export default {
 		},
 		emitSteps() {
 			const stepsWithNumbers = this.localSteps
-				.filter((step) => step.description?.trim()) // ignore les vides
+				.filter((step) => step.description !== undefined)
 				.map((step, index) => ({
 					number: index + 1,
-					description: step.description.trim(),
+					description: step.description?.trim() ?? "",
 				}));
 
+			console.log("Emit steps", stepsWithNumbers);
 			this.$emit("update:steps", stepsWithNumbers);
 		},
 	},
@@ -98,20 +113,18 @@ export default {
 .step-card {
 	border-radius: 12px;
 	border: 2px solid #d3beb1;
-	color : #5d827f;
+	color: #5d827f;
 }
 
-.step-textarea{
+.step-textarea {
 	border-radius: 12px;
 	border: 2px solid #d3beb1;
-	color : #5d827f;
+	color: #5d827f;
 }
 
 .step-content {
 	text-align: left;
 }
-
-
 
 .step {
 	color: #5d827f;

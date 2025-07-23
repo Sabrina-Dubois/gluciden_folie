@@ -220,6 +220,7 @@ public class RecipeService {
 
 		recipe.setName(inputs.name());
 
+		// ********** PHOTO **********
 		MultipartFile newPicture = inputs.picture();
 		if (newPicture != null && !newPicture.isEmpty()) {
 			String newPictureName = buildPicture(newPicture);
@@ -227,12 +228,14 @@ public class RecipeService {
 			recipe.setPicture(newPictureName);
 		}
 
+		// ********** DIFFICULTÉS **********
 		String difficulty = inputs.difficulty();
 		if (difficulty == null || difficulty.trim().isEmpty()) {
 			difficulty = "Facile";
 		}
 		recipe.setDifficulty(difficulty);
 
+		// ********** INGREDIENTS **********
 		List<RecipeIngredientUnityDto> newIngredients = inputs.ingredients();
 		if (newIngredients != null && !newIngredients.isEmpty()) {
 			riuRepo.deleteByRecipeId(recipe.getId());
@@ -270,6 +273,48 @@ public class RecipeService {
 			}
 
 		}
+		// ********** ÉTAPES **********
+		List<StepCreateDto> newSteps = inputs.steps();
+
+		// Récupérer les étapes existantes
+		List<Step> existingSteps = stepRepo.findByRecipeIdOrderByNumberAsc(id);
+
+		if (newSteps != null) {
+			// Mettre à jour ou ajouter
+			for (StepCreateDto stepDto : newSteps) {
+				// Chercher si étape existante avec le même numéro
+				Step step = existingSteps.stream().filter(s -> s.getNumber() == stepDto.number()).findFirst()
+						.orElse(null);
+
+				if (step != null) {
+					// Mise à jour de l'étape existante
+					step.setDescription(stepDto.description());
+					stepRepo.save(step);
+				} else {
+					// Nouvelle étape à ajouter
+					Step newStep = new Step();
+					newStep.setNumber(stepDto.number());
+					newStep.setDescription(stepDto.description());
+					newStep.setRecipe(recipe);
+					stepRepo.save(newStep);
+				}
+			}
+
+			// Supprimer les étapes existantes qui ne sont plus dans la liste reçue
+			List<Integer> newStepNumbers = newSteps.stream().map(StepCreateDto::number).toList();
+			for (Step step : existingSteps) {
+				if (!newStepNumbers.contains(step.getNumber())) {
+					stepRepo.delete(step);
+				}
+			}
+
+		} else {
+			for (Step step : existingSteps) {
+				stepRepo.delete(step);
+			}
+		}
+
+		recipesRepo.save(recipe);
 	}
 
 	/* ********** Ajouter un ingrédient à une recette ********** */

@@ -31,7 +31,8 @@ import { useCategoriesStore } from "@/stores/categoriesStore.js";
 import apiClient from "../api/axiosConfig";
 import { categoryValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+import i18n from "@/i18n/i18n"; 
+//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "updateCategory",
@@ -78,13 +79,13 @@ export default {
 
 			if (this.v$.categoryName.$error) {
 				if (this.v$.categoryName.required.$invalid) {
-					errors.push(messages.required);
+					errors.push(i18n.global.t("validation.required"));
 				}
 				if (this.v$.categoryName.minLength.$invalid) {
-					errors.push(messages.minLength(4));
+					errors.push(i18n.global.t("validation.minLength", { min: 4 }));
 				}
 				if (this.v$.categoryName.maxLength.$invalid) {
-					errors.push(messages.maxLength(50));
+					errors.push(i18n.global.t("validation.maxLength", { max: 50 }));
 				}
 			}
 			return errors;

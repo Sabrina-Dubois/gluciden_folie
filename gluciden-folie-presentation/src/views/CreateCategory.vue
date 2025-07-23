@@ -27,7 +27,8 @@
 import { useCategoriesStore } from "@/stores/categoriesStore.js";
 import { categoryValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+import i18n from "@/i18n/i18n.js"; 
+// from "../utils/validationMessages.js";
 
 export default {
 	name: "createCategory",
@@ -51,9 +52,9 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.categoryName;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
-			if (rules.maxLength.$invalid) errors.push(messages.maxLength((50)));
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 50 }));
 			return errors;
 		},
 	},

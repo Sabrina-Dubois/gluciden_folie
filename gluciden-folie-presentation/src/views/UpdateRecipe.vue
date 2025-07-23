@@ -49,6 +49,18 @@
 				<!-- Ingrédients -->
 				<Ingredients v-model:ingredients="form.ingredients" />
 
+				<!-- Etape -->
+				
+				<Steps
+					:steps="form.steps"
+					@update:steps="
+						(val) => {
+							console.log('Steps updated', val);
+							form.steps = val;
+						}
+					"
+				/>
+
 				<!-- Bouton de validation -->
 				<v-btn class="custom-btn" type="submit">
 					{{ $t("update_recipe.button") }}
@@ -63,13 +75,16 @@ import apiClient from "../api/axiosConfig";
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-import { messages } from "../utils/validationMessages.js";
+import i18n from "@/i18n/i18n"; 
+//import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
+import Steps from "@/components/Steps.vue";
 
 export default {
 	name: "updateRecipe",
 	components: {
 		Ingredients,
+		Steps,
 	},
 	data() {
 		return {
@@ -79,7 +94,10 @@ export default {
 				picture: "",
 				ingredients: [],
 				difficulty: null,
+				steps: [],
 			},
+
+			formLoaded: false,
 			ingredients: [],
 			imagePreview: "",
 			newIngredient: "",
@@ -87,12 +105,15 @@ export default {
 			submitted: false,
 		};
 	},
+	mounted() {
+		this.fetchRecipe();
+	},
 	validations() {
 		return recipeValidation;
 	},
 	created() {
 		this.v$ = useVuelidate();
-		this.fetchRecipe();
+		//this.fetchRecipe();
 	},
 	computed: {
 		formattedIngredients() {
@@ -113,9 +134,9 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(messages.required);
-			if (rules.minLength.$invalid) errors.push(messages.minLength(4));
-			if (rules.maxLength.$invalid) errors.push(messages.maxLength(100));
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
 			return errors;
 		},
 		pictureErrors() {
@@ -123,9 +144,9 @@ export default {
 			const rules = this.v$.form.picture;
 
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
-				if (rules.validImageType.$invalid) errors.push(messages.validImageType);
-				if (rules.validImageSize.$invalid) errors.push(messages.validImageSize);
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
 			}
 
 			return errors;
@@ -136,7 +157,7 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.difficulty;
-			if (rules.required.$invalid) errors.push(messages.required);
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},
@@ -163,6 +184,10 @@ export default {
 						unityId: ingredient.unityId, // ID de l’unité (pas l’objet entier)
 					})
 				);
+				this.form.steps = (response.data.steps || []).map((s, i) => ({
+					number: i + 1,
+					description: s.description ?? "",
+				}));
 
 				this.imagePreview = `/images/${response.data.picture}`;
 			} catch (error) {
@@ -204,6 +229,7 @@ export default {
 			formData.append("name", this.form.name);
 			formData.append("difficulty", this.form.difficulty);
 			formData.append("ingredients", JSON.stringify(this.form.ingredients));
+			formData.append("steps", JSON.stringify(this.form.steps));
 
 			// On vérifie si une nouvelle image a été téléchargée, sinon on garde l'ancienne image
 			if (this.form.picture instanceof File) {

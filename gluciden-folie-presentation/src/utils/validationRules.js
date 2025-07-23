@@ -1,54 +1,51 @@
 import { required, minLength, maxLength, helpers, numeric } from "@vuelidate/validators";
-import { messages } from "./validationMessages.js";
+import i18n from "../i18n/i18n";
 
-// Validation champs obligatoires
-export const requiredField = helpers.withMessage(messages.required, required);
+const t = i18n.global.t;
+
+// Champs obligatoires
+export const requiredField = helpers.withMessage(() => i18n.global.t("validation.required"), required);
 
 // Règles longueurs
 export const lengthRules = (min, max) => ({
-  minLength: helpers.withMessage(messages.minLength(min), minLength(min)),
-  maxLength: helpers.withMessage(messages.maxLength(max), maxLength(max)),
+  minLength: helpers.withMessage(() => i18n.global.t("validation.minLength", { min }), minLength(min)),
+  maxLength: helpers.withMessage(() => i18n.global.t("validation.maxLength", { max }), maxLength(max)),
 });
 
 // Quantités
 export const positiveNumber = helpers.withMessage(
-  messages.positiveNumber,
+  () => i18n.global.t("validation.positiveNumber"),
   (value) => Number(value) > 0
-)
-
-// ✅ Accepte les fichiers OU les strings existants (nom de l'image existante)
-const validImageType = helpers.withMessage(
-  messages.validImageType,
-  (value) =>
-    !value ||
-    typeof value === "string" || // image existante déjà en BDD
-    (value instanceof File && (value.type === "image/jpeg" || value.type === "image/png"))
 );
 
-// ✅ Pareil ici, accepte aussi les strings (pas de size à valider pour elles)
-const validImageSize = helpers.withMessage(
-  messages.validImageSize,
+// ✅ fichiers OU les strings existants (nom de l'image existante)
+const validImageType = helpers.withMessage(
+  () => i18n.global.t("validation.validImageType"),
   (value) =>
-    !value ||
-    typeof value === "string" || // on ne vérifie pas la taille si image déjà présente
-    (value instanceof File && value.size <= 5242880)
+    !value || typeof value === "string" || (value instanceof File && ["image/jpeg", "image/png"].includes(value.type))
+);
+
+// ✅ strings (pas de size à valider pour elles)
+const validImageSize = helpers.withMessage(
+  () => i18n.global.t("validation.validImageSize"),
+  (value) => !value || typeof value === "string" || (value instanceof File && value.size <= 5242880)
 );
 
 // ✅ Le champ est requis si ni fichier ni nom de fichier
-const requiredIfNoImage = helpers.withMessage(messages.required, (value) => {
-  if (typeof value === "string" && value.trim() !== "") return true;
-  if (value instanceof File) return true;
-  return false;
-});
+const requiredIfNoImage = helpers.withMessage(
+  () => i18n.global.t("validation.required"),
+  (value) => (typeof value === "string" && value.trim() !== "") || value instanceof File
+);
 
 // Validation adresse email
-const validEmail = helpers.withMessage(messages.validEmail, (value) =>
-  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(value)
+const validEmail = helpers.withMessage(
+  () => i18n.global.t("validation.validEmail"),
+  (value) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(value)
 );
 
 // Validation mot de passe
 const validPassword = helpers.withMessage(
-  messages.validPassword,
+  () => i18n.global.t("validation.validPassword"),
   (value) => /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /[!@#$%^&*(),.?":{}|<>]/.test(value)
 );
 
@@ -64,6 +61,15 @@ export const recipeValidation = {
       validImageSize,
     },
     difficulty: {
+      required: helpers.withMessage(
+        () => i18n.global.t("validation.required"),
+        (value) => {
+          return typeof value === "string" && value.trim() !== "";
+        }
+      ),
+    },
+
+    steps: {
       required: requiredField,
     },
   },

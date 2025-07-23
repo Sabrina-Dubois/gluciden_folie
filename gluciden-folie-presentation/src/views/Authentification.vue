@@ -74,7 +74,8 @@
 import apiClient from "../api/axiosConfig";
 import useVuelidate from "@vuelidate/core";
 import { accountValidation } from "../utils/validationRules";
-import { messages } from "../utils/validationMessages.js";
+import i18n from "@/i18n/i18n.js"; 
+//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "authentification",
@@ -116,11 +117,11 @@ export default {
 			const errors = [];
 			const rules = this.v$.username;
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
 				if (this.v$.username.validEmail.$invalid)
-					errors.push(messages.validEmail);
-				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
-				if (rules.maxLength.$invalid) errors.push(messages.maxLength(50));
+					errors.push(i18n.global.t("validation.validEmail"));
+				if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 8 }));
+				if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 50 }));
 			}
 			return errors;
 		},
@@ -128,10 +129,10 @@ export default {
 			const errors = [];
 			const rules = this.v$.password;
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(messages.required);
-				if (rules.validPassword.$invalid) errors.push(messages.validPassword);
-				if (rules.minLength.$invalid) errors.push(messages.minLength(8));
-				if (rules.maxLength.$invalid) errors.push(messages.maxLength(72));
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+				if (rules.validPassword.$invalid) errors.push(i18n.global.t("validation.validPassword"));
+				if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 8 }));
+				if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 72 }));
 			}
 			return errors;
 		},

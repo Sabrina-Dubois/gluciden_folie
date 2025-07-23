@@ -87,6 +87,17 @@
       "label": "Resume steps instructions"
     }
   },
+  "recipe_details": {
+    "picture": {
+      "picture": "Picture",
+      "label": "Download picture"
+    },
+    "difficulty": "Difficulty",
+    "ingredients": "Ingredients",
+    "steps": "Recipe steps",
+    "recipe_download": "Loading recipe in progress...",
+    "return_button": " Return list of recipes"
+  },
   "create_category": {
     "title": "Create a new category",
     "category": {
@@ -123,5 +134,17 @@
     "map": "Site map",
     "contact": "Contact",
     "copyright": "GLUCID'EN FOLIE.All rights reserved."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "numeric": "This field must be a number.",
+    "positiveNumber": "The quantity must be greater than 0.",
+    "minLength": "This field must have at least {min} characters.",
+    "maxLength": "This field must not exceed {max} characters.",
+    "validEmail": "The email address is not valid.",
+    "validPassword": "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+    "requiredImage": "The image is required.",
+    "validImageSize": "The image size must not exceed 5 MB.",
+    "validImageType": "The image must be in PNG or JPEG format."
   }
 }
