@@ -1,243 +1,205 @@
 <template>
 	<div class="main-content custom-bg">
-		<h1>{{ $t('create_recipe.page.title') }}</h1>
-		<v-card class="recipeForm d-flex align-center">
-			<v-form @submit.prevent="submitForm">
-				<!--subitForm ->method valider données saisies / gérer mgs erreurs
-				//v-model -> form la valeur saisie màj auto //v-model créer un lien
-				bidirectionnel entre l'interface utilisateur et les données du composant-->
-				<h3>{{ $t('create_recipe.page.recipe_title.recipe_title') }}</h3>
+		<h1>{{ $t("create_recipe.title") }}</h1>
+		<v-card class="recipeForm" max-width="800px">
+			<!-- Formulaire création -->
+			<v-form @submit.prevent="addRecipe" :model="v$">
+				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
-					v-model="recipeName"
-					label="Titre de la recette"
-					hide-details
+					v-model="form.name"
+					:label="$t('create_recipe.recipe.name') + ' *'"
+					:error="v$.form.name.$error"
+					:error-messages="nameErrors"
 					variant="underlined"
+					hide-details="auto"
 				></v-text-field>
 
-				<!-- <h3>Type de desserts & Régime alimentaire</h3>
-				<v-container class="pa-0" fluid>
-					<v-row class="d-flex">
-						<v-col
-							v-for="(type, index) in types"
-							:key="index"
-							cols="12"
-							md="3"
-							no-gutters
-							@click="selectItem(index)"
-						>
-							<v-card>
-								<v-icon v-if="type.icon">
-									{{ type.icon }}
-								</v-icon>
+				<h3>{{ $t("create_recipe.picture") }}</h3>
 
-								<v-card-subtitle class="text-center">
-									{{ type.name }}
-								</v-card-subtitle>
-							</v-card>
-						</v-col>
-					</v-row>
-				</v-container> -->
+				<!-- Image existante -->
+				<v-img
+					v-if="imagePreview"
+					:src="imagePreview"
+					class="recipe-picture"
+					height="200px"
+					cover
+					rounded=""
+				></v-img>
 
-				<!-- <h3>Nombre de portion</h3>
-				<h3>Temps de préparation</h3>
+				<!-- Nouvelle image -->
+				<v-file-input
+					v-model="form.picture"
+					@change="handleFileUpload"
+					accept="image/png, image/jpeg"
+					:label="$t('create_recipe.label') + ' *'"
+					:error="v$.form.picture.$error"
+					:error-messages="pictureErrors"
+					class="required-field"
+					chips
+					prepend-icon="mdi-camera"
+					variant="underlined"
+				></v-file-input>
 
-				<h3>Temps de cuisson</h3>
-				<v-container>
-					<v-row>
-						<v-text-field
-							class="timeCook"
-							v-model="hourTime"
-							label="Heures"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-						<v-text> : </v-text>
-						<v-text-field
-							class="timeCook"
-							v-model="minuteTime"
-							label="Minutes"
-							hide-details
-							variant="underlined"
-						></v-text-field>
-					</v-row>
-				</v-container>
-
-				<h3>Type de cuisson</h3>
-				<v-container class="boo pa-0" fluid>
-					<v-row class="d-flex">
-						<v-col
-							v-for="(cook, index) in cooks"
-							:key="index"
-							cols="12"
-							md="3"
-							no-gutters
-							@click="selectCook(index)"
-						>
-							<v-card>
-								<v-icon v-if="cook.icon">
-									{{ cook.icon }}
-								</v-icon>
-								<v-card-subtitle class="text-center">
-									{{ cook.name }}
-								</v-card-subtitle>
-							</v-card>
-						</v-col>
-					</v-row>
-				</v-container>
-
-				<h3>Difficultés</h3>
-				<div class="text-center">
+				<!-- Difficultés -->
+				<h3>{{ $t("create_recipe.difficulty") }}</h3>
+				<div class="custom-rating">
 					<v-rating
-						v-model="rating"
-						:item-labels="labelsDifficulty"
-						length="4"
+						v-model="form.difficulty"
+						class="required-field"
+						:length="4"
+						:error="v$.form.difficulty.$error"
+						:error-messages="difficultyErrors"
 						empty-icon="mdi-circle-outline"
 						full-icon="mdi-circle"
 						hover
+						dense
+						@change="v$.form.difficulty.$touch()"
 					>
-						<template v-slot:item-label="props">
-							<span>
-								{{ props.label }}
-							</span>
-						</template>
 					</v-rating>
 				</div>
 
-				<h3>Coûts</h3>
-				<div class="text-center">
-					<v-rating
-						v-model="rating"
-						:item-labels="labelsCost"
-						length="3"
-						empty-icon="mdi-circle-outline"
-						full-icon="mdi-circle"
-						hover
-					>
-						<template v-slot:item-label="props">
-							<span>
-								{{ props.label }}
-							</span>
-						</template>
-					</v-rating>
-				</div> -->
+				<!-- Ingrédients -->
+				<h3>{{ $t("create_recipe.ingredients") }}</h3>
+				<Ingredients v-model:ingredients="form.ingredients" />
 
-				<h3>{{ $t('create_recipe.page.picture.picture') }}</h3>
-				<v-img
-                    v-if="imagePreview"
-                    :src="imagePreview"
-                    class="recipe-picture"
-                    height="200px"
-                    cover
-                    rounded=""
-                ></v-img>
-				
-				<v-file-input
-					v-model="recipePicture"
-					accept="image/png, image/jpeg"
-					label="Télécharger la photo de la recette"
-					chips
-				prepend-icon="mdi-camera"
-					variant="underlined"
-					@change="handleFileUpload"
-				>
-				</v-file-input>
-				
+				<!-- Étapes -->
+				<div>
+					<Steps v-model:steps="form.steps" />
+				</div>
 
-				<!-- <h3>Choix des ingrédients</h3>
-
-				<h3>Commentaires</h3>
-				<v-textarea
-					label="Ecrit ton commentaire"
-					variant="underlined"
-				></v-textarea> -->
-
-				<v-btn class="custom-btn" ml-5 rounded="" type="submit"
-					>{{ $t('create_recipe.page.button') }}</v-btn
-				>
+				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
+					{{ $t("create_recipe.button") }}
+				</v-btn>
 			</v-form>
 		</v-card>
 	</div>
 </template>
 
 <script>
+import { useRecipesStore } from "@/stores/recipesStore.js";
+import { recipeValidation } from "../utils/validationRules.js";
+import useVuelidate from "@vuelidate/core";
+//import { messages } from "../utils/validationMessages.js";
+import Ingredients from "@/components/Ingredients.vue";
+import Steps from "@/components/Steps.vue";
+import i18n from "@/i18n/i18n"; 
+
 export default {
 	name: "createRecipe",
-	//data -> retourne obj qui contient les données réctives du composant
+	components: {
+		Ingredients,
+		Steps,
+	},
 	data() {
 		return {
-			recipeName: "", // modèle nom initialise et utiliser le v-model dans le template
-			// selectedType: null,
-			// types: [
-			// 	{ name: "Gâteaux", icon: " mdi-cake" },
-			// 	{ name: "Minis", icon: "mdi-cupcake" },
-			// 	{ name: "Verrines", icon: "mdi-cup-outline" },
-			// 	{ name: "Crêpes", icon: "mdi-database" },
-			// 	{ name: "Boissons", icon: "mdi-coffee" },
-			// 	{ name: "Sans Gluten", icon: "mdi-barley-off" },
-			// 	{ name: "Sans Lactose", icon: "mdi-cup-off-outline" },
-			// 	{ name: "Hyper protéiné", icon: "mdi-dumbbell" },
-			// 	{ name: "Hypo glucide", icon: "mdi-spoon-sugar" },
-			// ],
-			// selectedCook: null,
-			// cooks: [
-			// 	{ name: "Plaque de cuisson", icon: "mdi-gas-burner" },
-			// 	{ name: "Four", icon: "mdi-stove" },
-			// 	{ name: "Pas de cuisson", icon: "mdi-microwave-off" },
-			// 	{ name: "Micro-onde", icon: "mdi-microwave" },
-			// 	{ name: "Autres", icon: "mdi-dots-horizontal" },
-			// ],
-			// rating: 0,
-			// colors: ["red", "orange", "grey", "cyan"],
-			// labelsDifficulty: ["Très facile", "Facile", "Moyen", "Difficile"],
-			// labelsCost: ["Bon marché", "Coût moyen", "Assez chere"],
-			recipePicture: null,
-        imagePreview: null,
+			form: {
+				name: "",
+				picture: null,
+				ingredients: [],
+				difficulty: null,
+				steps: [],
+			},
+			imagePreview: null,
+			v$: null,
+			submitted: false,
 		};
 	},
+	validations() {
+		return {
+    form: {
+      ...recipeValidation.form,
+	}
+    }
+	},
+	created() {
+		this.v$ = useVuelidate();
+	},
+
+	computed: {
+		nameErrors() {
+			if (!this.v$.form.name.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.form.name;
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			return errors;
+		},
+		pictureErrors() {
+			const errors = [];
+			const rules = this.v$.form.picture;
+
+			if (rules.$error) {
+				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
+			}
+
+			return errors;
+		},
+		difficultyErrors() {
+			if (!this.v$.form.difficulty.$error) {
+				return [];
+			}
+			const errors = [];
+			const rules = this.v$.form.difficulty;
+			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			return errors;
+		},
+	},
+
 	methods: {
 		handleFileUpload(event) {
-        const file = event.target.files[0]; // Récupérez le fichier sélectionné
-        if (file) {
-            this.recipePicture = file; // Mettez à jour la propriété de l'image
-            this.imagePreview = URL.createObjectURL(file); // Créez une URL de prévisualisation
-        }
-    },
-		submitForm() {
-			console.log("Nom de la recette:", this.recipeName);
-			console.log("Photo de la recette:", this.recipePicture);
-
-			//pour les fichiers via HTTP -> gestion de l'encodage
-			//Json est ok pour les données textuelles mais pas pour transmettre des données binaires
-			const formData = new FormData();
-			formData.append("name", this.recipeName);
-			formData.append("picture", this.recipePicture); // image du formulaire
-
-			//objet qui prends les options du fetch par defaut fetch est un GET
-			const options = {
-				method: "POST",
-				body: formData,
-			};
-			try {
-				const response = fetch("http://localhost:8080/recipes", options)
-				//pour réinitialiser les variables lorsque le validation est OK
-					.then(() => {
-						this.recipeName = "";
-						this.recipePicture = null;
-					})
-					this.$router.push({ name: 'recipesList' });
-	
-					if (response.ok) {
-                    console.log("Recette crée avec succès !");
-					this.$router.push({ name: 'recipesList' });
-                } else {
-                    console.error("Erreur lors de la création de la recette");
-                }
-			} catch (error) {
-				console.error(error);
+			const file = event.target.files[0];
+			if (file) {
+				this.form.picture = file;
+				this.imagePreview = URL.createObjectURL(file);
+			} else {
+				this.imagePreview = null;
 			}
 		},
-		selectedItem(index) {
-			this.selectedItem = index;
+		async addRecipe() {
+			this.submitted = true;
+
+			await this.v$.$validate();
+
+			if (this.v$.$invalid) {
+				console.log(
+					"Formulaire invalide",
+					JSON.parse(JSON.stringify(this.v$.$errors))
+				);
+				return;
+			}
+			if (
+				!Array.isArray(this.form.ingredients) ||
+				this.form.ingredients.length === 0
+			) {
+				return;
+			}
+			const difficultyLabels = ["Facile", "Moyenne", "Difficile", "Expert"];
+			const difficultyText =
+				this.form.difficulty &&
+				this.form.difficulty >= 1 &&
+				this.form.difficulty <= 4
+					? difficultyLabels[this.form.difficulty - 1]
+					: "Non précisée";
+
+			try {
+				const recipesStore = useRecipesStore();
+
+				await recipesStore.addRecipe({
+					name: this.form.name,
+					picture: this.form.picture,
+					difficulty: difficultyText,
+					ingredientList: this.form.ingredients,
+					steps: this.form.steps,
+				});
+			} catch (error) {
+				console.error("Erreur lors de la création de la recette :", error);
+			}
+			this.$router.push({ name: "recipesList" });
 		},
 	},
 };
@@ -248,58 +210,32 @@ export default {
 	padding-top: 10px;
 }
 
-.d-flex {
-	align-items: center;
-	justify-content: center;
-}
-
-h1 {
-	text-align: center;
-	margin: 20px;
-}
-
-h3 {
-	color: #5d827f;
-}
-
-.v-icon,
-.v-rating {
-	color: #f29eb0;
-}
 .recipeForm {
-	max-width: 900px;
+	max-width: 800px;
 	margin: auto;
 }
 
-.v-card {
-	background-color: white;
-	text-align: center;
-	margin: 0 auto;
-	padding: 20px;
-}
-/* . {
-	max-width: 120px;
-} */
 .v-form {
 	background-color: white;
+	width: 100%;
 }
 
 .v-text-field,
 .v-file-input {
-	max-height: 20px;
 	max-width: auto;
-	margin-bottom: 90px;
+	margin-bottom: 30px;
+	padding-left: 20px;
 	color: #5d827f;
 }
 
+.custom-rating{
+	color: #5d827f;
+}
+
+/* *** Boutons *** */
 .v-btn {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
-}
-
-/* Wrapper :envelopper les items de v-rating -> justify-content: space-between*/
-.v-rating__wrapper span {
-	margin: 0 10px;
 }
 </style>

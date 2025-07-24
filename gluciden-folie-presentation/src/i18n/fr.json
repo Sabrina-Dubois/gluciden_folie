@@ -1,71 +1,130 @@
 {
   "header": {
-    "link_test": "Test",
-    "link_list": "Liste des recettes",
-    "link_create": "Créer une recette",
-    "link_update": "Modifier une recette",
-    "button": "Connexion"
-  },
-  "//general": {
-    "//welcome": "Bienvenue",
-    "//search": "Rechercher des recettes",
-    "//favorites": "Recettes favorites",
-    "//add_recipe": "Ajouter une recette",
-    "//logout": "Se déconnecter"
+    "test": "Test",
+    "list_recipes": "Liste des recettes",
+    "create_recipe": "Créer une recette",
+    "update_recipe": "Modifier une recette",
+    "list_categories": "Liste des catégories",
+    "button": "Connexion",
+    "create-category": "Créer une catégorie",
+    "update_category": "Update ne catégorie"
   },
   "home": {
-      "title": "Bienvenue sur GLUCID'EN FOLIE",
-      "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot cake'.Moelleux et épicé, il sera parfait pour une pause gourmande, saine et typiquement britannique!"
+    "title": "Bienvenue sur GLUCID'EN FOLIE",
+    "recipeOfTheDay": {
+      "title": "Recette du jour",
+      "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot Cake'. Moelleux et épicé, parfait pour une pause gourmande, saine et typiquement britannique !"
+    },
+    "foodieFavorite": {
+      "title": "Coup de cœur des gourmands"
+    }
+  },
+  "auth": {
+    "toggleToRegister": "Pas encore inscrit ? Inscrivez-vous",
+    "toggleToLogin": "Déjà inscrit ? Connectez-vous",
+    "button-auth": "Créer un compte",
+    "button-connexion": "Se connecter",
+    "email": {
+      "label-mail": "Email",
+      "placeholder-mail": "Enter your email "
+    },
+    "password": {
+      "label-pass": "Mot de passe",
+      "placeholder-pass": "Entrez votre mot de passe"
+    }
   },
   "create_recipe": {
-    "page": {
-      "title": "Créer une nouvelle recette",
-      "recipe_title": {
-        "recipe_title": "Titre de la recette",
-        "label": "Nom de la recette"
-      },
-      "picture": {
-        "picture": "Photo",
-        "label": "Télécharger la photo"
-      },
-      "button": "Enregistrer"
-    }
+    "title": "Créer une nouvelle recette",
+    "recipe": {
+      "name": "Titre de la recette",
+      "label": "Nom de la recette"
+    },
+    "picture": "Photo",
+    "label": "Télécharger la photo",
+    "difficulty": "Difficultés",
+    "ingredients": "Choix des ingrédients",
+    "button": "Créer"
   },
   "recipe_list": {
-    "title": "Liste des recettes",
-    "//no_recipes": "Aucune recette disponible",
-    "//view_details": "Voir les détails"
-  },
-  "//recipe_details": {
-    "//title": "Détails de la recette",
-    "/:ingredients": "Ingrédients",
-    "//instructions": "Instructions",
-    "//rating": "Note",
-    "//comments": "Commentaires",
-    "//add_comment": "Ajouter un commentaire"
+    "title": "Liste des recettes"
   },
   "update_recipe": {
-    "page": {
-      "title": "Modifier une nouvelle recette",
-      "recipe_title": {
-        "recipe_title": "Titre de la recette",
-        "label": "Nom de la recette"
-      },
-      "picture": {
-        "picture": "Photo",
-        "label": "Télécharger la photo"
-      },
-      "button": "Enregistrer"
+    "title": "Modifier une recette",
+    "recipe": {
+      "name": "Titre de la recette",
+      "label": "Nom de la recette"
+    },
+    "picture": {
+      "picture": "Photo",
+      "label": "Télécharger la photo"
+    },
+    "difficulty": {
+      "name": "Difficulté",
+      "label": "Niveau de difficulté"
+    },
+    "ingredients": {
+      "name": "Ingrédients",
+      "label": "Nom des ingrédients"
+    },
+    "button": "Enregistrer"
+  },
+  "ingredients": {
+    "label": "Ingrédients",
+    "quantity": {
+      "label": "Quantité"
+    },
+    "unity": {
+      "label": "Unité"
     }
   },
-  "//favorites": {
-    "//title": "Vos recettes favorites",
-    "//no_favorites": "Vous n'avez pas encore ajouté de recettes favorites."
+  "steps": {
+    "title": "Étapes de la recette",
+    "card-title": "Étape",
+    "label": "Description de l'étape",
+    "button": "Ajouter une étape",
+    "instructions": {
+      "title": "Instructions complètes",
+      "label": "Résumé des étapes"
+    }
   },
-  "search": {
-    "title": "Rechercher des recettes par ingrédients",
-    "placeholder": "Entrez des ingrédients...",
-    "no_results": "Aucune recette trouvée pour votre recherche."
+  "recipe_details": {
+    "picture": {
+      "picture": "Photo",
+      "label": "Télécharger la photo"
+    },
+    "difficulty": "Difficulté",
+    "ingredients": "Ingrédients",
+    "steps": "Étapes de la recette",
+    "recipe_download": "Chargement de la recette...",
+    "return_button": "Retour à la liste"
+  },
+  "create_category": {
+    "title": "Créer une nouvelle catégorie",
+    "category": {
+      "name": "Nom de la catégorie",
+      "label": "Nouvelle catégorie"
+    },
+    "button": "Ajouter"
+  },
+  "create_sub_category": {
+    "page": {
+      "title": "Ajouter une sous-catégorie",
+      "button": "Ajouter sous-catégorie"
+    }
+  },
+  "category_list": {
+    "title": "Liste des catégories"
+  },
+  "update_category": {
+    "title": "Modifier une nouvelle catégorie",
+    "category": {
+      "name": "Titre de la catégorie",
+      "label": "Nom de la catégorie"
+    },
+    "picture": "Photo",
+    "label": "Téléchager la photo",
+
+    "button": "Enregistrer"
   },
   "errors": {
     "not_found": "Page non trouvée",
@@ -76,6 +135,24 @@
     "text": "Vous êtes sur la page de test. Vous pouvez naviguer vers d'autres pages via la barre de navigation."
   },
   "footer": {
-    "text": "GLUCID'EN FOLIE. Tous droits rèservès."
+    "notices": "Mentions légales",
+    "about": "A propos",
+    "confidentiality": "Politique de confidentialité",
+    "condition": "Conditions d'utilisation",
+    "map": "Plan du site",
+    "contact": "Contact",
+    "copyright": "GLUCID'EN FOLIE. Tous droits réservés."
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire.",
+    "numeric": "Ce champ doit être un nombre.",
+    "positiveNumber": "La quantité doit être supérieure à 0.",
+    "minLength": "Le champ doit contenir au moins {min} caractères.",
+    "maxLength": "Le champ ne doit pas dépasser {max} caractères.",
+    "validEmail": "L'adresse e-mail n'est pas valide.",
+    "validPassword": "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.",
+    "requiredImage": "L'image est obligatoire.",
+    "validImageSize": "La taille de l'image ne doit pas dépasser 5 Mo.",
+    "validImageType": "L'image doit être au format PNG ou JPEG."
   }
 }

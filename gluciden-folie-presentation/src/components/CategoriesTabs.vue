@@ -1,53 +1,66 @@
 <template>
 	<v-card>
 		<!-- Création des onglets -->
-		<v-tabs 
-            v-model="tab"
-            class="tab"
-            :value="tab">
+		<v-tabs v-model="tab" class="tab" :value="tab">
 			<!-- Contenu des onglets -->
 			<v-tab
-				v-for="item in categories"
-				:key="item"
-				:value="item"
+				v-for="category in categories"
+				:key="category.id"
+				:value="category.name"
 				class="tab"
-				:elevation="8"
-				@click="$emit('updateActiveItemC', item)"
+				
 			>
-
 				<!-- Affiche le nom de l'élément dans l'onglet -->
-				{{ item.name }}
+				{{ category.name }}
 			</v-tab>
 		</v-tabs>
 	</v-card>
 </template>
 
 <script>
+import { useCategoriesStore } from "@/stores/categoriesStore.js";
+
 export default {
 	name: "CategoriesTabs",
-	data() {},
-	props: {
-		categories: {
-			type: Array,
-			default: [],
+	data() {
+		return {
+			tab: null,
+		};
+	},
+	computed: {
+		categories() {
+			const categoriesStore = useCategoriesStore();
+			return categoriesStore.categories;
 		},
 	},
-	// récuperer évenement
-	methods: {
-		temp(item) {
-			console.log(item);
+	watch: {
+		// Watch pour suivre les changements de catégories
+		categories(newCategories) {
+			if (newCategories.length > 0 && !this.tab) {
+				this.tab = newCategories[0].name; // Si on n'a pas encore de tab sélectionné, on sélectionne la première catégorie
+			}
 		},
+	},
+	created() {
+		const categoriesStore = useCategoriesStore();
+		this.$watch(
+			() => categoriesStore.categories,
+			(newVal) => {
+				this.tab = newVal.length > 0 ? newVal[0].name : null;
+			}
+		);
 	},
 };
 </script>
 
 <style scoped>
 .v-card {
-	width: 1000px;
+	width:auto;
+	max-height: 70px;
 	margin: auto;
-    background-color: #5d827f !important;
-    display: flex;
-    justify-content:center;
+	background-color: #5d827f !important;
+	display: flex;
+	justify-content: center;
 }
 
 .tab {
@@ -55,11 +68,9 @@ export default {
 	color: #d3beb1;
 	font-style: bold;
 }
-.tab:hover,
+
 .tab--active {
 	background-color: #d3beb1;
 	color: #5d827f !important;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 </style>

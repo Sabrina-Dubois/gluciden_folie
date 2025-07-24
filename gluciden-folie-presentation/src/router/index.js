@@ -1,109 +1,44 @@
-//Without LAZY LOADING
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Categories from "@/views/CreateCategorie.vue";
-import Test from "../views/Test.vue";
-import Connection from "../views/Connection.vue";
-import Recipes from "../views/Recipes.vue";
-import CreateRecipe from "../views/CreateRecipe.vue";
-import RecipesList from "@/components/RecipesList.vue";
-import UpdateRecipe from "@/views/UpdateRecipe.vue";
+
+import adminRoutes from "./adminRoutes";
+import userRoutes from "./userRoutes";
+import visitorRoutes from "./visitorRoutes";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/",
-      name: "home",
-      component: Home,
-    },
-    {
-      path: "/categories",
-      name: "categories",
-      component: Categories,
-    },
-    {
-      path: "/test",
-      name: "test",
-      component: Test,
-    },
-    {
-      path: "/connexion", 
-      name: "connection",
-      component: Connection,
-    },
-    {
-      path: "/recettes", // a faire en francais
-      name: "recipes",
-      component: Recipes,
-    },
-    {
-      path: "/creer-recette",
-      name: "createRecipe",
-      component: CreateRecipe,
-    },
-    {
-      path: "/modifier-recette/:id", // a faire en francais
-      name: "updateRecipe",
-      component: UpdateRecipe,
-    },
-    {
-      path: "/liste-recettes", 
-      name: "recipesList",
-      component: RecipesList,
-    },
-  ],
+  routes: [...visitorRoutes, ...userRoutes, ...adminRoutes],
 });
+
+// 🔒 Guard global de sécurité
+router.beforeEach((to, from, next) => {
+  //to est l’objet qui contient les infos de la page où l’utilisateur veut aller.
+  //next() est une fonction que tu dois appeler pour continuer la navigation ou la rediriger
+  const token = localStorage.getItem("jwt");
+
+  // Si la route demande un rôle admin
+  if (to.meta.requiresAdmin) {
+    // Pas connecté → redirection vers login
+    if (!token) {
+      return next({ name: "login" });
+    }
+    try {
+      // Décodage du token pour extraire le rôle
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      // Si le rôle est ROLE_ADMIN → OK
+      if (payload.role === "ROLE_ADMIN") {
+        return next();
+      } else {
+        // Le user est connecté mais pas admin → redirection refus
+        return next({ name: "unauthorized" });
+      }
+    } catch (error) {
+      console.error("Token invalide :", error);
+      return next({ name: "login" }); // Token cassé → on renvoie au login
+    }
+  }
+  // Aucune restriction → accès autorisé
+  next();
+});
+
 export default router;
-
-
-// LAZY LOADING -> Import()
-// import { createRouter, createWebHistory } from "vue-router";
-
-// const router = createRouter({
-//   history: createWebHistory(import.meta.env.BASE_URL),
-//   routes: [
-//     {
-//       path: "/",
-//       name: "home",
-//       component: () => import("../views/Home.vue"),
-//     },
-//     {
-//       path: "/categories",
-//       name: "categories",
-//       component: () => import("@/views/Categories.vue"),
-//     },
-//     {
-//       path: "/test",
-//       name: "test",
-//       component: () => import("../views/Test.vue"),
-//     },
-//     {
-//       path: "/connexion",
-//       name: "connection",
-//       component: () => import("../views/Connection.vue"),
-//     },
-//     {
-//       path: "/recettes", // a faire en francais
-//       name: "recipes",
-//       component: () => import("../views/Recipes.vue"),
-//     },
-//     {
-//       path: "/creer-recette",
-//       name: "createRecipe",
-//       component: () => import("../views/CreateRecipe.vue"),
-//     },
-//     {
-//       path: "/modifier-recette/:id", // a faire en francais
-//       name: "updateRecipe",
-//       component: () => import("@/views/UpdateRecipe.vue"),
-//     },
-//     {
-//       path: "/liste-recettes",
-//       name: "recipesList",
-//       component: () => import("@/components/RecipesList.vue"),
-//     },
-//   ],
-// });
-
-// export default router;

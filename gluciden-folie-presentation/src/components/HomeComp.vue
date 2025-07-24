@@ -1,14 +1,15 @@
 <template>
 	<v-container class="home-comp-container" fluid>
-		<h1>{{ $t('home.title')}}</h1>
-
+		<h1>{{ $t("home.title") }}</h1>
+		
 		<v-card class="d-flex mb-4">
+			<h3>{{ $t("home.recipeOfTheDay.title") }}</h3>
 			<v-container fluid>
 				<v-row>
 					<!-- Description -->
 					<v-col cols-6 class="d-flex align-center">
 						<p class="description">
-							{{ $t('home.description') }}
+							{{ $t("home.recipeOfTheDay.description") }}
 						</p>
 					</v-col>
 
@@ -41,6 +42,8 @@
 		</v-card>
 
 		<!-- Carroussel -->
+		<v-card>
+		<h3> {{ $t("home.foodieFavorite.title") }}</h3>
 		<v-card class="carroussel">
 			<v-carousel hide-delimiters>
 				<v-carousel-item
@@ -49,9 +52,10 @@
 					:src="item.src"
 					cover
 				>
-					<div class="text">Mousse au chocolat</div>
+					<div class="text"> Mousse au chocolat </div>
 				</v-carousel-item>
 			</v-carousel>
+		</v-card>
 		</v-card>
 	</v-container>
 </template>
@@ -63,7 +67,6 @@ export default {
 		//fonction qui retourne un objet contenant les données réactives du composant->retourne un array items qui contient les src des images à afficher dans le carrousel.
 		return {
 			items: [
-				//array d'objets:chaque objet ayant une propriété src qui pointe vers une URL d'image->images utilisées par le carrousel pour afficher chaque élément.
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg" },
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg" },
 				{ src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg" },
@@ -82,15 +85,10 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-	font-family: "Laila", serif;
-	color: #5d827f !important;
-	text-align: center;
-}
-
 .home-comp-container {
 	max-width: 900px;
 	margin: auto;
+	padding: 0 16px;
 }
 
 .mb-4 {
@@ -108,10 +106,6 @@ h1 {
 .card-title {
 	color: #5d827f;
 	font-size: 25px;
-}
-
-.v-card-actions {
-	height: 10px;
 }
 
 .v-btn {

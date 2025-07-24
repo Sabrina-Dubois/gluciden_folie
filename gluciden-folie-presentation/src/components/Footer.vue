@@ -1,36 +1,71 @@
 <template>
- <v-footer>
-  <v-container class="footer text-center">
-      <p>&copy; {{ currentYear }} {{ $t('footer.text') }}</p>
-    </v-container>
-  </v-footer>
+	<v-footer class="custom-footer">
+		<v-container >
+			<div class="footer-row">
+				<h4>{{ $t("footer.notices") }}</h4>
+			</div>
 
+			<ul class="footer-row">
+				<li><a href="/about">{{ $t("footer.about") }}</a></li>
+				<li><a href="/privacy">{{ $t("footer.confidentiality") }}</a></li>
+				<li><a href="/terms">{{ $t("footer.condition") }}</a></li>
+				<li><a href="/sitemap">{{ $t("footer.map") }}</a></li>
+				<li><a href="/contact">{{ $t("footer.contact") }}</a></li>
+			</ul>
+
+			<div class="footer-row">
+				<p>&copy; {{ currentYear }} {{ $t("footer.copyright") }}</p>
+			</div>
+		</v-container>
+	</v-footer>
 </template>
 
 <script>
+
 export default {
-  name: 'Footer',
-  data() {
-    return {
-      currentYear: new Date().getFullYear()
-    };
-  }
-}
+	name: "Footer",
+	data() {
+		return {
+			currentYear: new Date().getFullYear(),
+		};
+	},
+};
 </script>
 
 <style>
-.v-footer {
-  background-color: #D3BEB1;
-  color: #5D827F;
-  width: 100%;
-  height: 40px;
+.custom-footer {
+	background-color: #d3beb1 !important;
+	 display: flex;
+	 flex-direction: column; 
+	align-items: center;
+	text-align: center;
+	 padding: 20px;
+	 width: 100%;
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-height: 200px;
+.footer-row {
+	text-align: center;
 }
 
+.footer-row li {
+	display: inline-block;
+	margin: 0 10px;
+	list-style: none;
+}
+
+.footer-row li a {
+	color: #5d827f;
+	font-size: 15px;
+}
+
+.footer-row li a:hover {
+	text-decoration: underline;
+}
+
+.footer-row h4,
+.footer-row p {
+	font-size: 15px;
+	margin: 0;
+	color: #5d827f;
+}
 </style>

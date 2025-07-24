@@ -1,81 +1,150 @@
 {
   "header": {
-    "link_test": "Test",
-    "link_list": "Recipe list",
-    "link_create": "Create recipe",
-    "link_update": "Update recipe",
-    "button": "Connection"
-  },
-  "//general": {
-    "//welcome": "Welcome",
-    "//search": "Search for recipes",
-    "//favorites": "Favorite recipes",
-    "//add_recipe": "Add a recipe",
-    "//logout": "Logout"
+    "test": "Test",
+    "list_recipes": "Recipes list",
+    "create_recipe": "Create recipe",
+    "update_recipe": "Update recipe",
+    "list_categories": "Categories list",
+    "button": "Connection",
+    "create-category": "Create category",
+    "update_category": "Update recipe"
   },
   "home": {
     "title": "Welcome to GLUCID'EN FOLIE",
-    "description": "Travel to England with our recipe of the day: an authentic 'Carrot cake'.Moist and spicy, it will be perfect for a gourmet, healthy and typically British break!"
+    "recipeOfTheDay": {
+      "title": "Recipe of the Day",
+      "description": "Travel to England with our recipe of the day: an authentic 'Carrot Cake'. Moist and spiced, it’s perfect for a delicious, healthy, and typically British treat!"
+    },
+    "foodieFavorite": {
+      "title": "Foodie's Favorite"
+    }
+  },
+  "auth": {
+    "toggleToRegister": "Not registered yet? Register now",
+    "toggleToLogin": "Already registered? Login",
+    "button-auth": "Create an account",
+    "button-connexion": "Connect",
+    "email": {
+      "label-mail": "Email",
+      "placeholder-mail": "Enter your email "
+    },
+    "password": {
+      "label-pass": "Password",
+      "placeholder-pass": "Enter your password"
+    }
   },
   "create_recipe": {
-    "page": {
-      "title": "Create a new recipe",
-      "recipe_title": {
-        "recipe_title": "Recipe title",
-        "//label": "Recipe name"
-      },
-      "picture": {
-        "picture": "Picture",
-        "//label": "Download picture"
-      },
-      "button": "Save"
-    }
+    "title": "Create a new recipe",
+    "recipe": {
+      "name": "Recipe title",
+      "label": "Recipe name"
+    },
+    "picture": "Picture",
+    "label": "Download picture",
+    "difficulty": "Difficulty",
+    "ingredients": "Choise ingredients",
+    "button": "Create"
   },
   "recipe_list": {
-    "title": "Recipe List",
-    "//no_recipes": "No recipes available",
-    "//view_details": "View details"
-  },
-  "//recipe_details": {
-    "//title": "Recipe Details",
-    "//ingredients": "Ingredients",
-    "//instructions": "Instructions",
-    "//rating": "Rating",
-    "//comments": "Comments",
-    "//add_comment": "Add a comment"
+    "title": "Recipe List"
   },
   "update_recipe": {
-    "page": {
-      "title": "Update recipe",
-      "recipe_title": {
-        "recipe_title": "Recipe title",
-        "label": "Recipe name"
-      },
-      "picture": {
-        "picture": "Picture",
-        "label": "Download picture"
-      },
-      "button": "Save"
+    "title": "Update recipe",
+    "recipe": {
+      "name": "Recipe title",
+      "label": "Recipe name"
+    },
+    "picture": {
+      "name": "Picture",
+      "label": "Download picture"
+    },
+    "difficulty": {
+      "name": "Difficulty",
+      "label": "Difficulty level"
+    },
+    "ingredients": {
+      "name": "Ingredients",
+      "label": "Ingredients Name"
+    },
+    "button": "Save"
+  },
+  "ingredients": {
+    "label": "Ingrédients",
+    "quantity": {
+      "label": "Quantity"
+    },
+    "unity": {
+      "label": "Unity"
     }
   },
-  "// favorites": {
-    "//title": "Your Favorite Recipes",
-    "//no_favorites": "You don't have any favorite recipes yet."
+  "steps": {
+    "title": "Recipe steps",
+    "card-title": "Step",
+    "label": "Step description",
+    "button": "Add a step",
+    "instructions": {
+      "title": "Step instructions",
+      "label": "Resume steps instructions"
+    }
   },
-  "//search": {
-    "//title": "Search for Recipes by Ingredients",
-    "//placeholder": "Enter ingredients...",
-    "//no_results": "No recipes found for your search."
+  "recipe_details": {
+    "picture": {
+      "picture": "Picture",
+      "label": "Download picture"
+    },
+    "difficulty": "Difficulty",
+    "ingredients": "Ingredients",
+    "steps": "Recipe steps",
+    "recipe_download": "Loading recipe in progress...",
+    "return_button": " Return list of recipes"
   },
-  "// errors //": {
-    "// not_found //": "Page not found",
-    "// server_error //": "An error occurred. Please try again later."
+  "create_category": {
+    "title": "Create a new category",
+    "category": {
+      "name": "Category title",
+      "label": "New category"
+    },
+    "button": "Add"
+  },
+
+  "category_list": {
+    "title": "Category List"
+  },
+  "update_category": {
+    "title": "Update category",
+    "category": {
+      "name": "Category title",
+      "label": "Category name"
+    },
+
+    "picture": "Picture",
+    "label": "Download picture",
+
+    "button": "Save"
   },
   "test_page": {
     "title": "Test Page",
     "text": "You are on the test page. You can navigate to other pages via the navigation bar."
   },
   "footer": {
-    "text": "GLUCID'EN FOLIE.All rights reserved."
+    "notices": "Legal notices",
+    "about": "about",
+    "confidentiality": "Privacy Policy",
+    "condition": "Terms of use",
+    "map": "Site map",
+    "contact": "Contact",
+    "copyright": "GLUCID'EN FOLIE.All rights reserved."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "numeric": "This field must be a number.",
+    "positiveNumber": "The quantity must be greater than 0.",
+    "minLength": "This field must have at least {min} characters.",
+    "maxLength": "This field must not exceed {max} characters.",
+    "validEmail": "The email address is not valid.",
+    "validPassword": "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+    "requiredImage": "The image is required.",
+    "validImageSize": "The image size must not exceed 5 MB.",
+    "validImageType": "The image must be in PNG or JPEG format."
   }
 }
