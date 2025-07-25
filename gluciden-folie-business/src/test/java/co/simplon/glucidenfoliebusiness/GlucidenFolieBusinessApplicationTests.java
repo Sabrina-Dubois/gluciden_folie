@@ -1,9 +1,11 @@
-package co.simplon.spot_me_business;
+package co.simplon.glucidenfoliebusiness;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import co.simplon.glucidenfoliebusiness.GlucidenFolieBusinessApplication;
+
+@SpringBootTest(classes = GlucidenFolieBusinessApplication.java)
 class GlucidenFolieBusinessApplicationTests {
 
 	@Test
