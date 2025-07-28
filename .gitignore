@@ -29,7 +29,6 @@ build/
 **/application-dev.properties
 
 # Keep Maven files
-!pom.xml
 !.mvn/
 !.mvn/wrapper/maven-wrapper.properties
 !.mvn/wrapper/maven-wrapper.jar
