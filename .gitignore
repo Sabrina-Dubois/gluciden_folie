@@ -1,12 +1,13 @@
 ###BACKEND###
 
-HELP.md
+# Build files
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+HELP.md
 
-### STS ###
+# IDE files
 .apt_generated
 .classpath
 .factorypath
@@ -15,7 +16,6 @@ target/
 .springBeans
 .sts4-cache
 
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -23,13 +23,39 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
+# Application properties (ne pas exposer secrets)
 **/application.properties
 **/application-dev.properties
 
+# Keep Maven files
+!pom.xml
+!.mvn/
+!.mvn/wrapper/maven-wrapper.properties
+!.mvn/wrapper/maven-wrapper.jar
+
+
 ###FRONT###
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies & build
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
 
 ### VS Code ###
 .vscode/
@@ -42,15 +68,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-.DS_Store
-dist
-dist-ssr
-coverage
-*.local
-
-/cypress/videos/
-/cypress/screenshots/
 
 # Editor directories and files
 .vscode/*
@@ -65,6 +82,8 @@ coverage
 *.tsbuildinfo
 
 ###BDD###
-
 .dbeaver
 .project
+
+
+
