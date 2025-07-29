@@ -76,16 +76,17 @@ public class SecurityConfig implements WebMvcConfigurer {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.cors(Customizer.withDefaults()) // Active CORS avec la config définie dans CorsConfig
 				.csrf((csrf) -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login")
-						.permitAll()
-						// Accès en lecture pour tous les utilisateurs (USER + ADMIN)
-						.requestMatchers(HttpMethod.GET, "/recipes/**", "/categories/**").hasAnyRole("USER", "ADMIN")
-
-						// 📝 Accès en écriture/modification/suppression réservé aux ADMIN
-						.requestMatchers(HttpMethod.POST, "/recipes", "/categories/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/recipes/**", "/categories/**").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/recipes/**", "/categories/**").hasRole("ADMIN")
-						.anyRequest().authenticated())
+				.authorizeHttpRequests(
+						auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login").permitAll()
+								// Accès en lecture pour tous les utilisateurs (USER + ADMIN)
+								// .requestMatchers(HttpMethod.GET, "/recipes/**",
+								// "/categories/**").hasAnyRole("USER", "ADMIN")
+								.requestMatchers(HttpMethod.GET, "/recipes/**", "/categories/**").permitAll()
+								// 📝 Accès en écriture/modification/suppression réservé aux ADMIN
+								.requestMatchers(HttpMethod.POST, "/recipes", "/categories/**").hasRole("ADMIN")
+								.requestMatchers(HttpMethod.PUT, "/recipes/**", "/categories/**").hasRole("ADMIN")
+								.requestMatchers(HttpMethod.DELETE, "/recipes/**", "/categories/**").hasRole("ADMIN")
+								.anyRequest().authenticated())
 				// la méthode build configure le security chaine avec une config spécifique
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter())))
 				.build();
