@@ -1,7 +1,7 @@
 import axios from "axios";
 
 axios
-  .get("http://localhost:8080/api/endpoint")
+  .get("http://localhost:8082/api/endpoint")
   .then((response) => {
     console.log(response.data);
   })
