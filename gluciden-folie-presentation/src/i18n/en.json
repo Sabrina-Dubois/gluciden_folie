@@ -129,11 +129,50 @@
   "footer": {
     "notices": "Legal notices",
     "about": "about",
-    "confidentiality": "Privacy Policy",
-    "condition": "Terms of use",
-    "map": "Site map",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_use": "Terms of use",
+    "site_map": "Site map",
     "contact": "Contact",
     "copyright": "GLUCID'EN FOLIE.All rights reserved."
+  },
+  "site_map": {
+    "title": "Site Map",
+    "home": "Home",
+    "about": "About",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_use": "Terms of use",
+    "contact": "Contact"
+  },
+  "privacy_policy": {
+    "title": "Privacy Policy",
+    "paragraph1": "At GLUCID'EN FOLIE, your privacy is important. We only collect the information necessary to provide you with quality service, such as your login data or preferences.",
+    "paragraph2": "This data is protected and will never be shared with third parties without your consent.",
+    "paragraph3": "For now, options to view or modify your data are not yet available, but we are working to implement them soon.",
+    "paragraph4": "If you have any questions, please do not hesitate to contact us.",
+    "paragraph5": "By using our site, you accept this privacy policy."
+  },
+  "terms_of_use": {
+    "title": "Terms of Use",
+    "paragraph1": "By using our website, you agree to abide by the following rules: do not post offensive content, respect copyright laws, refrain from using our platform for illegal purposes, and be courteous to other members.",
+    "paragraph2": "We reserve the right to modify these terms at any time without prior notice. It is your responsibility to regularly review this page for any updates.",
+    "paragraph3": "Any violation of these terms may result in suspension or deletion of your account, as well as legal action if necessary.",
+    "paragraph4": "If you have any questions regarding these terms, please feel free to",
+    "paragraph5": "By continuing to use our site, you acknowledge that you have read and accepted these terms of use."
+  },
+  "about": {
+    "title": "About",
+    "paragraph1": "Welcome to the slightly crazy world of Glucide en folie!",
+    "paragraph2": "Here, it’s just me at the helm, crafting sweet recipes… but not just any recipes!",
+    "paragraph3": "The challenge? Offering access to a delicious world without blowing the carb counter—gluten-free, lactose-free, no added sugar, and even high-protein for those who want to keep fit (or get back on track).",
+    "paragraph4": "Because you can treat yourself without stressing, and most importantly, without guilt. I share my simple, tasty homemade recipes designed so everyone can find something they love—whether you’re diabetic, a healthy-eating fan, or just curious to try something new.",
+    "paragraph5": "So, whether you’re here to discover ‘light but indulgent’ baking or just love a little fun, you’re in the right place! Welcome to my world, where carb madness is really about guilt-free pleasure."
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "mail": "Mail",
+    "message": "Message",
+    "button": "Send"
   },
   "validation": {
     "required": "This field is required.",
@@ -148,3 +187,5 @@
     "validImageType": "The image must be in PNG or JPEG format."
   }
 }
+
+

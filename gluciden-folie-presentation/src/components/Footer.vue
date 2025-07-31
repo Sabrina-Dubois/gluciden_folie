@@ -1,16 +1,28 @@
 <template>
-	<v-footer class="custom-footer">
+	<v-footer class="custom-footer ">
 		<v-container >
 			<div class="footer-row">
 				<h4>{{ $t("footer.notices") }}</h4>
 			</div>
 
 			<ul class="footer-row">
-				<li><a href="/about">{{ $t("footer.about") }}</a></li>
-				<li><a href="/privacy">{{ $t("footer.confidentiality") }}</a></li>
-				<li><a href="/terms">{{ $t("footer.condition") }}</a></li>
-				<li><a href="/sitemap">{{ $t("footer.map") }}</a></li>
-				<li><a href="/contact">{{ $t("footer.contact") }}</a></li>
+				<li>
+					<a href="/apropos">{{ $t("footer.about") }}</a>
+				</li>
+				<li>
+					<a href="/politique-confidentialite">{{
+						$t("footer.privacy_policy")
+					}}</a>
+				</li>
+				<li>
+					<a href="/termes-utilisation">{{ $t("footer.terms_of_use") }}</a>
+				</li>
+				<li>
+					<a href="/plan">{{ $t("footer.site_map") }}</a>
+				</li>
+				<li>
+					<a href="/contact">{{ $t("footer.contact") }}</a>
+				</li>
 			</ul>
 
 			<div class="footer-row">
@@ -21,7 +33,6 @@
 </template>
 
 <script>
-
 export default {
 	name: "Footer",
 	data() {
@@ -35,12 +46,12 @@ export default {
 <style>
 .custom-footer {
 	background-color: #d3beb1 !important;
-	 display: flex;
-	 flex-direction: column; 
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	 padding: 20px;
-	 width: 100%;
+	padding: 20px;
+	width: 100%;
 }
 
 .footer-row {

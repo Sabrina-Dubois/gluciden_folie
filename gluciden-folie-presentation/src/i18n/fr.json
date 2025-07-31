@@ -7,7 +7,7 @@
     "list_categories": "Liste des catégories",
     "button": "Connexion",
     "create-category": "Créer une catégorie",
-    "update_category": "Update ne catégorie"
+    "update_category": "Modifier une catégorie"
   },
   "home": {
     "title": "Bienvenue sur GLUCID'EN FOLIE",
@@ -122,7 +122,7 @@
       "label": "Nom de la catégorie"
     },
     "picture": "Photo",
-    "label": "Téléchager la photo",
+    "label": "Télécharger la photo",
 
     "button": "Enregistrer"
   },
@@ -137,11 +137,50 @@
   "footer": {
     "notices": "Mentions légales",
     "about": "A propos",
-    "confidentiality": "Politique de confidentialité",
-    "condition": "Conditions d'utilisation",
-    "map": "Plan du site",
+    "privacy_policy": "Politique de confidentialité",
+    "terms_of_use": "Conditions d'utilisation",
+    "site_map": "Plan du site",
     "contact": "Contact",
     "copyright": "GLUCID'EN FOLIE. Tous droits réservés."
+  },
+  "site_map": {
+    "title": "Plan du site",
+    "home": "Accueil",
+    "about": "A propos",
+    "privacy_policy": "Politique de confidentialité",
+    "terms_of_use": "Conditions d'utilisation",
+    "contact": "Contact"
+  },
+  "privacy_policy": {
+    "title": "Politique de confidentialité",
+    "paragraph1": "Chez GLUCID'EN FOLIE, votre vie privée est importante. Nous collectons uniquement les informations nécessaires pour vous fournir un service de qualité, comme vos données de connexion ou préférences.",
+    "paragraph2": "Ces données sont protégées et ne seront jamais partagées avec des tiers sans votre consentement.",
+    "paragraph3": "Pour l’instant, les options de consultation ou modification des données ne sont pas encore disponibles, mais nous travaillons à les mettre en place prochainement.",
+    "paragraph4": "Si vous avez des questions, n’hésitez pas à nous contacter.",
+    "paragraph5": "En utilisant notre site, vous acceptez cette politique de confidentialité."
+  },
+  "terms_of_use": {
+    "title": "Conditions d’utilisation",
+    "paragraph1": "En utilisant notre site, vous acceptez de respecter les règles suivantes : ne pas publier de contenu offensant, respecter les droits d’auteur, ne pas utiliser notre plateforme à des fins illégales et rester courtois avec les autres membres.",
+    "paragraph2": "Nous nous réservons le droit de modifier ces conditions à tout moment, sans préavis. Il vous appartient de consulter régulièrement cette page pour prendre connaissance des éventuelles mises à jour.",
+    "paragraph3": "Tout manquement à ces conditions peut entraîner la suspension ou la suppression de votre compte, ainsi que des actions légales si nécessaire.",
+    "paragraph4": "Si vous avez des questions concernant ces conditions, n’hésitez pas à",
+    "paragraph5": "En continuant à utiliser notre site, vous reconnaissez avoir pris connaissance et accepté ces conditions d’utilisation."
+  },
+  "about": {
+    "title": "À propos",
+    "paragraph1": "Bienvenue dans l’univers un peu fou de Glucide en folie !",
+    "paragraph2": "Ici, c’est moi, toute seule aux commandes, qui crée des recettes sucrées… mais pas n’importe lesquelles !",
+    "paragraph3": "Le défi ? Donner accès à un univers gourmand sans faire exploser le compteur de glucides, sans gluten, sans lactose, sans sucre ajouté, et même hyperprotéiné pour ceux qui veulent garder la ligne (ou la reprendre en main).",
+    "paragraph4": "Parce qu’on peut se faire plaisir sans se prendre la tête, et surtout sans culpabiliser. Je partage mes petites recettes maison, simples, savoureuses, et pensées pour que tout le monde y trouve son compte, que vous soyez diabétique, fan de healthy, ou juste curieux de tester autre chose.",
+    "paragraph5": "Alors, que vous soyez ici pour découvrir la pâtisserie version “light mais gourmande”, ou juste parce que vous aimez les plaisirs un peu fous, vous êtes au bon endroit ! Bienvenue chez moi, où la folie des glucides, c’est surtout celle du plaisir à croquer sans modération."
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Nom",
+    "mail": "Email",
+    "message": "Message",
+    "button": "Envoyer"
   },
   "validation": {
     "required": "Ce champ est obligatoire.",

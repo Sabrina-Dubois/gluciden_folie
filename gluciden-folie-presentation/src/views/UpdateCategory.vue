@@ -1,7 +1,7 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("update_category.title") }}</h1>
-		<v-card class="categoryForm d-flex align-center">
+		<v-card class="categoryForm d-flex align-center" elevation="4">
 			<!-- Formulaire pour modifier une catégorie -->
 			<v-form @submit.prevent="updateCategory">
 				<h3>{{ $t("update_category.category.name") }}</h3>

@@ -84,13 +84,15 @@
 		<!-- Barre de recherche -->
 		<v-text-field
 			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
-			class="custom-text-field hidden-sm-and-down"
+			class="custom-search"
 			append-inner-icon="mdi-magnify"
-			density="compact"
+			density="comfortable"
 			label="Je cherche : un ingrédient, une recette..."
 			variant="solo"
+			clearable
 			hide-details
 			single-line
+			style="max-width: 300px"
 		></v-text-field>
 
 		<!-- Loupe visible seulement en mobile -->
@@ -221,10 +223,20 @@ export default {
 
 
 
-<style scoped>
+<style>
+/* *** Titre *** */
 .title {
 	overflow: visible !important;
 }
+.v-app-bar-title {
+	flex: 1;
+	text-align: start;
+	font-size: 40px;
+	font-weight: bold !important;
+	color: #5d827f;
+}
+
+/* *** Barre application *** */
 .custom-app-bar {
 	background-color: #d3beb1 !important;
 	display: flex;
@@ -235,11 +247,13 @@ export default {
 	justify-content: space-between;
 }
 
+/* *** Logo *** */
 .logo {
 	width: 115px;
 	height: auto;
 }
 
+/* *** Bouton *** */
 .v-btn {
 	margin: 5px 0; /* Espacement entre les boutons */
 	background-color: #f5ede8;
@@ -249,21 +263,13 @@ export default {
 	position: absolute;
 	right: 30px;
 }
-
-.v-app-bar-title {
-	flex: 1;
-	text-align: start;
-	font-size: 40px;
-	font-weight: bold !important;
-	color: #5d827f;
-}
-
 .v-btn:hover,
 .v-btn--active {
 	background-color: #5d827f;
 	color: #f5ede8 !important;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+
 /* *** Liste *** */
 .v-list {
 	justify-items: start;
@@ -281,6 +287,28 @@ export default {
 	justify-content: center;
 	padding-left: 10px;
 	font-size: 32px;
+}
+
+/* *** Barre de recherche *** */
+.custom-search ::v-deep(.v-field__control) {
+  background-color: #f0f0f0 !important;
+  border-radius: 12px !important;
+  border: 2px solid #1976d2 !important;
+  padding-left: 12px !important;
+}
+
+.custom-search ::v-deep(input) {
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+.custom-search ::v-deep(.v-field__append-inner) {
+  color: #1976d2 !important;
+}
+
+.custom-search ::v-deep(.v-field__control:focus-within) {
+  border-color: #004ba0 !important;
+  background-color: #fff !important;
 }
 </style>
 

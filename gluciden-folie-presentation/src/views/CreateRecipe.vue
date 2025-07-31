@@ -1,7 +1,7 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
-		<v-card class="recipeForm" max-width="800px">
+		<v-card class="recipeForm"  elevation="4" max-width="800px">
 			<!-- Formulaire création -->
 			<v-form @submit.prevent="addRecipe" :model="v$">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>

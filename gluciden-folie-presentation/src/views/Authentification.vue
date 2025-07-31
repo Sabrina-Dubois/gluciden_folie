@@ -5,7 +5,7 @@
 				<h1>
 					{{ isLogin ? $t("auth.toggleToLogin") : $t("auth.toggleToRegister") }}
 				</h1>
-				<v-card class="connection">
+				<v-card class="connection" elevation="4">
 					<v-form @submit.prevent="newAuth" :model="v$">
 						<!-- Email -->
 						<div class="field-container">
@@ -206,6 +206,7 @@ export default {
 .connection {
 	background-color: #d3beb1;
 	padding: 20px;
+	
 	border-radius: 10px;
 }
 

@@ -1,9 +1,9 @@
 <template>
-	<div class="main-content custom-bg">
+	<div class="main-content custom-bg" elevation="4">
 		<h1>{{ $t("create_category.title") }}</h1>
 
 		<!-- Création de la catégorie-->
-		<v-card class="categoryForm d-flex align-center">
+		<v-card class="categoryForm d-flex align-center" elevation="4">
 			<v-form @submit.prevent="createCategory">
 				<h3>{{ $t("create_category.category.name") }}</h3>
 				<!-- Création de la catégorie-->

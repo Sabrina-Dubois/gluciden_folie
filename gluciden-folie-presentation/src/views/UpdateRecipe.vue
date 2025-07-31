@@ -1,7 +1,7 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("update_recipe.title") }}</h1>
-		<v-card class="recipeForm d-flex align-center">
+		<v-card class="recipeForm d-flex align-center" elevation="4">
 			<v-form @submit.prevent="updateRecipe">
 				<!-- Nom de la recette -->
 				<v-text-field

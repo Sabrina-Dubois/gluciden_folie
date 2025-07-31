@@ -77,10 +77,10 @@ public class SecurityConfig implements WebMvcConfigurer {
 		return http.cors(Customizer.withDefaults()) // Active CORS avec la config définie dans CorsConfig
 				.csrf((csrf) -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login")
-						.permitAll()
+						.permitAll().requestMatchers("/", "/home").permitAll()
 						// Accès en lecture pour tous les utilisateurs (USER + ADMIN)
-						.requestMatchers(HttpMethod.GET, "/recipes/**", "/categories/**").hasAnyRole("USER", "ADMIN")
-
+						.requestMatchers(HttpMethod.GET, "/recipes/**", "/categories/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/unities/**").permitAll()
 						// 📝 Accès en écriture/modification/suppression réservé aux ADMIN
 						.requestMatchers(HttpMethod.POST, "/recipes", "/categories/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/recipes/**", "/categories/**").hasRole("ADMIN")

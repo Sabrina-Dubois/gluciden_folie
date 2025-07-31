@@ -1,31 +1,34 @@
 <template>
 	<v-container class="category-list-container" fluid>
-		<h1>{{ $t("category_list.title") }}</h1>
-		<v-card class="d-flex mx-auto my-auto">
+		<h1 class="page-title">{{ $t("category_list.title") }}</h1>
+
+		<v-card class="mx-auto my-6 px-4 py-4" elevation="4">
 			<v-container fluid>
-				<v-row dense>
+				<v-row dense align="stretch">
 					<v-col
 						v-for="category in categories"
-						:key="category.name"
+						:key="category.id"
 						cols="12"
+						sm="6"
 						md="3"
-						class="d-flex justify-center ml-4"
+						class="d-flex"
 					>
-						<v-card class="category-card d-flex flex-column align-center" flat>
-							<v-card class="cards-list"
-								><v-card-title class="text-white">
-									{{ category.name }}
-								</v-card-title>
+						<!-- ✅ Chaque carte occupe toute la hauteur -->
+						<v-card class="category-card d-flex flex-column" flat>
+							<v-card-title class="title-category text-center">
+								{{ category.name }}
+							</v-card-title>
 
-								<v-card-actions class="button d-flex">
-									<v-btn
-										icon="mdi-pencil"
-										@click="updateCategory(category.id)"
-									></v-btn>
-									<v-btn icon="mdi-delete" @click="deleteCategory(category.id)">
-									</v-btn>
-								</v-card-actions>
-							</v-card>
+							<v-spacer></v-spacer>
+
+							<v-card-actions class="button d-flex justify-center">
+								<v-btn
+									icon="mdi-pencil"
+									@click="updateCategory(category.id)"
+								></v-btn>
+								<v-btn icon="mdi-delete" @click="deleteCategory(category.id)">
+								</v-btn>
+							</v-card-actions>
 						</v-card>
 					</v-col>
 				</v-row>
@@ -36,7 +39,6 @@
 
 <script>
 import { useCategoriesStore } from "@/stores/categoriesStore.js";
-//import apiClient from "@/api/axiosConfig";
 
 export default {
 	name: "categoriesList",
@@ -47,63 +49,58 @@ export default {
 	},
 	methods: {
 		deleteCategory(categoryId) {
-			useCategoriesStore().deleteCategory(categoryId); //store
+			useCategoriesStore().deleteCategory(categoryId);
 		},
-		//renvoyer vers la page update
 		updateCategory(categoryId) {
 			this.$router.push({ name: "updateCategory", params: { id: categoryId } });
 		},
 	},
 	created() {
-		useCategoriesStore().fetchCategories();// recup cat du store à la création du comp
+		useCategoriesStore().fetchCategories();
 	},
 };
 </script>
 
 <style scoped>
+/* *** Container *** */
 .category-list-container {
 	max-width: 900px;
+	margin: auto;
 }
 
-.ml-4 {
-	margin-left: 50px;
+/* *** Titre *** */
+.title-category {
+	color: #5d827f;
+	font-size: 18px;
+	text-align: center;
 }
 
+/* *** Cards *** */
+.category-card {
+	background-color: #d3beb1;
+	border-radius: 12px;
+	padding: 16px;
+	width: 100%;
+	min-height: 150px; 
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+/* *** Boutons *** */
 .button {
 	justify-content: center;
 }
 .v-btn {
 	color: #5d827f;
-	margin: 0px 00px;
 	background-color: #f5ede8;
+	margin: 0 5px;
+	transition: all 0.3s ease;
 }
-
 .v-btn:hover,
 .v-btn--active {
 	background-color: #5d827f;
 	color: #f5ede8 !important;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.fav-btn {
-	color: #f29eb0;
-}
-
-.fav-btn:hover,
-.fav-btn--active {
-	background-color: #5d827f;
-	color: #f29eb0 !important;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.v-app-bar-title {
-	flex: 1;
-	text-align: start;
-	font-size: 40px;
-	font-weight: bold !important;
-	color: #5d827f;
-}
-.cards-list {
-	background-color: #d3beb1;
 }
 </style>

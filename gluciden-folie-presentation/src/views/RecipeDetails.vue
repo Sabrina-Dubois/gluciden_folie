@@ -1,6 +1,6 @@
 <template>
 	<v-container fluid>
-		<v-card class="mx-auto my-5 pa-4" max-width="800">
+		<v-card class="mx-auto my-5 pa-4" max-width="800" elevation="4">
 			<div v-if="recipe">
 				<h1>{{ recipe.name }}</h1>
 				<img

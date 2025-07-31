@@ -1,7 +1,7 @@
 <template>
 	<v-container class="Recip-list-container" fluid>
 		<h1>{{ $t("recipe_list.title") }}</h1>
-		<v-card class="d-flex mx-auto my-auto">
+		<v-card class="d-flex mx-auto my-auto" elevation="4">
 			<v-container fluid>
 				<v-row dense>
 					<!-- Card image & boutons -->
@@ -116,14 +116,32 @@ export default {
 </script>
 
 <style scoped>
+/* *** Container *** */
 .recip-list-container {
 	max-width: 900px;
 }
-
 .ml-4 {
 	margin-left: 50px;
 }
+.Recip-list-container {
+	background-color: #f5ede8;
+}
 
+/* *** Titre *** */
+.title-recipe {
+	color: #5d827f;
+	font-size: 18px;
+	text-align: center
+}
+.v-app-bar-title {
+	flex: 1;
+	text-align: start;
+	font-size: 40px;
+	font-weight: bold !important;
+	color: #5d827f;
+}
+
+/* *** Boutons *** */
 .button {
 	justify-content: center;
 }
@@ -132,20 +150,16 @@ export default {
 	margin: 0px 00px;
 	background-color: #f5ede8;
 }
-.title-recipe {
-	color: #5d827f;
-}
+
 .v-btn:hover,
 .v-btn--active {
 	background-color: #5d827f;
 	color: #f5ede8 !important;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 .fav-btn {
 	color: #f29eb0;
 }
-
 .fav-btn:hover,
 .fav-btn--active {
 	background-color: #5d827f;
@@ -153,17 +167,7 @@ export default {
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.v-app-bar-title {
-	flex: 1;
-	text-align: start;
-	font-size: 40px;
-	font-weight: bold !important;
-	color: #5d827f;
-}
-.Recip-list-container {
-	background-color: #f5ede8;
-}
-
+/* *** Photo *** */
 .recipe-picture {
 	width: 200px;
 	height: 200px;
