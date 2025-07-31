@@ -84,15 +84,13 @@
 		<!-- Barre de recherche -->
 		<v-text-field
 			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
-			class="custom-search"
+			class="custom-text-field hidden-sm-and-down"
 			append-inner-icon="mdi-magnify"
-			density="comfortable"
+			density="compact"
 			label="Je cherche : un ingrédient, une recette..."
 			variant="solo"
-			clearable
 			hide-details
 			single-line
-			style="max-width: 300px"
 		></v-text-field>
 
 		<!-- Loupe visible seulement en mobile -->
@@ -223,7 +221,7 @@ export default {
 
 
 
-<style>
+<style scoped>
 /* *** Titre *** */
 .title {
 	overflow: visible !important;
@@ -282,34 +280,9 @@ export default {
 	background-color: #f5ede8 !important;
 	color: #d3beb1 !important; /* Assurer que la couleur du texte au survol reste héritée */
 }
-
 .flag-icon {
 	justify-content: center;
 	padding-left: 10px;
 	font-size: 32px;
 }
-
-/* *** Barre de recherche *** */
-.custom-search ::v-deep(.v-field__control) {
-  background-color: #f0f0f0 !important;
-  border-radius: 12px !important;
-  border: 2px solid #1976d2 !important;
-  padding-left: 12px !important;
-}
-
-.custom-search ::v-deep(input) {
-  font-weight: 600 !important;
-  color: #333 !important;
-}
-
-.custom-search ::v-deep(.v-field__append-inner) {
-  color: #1976d2 !important;
-}
-
-.custom-search ::v-deep(.v-field__control:focus-within) {
-  border-color: #004ba0 !important;
-  background-color: #fff !important;
-}
 </style>
-
-
