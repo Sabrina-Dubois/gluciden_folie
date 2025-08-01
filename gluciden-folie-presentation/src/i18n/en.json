@@ -184,7 +184,8 @@
     "validPassword": "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
     "requiredImage": "The image is required.",
     "validImageSize": "The image size must not exceed 5 MB.",
-    "validImageType": "The image must be in PNG or JPEG format."
+    "validImageType": "The image must be in PNG or JPEG format.",
+    "validDifficulty": "The difficulty isn't valid"
   }
 }
 

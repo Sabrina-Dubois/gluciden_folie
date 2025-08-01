@@ -3,8 +3,10 @@ package co.simplon.glucidenfoliebusiness.dtos.recipe;
 
 import java.util.List;
 
-public record RecipeReadDto(Long id, String name, String picture, String difficulty, List<IngredientInfo> ingredients,
-		List<StepReadDto> steps) {
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
+
+public record RecipeReadDto(Long id, String name, String picture, Difficulty difficulty,
+		List<IngredientInfo> ingredients, List<StepReadDto> steps) {
 	public record IngredientInfo(String name, Long unityId, Double quantity) {
 	}
 }

@@ -27,6 +27,7 @@ import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeReadDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.StepCreateDto;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
 
@@ -42,12 +43,12 @@ public class RecipeController {
 
 	@PostMapping
 	public Recipe create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
-			@RequestParam(value = "difficulty", required = false) String difficulty,
+			@RequestParam(value = "difficulty", required = false) Difficulty difficulty,
 			@RequestParam("ingredients") String ingredientsJson,
 			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {
 
-		if (difficulty == null || difficulty.trim().isEmpty()) {
-			difficulty = "Facile";
+		if (difficulty == null) {
+			difficulty = Difficulty.FACILE;
 		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -91,7 +92,7 @@ public class RecipeController {
 
 	@PutMapping("/{id}")
 	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
-			@RequestParam(value = "difficulty", required = false) String difficulty,
+			@RequestParam(value = "difficulty", required = false) Difficulty difficulty,
 			@RequestParam(value = "ingredients", required = false) String ingredientsJson,
 			@RequestParam(value = "picture", required = false) MultipartFile picture,
 			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {

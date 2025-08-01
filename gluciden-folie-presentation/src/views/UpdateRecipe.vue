@@ -38,7 +38,7 @@
 				<!-- Difficulté -->
 				<v-select
 					v-model="form.difficulty"
-					:items="['Facile', 'Moyenne', 'Difficile', 'Expert']"
+					:items="['FACILE', 'MOYEN', 'DIFFICILE', 'EXPERT']"
 					:label="$t('update_recipe.difficulty.label')"
 					:error="v$.form.difficulty.$error"
 					:error-messages="difficultyErrors"
@@ -134,9 +134,12 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
-			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			if (rules.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid)
+				errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid)
+				errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
 			return errors;
 		},
 		pictureErrors() {
@@ -190,6 +193,7 @@ export default {
 				}));
 
 				this.imagePreview = `/images/${response.data.picture}`;
+				console.log("Form après chargement:", this.form);
 			} catch (error) {
 				console.error("Erreur lors de la récupération de la recette:", error);
 			}
@@ -223,6 +227,7 @@ export default {
 		async updateRecipe() {
 			this.submitted = true;
 			const isValid = await this.v$.$validate();
+			console.log("Validation OK ?", isValid);
 			if (!isValid) return;
 
 			const formData = new FormData();
@@ -231,7 +236,6 @@ export default {
 			formData.append("ingredients", JSON.stringify(this.form.ingredients));
 			formData.append("steps", JSON.stringify(this.form.steps));
 
-			// On vérifie si une nouvelle image a été téléchargée, sinon on garde l'ancienne image
 			if (this.form.picture instanceof File) {
 				formData.append("picture", this.form.picture);
 			} else if (

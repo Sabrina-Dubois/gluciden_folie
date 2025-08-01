@@ -41,7 +41,7 @@ export const useRecipesStore = defineStore("recipes", {
           formData.append("picture", picture);
         }
         formData.append("name", name);
-        formData.append("difficulty", difficulty);
+        formData.append("difficulty", difficulty.toUpperCase());
         formData.append("ingredients", JSON.stringify(ingredientList));
         formData.append("steps", JSON.stringify(steps));
 

@@ -9,8 +9,11 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -29,7 +32,8 @@ public class Recipe extends AbstractEntity {
 	private String picture;
 
 	@Column(name = "difficulty")
-	private String difficulty;
+	@Enumerated(EnumType.STRING)
+	private Difficulty difficulty;
 
 	@OneToMany(mappedBy = "recipe")
 	private List<Step> steps = new ArrayList<>();
@@ -93,11 +97,11 @@ public class Recipe extends AbstractEntity {
 		this.categories = categories;
 	}
 
-	public String getDifficulty() {
+	public Difficulty getDifficulty() {
 		return difficulty;
 	}
 
-	public void setDifficulty(String difficulty) {
+	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
 	}
 

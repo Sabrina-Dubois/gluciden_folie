@@ -1,9 +1,9 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
-		<v-card class="recipeForm"  elevation="4" max-width="800px">
+		<v-card class="recipeForm" elevation="4" max-width="800px">
 			<!-- Formulaire création -->
-			<v-form @submit.prevent="addRecipe" :model="v$">
+			<v-form @submit.prevent="addRecipe">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
 					v-model="form.name"
@@ -28,7 +28,6 @@
 
 				<!-- Nouvelle image -->
 				<v-file-input
-					v-model="form.picture"
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
@@ -53,9 +52,8 @@
 						full-icon="mdi-circle"
 						hover
 						dense
-						@change="v$.form.difficulty.$touch()"
-					>
-					</v-rating>
+						@update:modelValue="v$.form.difficulty.$touch()"
+					></v-rating>
 				</div>
 
 				<!-- Ingrédients -->
@@ -79,7 +77,6 @@
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-//import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
 import Steps from "@/components/Steps.vue";
 import i18n from "@/i18n/i18n"; 
@@ -106,10 +103,10 @@ export default {
 	},
 	validations() {
 		return {
-    form: {
-      ...recipeValidation.form,
-	}
-    }
+			form: {
+				...recipeValidation.form,
+			},
+		};
 	},
 	created() {
 		this.v$ = useVuelidate();
@@ -152,14 +149,24 @@ export default {
 
 	methods: {
 		handleFileUpload(event) {
-			const file = event.target.files[0];
+			const file = event.target.files ? event.target.files[0] : null;
 			if (file) {
 				this.form.picture = file;
 				this.imagePreview = URL.createObjectURL(file);
 			} else {
 				this.imagePreview = null;
+				this.form.picture = null;
 			}
 		},
+
+		difficultyNumberToString(num) {
+			const difficultyLabels = ["FACILE", "MOYEN", "DIFFICILE", "EXPERT"];
+			if (num && num >= 1 && num <= 4) {
+				return difficultyLabels[num - 1];
+			}
+			return null;
+		},
+
 		async addRecipe() {
 			this.submitted = true;
 
@@ -178,13 +185,6 @@ export default {
 			) {
 				return;
 			}
-			const difficultyLabels = ["Facile", "Moyenne", "Difficile", "Expert"];
-			const difficultyText =
-				this.form.difficulty &&
-				this.form.difficulty >= 1 &&
-				this.form.difficulty <= 4
-					? difficultyLabels[this.form.difficulty - 1]
-					: "Non précisée";
 
 			try {
 				const recipesStore = useRecipesStore();
@@ -192,7 +192,7 @@ export default {
 				await recipesStore.addRecipe({
 					name: this.form.name,
 					picture: this.form.picture,
-					difficulty: difficultyText,
+					difficulty: this.difficultyNumberToString(this.form.difficulty),
 					ingredientList: this.form.ingredients,
 					steps: this.form.steps,
 				});
@@ -228,7 +228,7 @@ export default {
 	color: #5d827f;
 }
 
-.custom-rating{
+.custom-rating {
 	color: #5d827f;
 }
 

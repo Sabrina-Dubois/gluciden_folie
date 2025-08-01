@@ -25,6 +25,7 @@ import co.simplon.glucidenfoliebusiness.entities.RecipeIngredientUnity;
 import co.simplon.glucidenfoliebusiness.entities.RecipeIngredientUnityId;
 import co.simplon.glucidenfoliebusiness.entities.Step;
 import co.simplon.glucidenfoliebusiness.entities.Unity;
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
 import co.simplon.glucidenfoliebusiness.repositories.IngredientRepository;
 import co.simplon.glucidenfoliebusiness.repositories.RecipeIngredientUnityRepository;
@@ -64,9 +65,9 @@ public class RecipeService {
 		recipe.setName(recipeDto.name());
 
 		// Valeur par défaut -> difficulté
-		String difficulty = recipeDto.difficulty();
-		if (difficulty == null || difficulty.trim().isEmpty()) {
-			difficulty = "Facile";
+		Difficulty difficulty = recipeDto.difficulty();
+		if (difficulty == null) {
+			difficulty = Difficulty.FACILE;
 		}
 		recipe.setDifficulty(difficulty);
 
@@ -229,9 +230,9 @@ public class RecipeService {
 		}
 
 		// ********** DIFFICULTÉS **********
-		String difficulty = inputs.difficulty();
-		if (difficulty == null || difficulty.trim().isEmpty()) {
-			difficulty = "Facile";
+		Difficulty difficulty = inputs.difficulty();
+		if (difficulty == null) {
+			difficulty = Difficulty.FACILE;
 		}
 		recipe.setDifficulty(difficulty);
 

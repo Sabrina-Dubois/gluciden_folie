@@ -23,6 +23,5 @@ app.use(router);
 app.use(vuetify);
 app.use(i18n);
 app.use(pinia);
-app.use(axios);
 
 app.mount("#app");

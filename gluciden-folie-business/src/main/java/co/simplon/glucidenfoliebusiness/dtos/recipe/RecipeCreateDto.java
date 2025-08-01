@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import co.simplon.glucidenfoliebusiness.validations.recipe.RecipeCreateUnique;
 import co.simplon.glucidenfoliebusiness.validations.recipe.picture.FileSize;
 import co.simplon.glucidenfoliebusiness.validations.recipe.picture.FileType;
@@ -19,7 +20,7 @@ public record RecipeCreateDto(
 		@NotNull(message = "La photo est obligatoire") @FileType(types = {
 				MediaType.IMAGE_JPEG_VALUE,
 				MediaType.IMAGE_PNG_VALUE }) @FileSize(max = FileSize.TWO_MB) MultipartFile picture,
-		@NotBlank(message = "La difficulté est obligatoire") String difficulty,
+		@NotBlank(message = "La difficulté est obligatoire") Difficulty difficulty,
 		@NotNull @NotEmpty List<RecipeIngredientUnityDto> ingredients, List<StepCreateDto> steps){
 
 }

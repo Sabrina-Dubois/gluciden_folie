@@ -192,6 +192,7 @@
     "validPassword": "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.",
     "requiredImage": "L'image est obligatoire.",
     "validImageSize": "La taille de l'image ne doit pas dépasser 5 Mo.",
-    "validImageType": "L'image doit être au format PNG ou JPEG."
+    "validImageType": "L'image doit être au format PNG ou JPEG.",
+    "validDifficulty": "La difficulté choisie n'est pas valide"
   }
 }

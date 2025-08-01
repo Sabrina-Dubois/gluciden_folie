@@ -6,15 +6,15 @@ const t = i18n.global.t;
 // Champs obligatoires
 export const requiredField = helpers.withMessage(() => i18n.global.t("validation.required"), required);
 
-// Règles longueurs
+// **** Règles longueurs ****
 export const lengthRules = (min, max) => ({
-  minLength: helpers.withMessage(() => i18n.global.t("validation.minLength", { min }), minLength(min)),
-  maxLength: helpers.withMessage(() => i18n.global.t("validation.maxLength", { max }), maxLength(max)),
+  minLength: helpers.withMessage(() => t("validation.minLength", { min }), minLength(min)),
+  maxLength: helpers.withMessage(() => t("validation.maxLength", { max }), maxLength(max)),
 });
 
 // Quantités
 export const positiveNumber = helpers.withMessage(
-  () => i18n.global.t("validation.positiveNumber"),
+  () => t("validation.positiveNumber"),
   (value) => Number(value) > 0
 );
 
@@ -37,18 +37,17 @@ const requiredIfNoImage = helpers.withMessage(
   (value) => (typeof value === "string" && value.trim() !== "") || value instanceof File
 );
 
-// Validation adresse email
+// **** Email et mot de passe ****
 const validEmail = helpers.withMessage(
-  () => i18n.global.t("validation.validEmail"),
+  () => t("validation.validEmail"),
   (value) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(value)
 );
-
-// Validation mot de passe
 const validPassword = helpers.withMessage(
-  () => i18n.global.t("validation.validPassword"),
+  () => t("validation.validPassword"),
   (value) => /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /[!@#$%^&*(),.?":{}|<>]/.test(value)
 );
 
+// **** Recette ****
 export const recipeValidation = {
   form: {
     name: {
@@ -62,9 +61,22 @@ export const recipeValidation = {
     },
     difficulty: {
       required: helpers.withMessage(
-        () => i18n.global.t("validation.required"),
+        () => t("validation.required"),
         (value) => {
-          return typeof value === "string" && value.trim() !== "";
+          if (value == null) return false;
+
+          if (typeof value === "number") {
+            // validation pour les chiffres (create)
+            return value >= 1 && value <= 4;
+          } else if (typeof value === "string") {
+            // validation pour les lettres (update)
+            // exemple : accepte uniquement "A", "B", "C", "D"
+            const allowedStrings = ["FACILE", "MOYEN", "DIFFICLIE", "EXPERT"];
+            return allowedStrings.includes(value);
+          } else {
+            // si ce n'est ni string ni number, invalide
+            return false;
+          }
         }
       ),
     },
@@ -74,6 +86,8 @@ export const recipeValidation = {
     },
   },
 };
+
+// **** Ingrédients ****
 export const ingredientValidation = {
   name: {
     required: requiredField,
@@ -89,6 +103,7 @@ export const ingredientValidation = {
   },
 };
 
+// **** Catégorie ****
 export const categoryValidation = {
   categoryName: {
     required: requiredField,
@@ -96,6 +111,7 @@ export const categoryValidation = {
   },
 };
 
+// **** Compte ****
 export const accountValidation = {
   username: {
     required: requiredField,

@@ -86,8 +86,9 @@ export default {
 			return "";
 		},
 		difficultyIndex() {
-			const levels = ["Facile", "Moyenne", "Difficile", "Expert"];
-			return levels.indexOf(this.recipe?.difficulty) + 1;
+			const levels = ["FACILE", "MOYEN", "DIFFICILE", "EXPERT"];
+			if (!this.recipe || !this.recipe.difficulty) return 0;
+			return levels.indexOf(this.recipe.difficulty.toUpperCase()) + 1;
 		},
 	},
 

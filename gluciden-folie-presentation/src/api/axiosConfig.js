@@ -14,6 +14,7 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jwt");
     if (token) {
+      if (!config.headers) config.headers = {};
       if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -22,27 +23,34 @@ apiClient.interceptors.request.use(
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"]; // Axios le gère automatiquement
     }
-    return config; 
+    return config;
   },
   (error) => {
-    return Promise.reject(error); // Rejeter en cas d'erreur
+    return Promise.reject(error);
   }
 );
 
 // Intercepteur -> Gestion de l'erreur 401
 apiClient.interceptors.response.use(
-  (response) => response, // Si la réponse est valide, on la renvoie
+  (response) => response,
   async (error) => {
+    const originalRequest = error.config;
+
     if (error.response && error.response.status === 401) {
       console.log("Erreur 401 : Jeton invalide ou expiré.");
-      // Supprimer le jeton si il est invalide ou expiré
+      // Supprimer le jeton
       localStorage.removeItem("jwt");
-      // Rediriger l'utilisateur vers la page de connexion
-      if (window.location.pathname !== "/login") {
-        await router.push("/login"); // Assure-toi que cela redirige correctement
+
+      // Éviter la boucle infinie en vérifiant un flag custom "_retry"
+      if (!originalRequest._retry && window.location.pathname !== "/login") {
+        originalRequest._retry = true; // Marque la requête comme "déjà gérée"
+
+        // Redirige vers /login
+        await router.push("/login");
       }
     }
-    return Promise.reject(error); // Rejeter l'erreur pour que l'appel d'API puisse la gérer
+
+    return Promise.reject(error);
   }
 );
 
