@@ -1,27 +1,35 @@
 <template>
-	<v-footer class="custom-footer ">
-		<v-container >
+	<v-footer class="custom-footer">
+		<v-container>
 			<div class="footer-row">
 				<h4>{{ $t("footer.notices") }}</h4>
 			</div>
 
 			<ul class="footer-row">
 				<li>
-					<a href="/apropos">{{ $t("footer.about") }}</a>
+					<router-link :to="{ name: 'about' }">{{
+						$t("footer.about")
+					}}</router-link>
 				</li>
 				<li>
-					<a href="/politique-confidentialite">{{
+					<router-link :to="{ name: 'privacyPolicy' }">{{
 						$t("footer.privacy_policy")
-					}}</a>
+					}}</router-link>
 				</li>
 				<li>
-					<a href="/termes-utilisation">{{ $t("footer.terms_of_use") }}</a>
+					<router-link :to="{ name: 'termsOfUse' }">{{
+						$t("footer.terms_of_use")
+					}}</router-link>
 				</li>
 				<li>
-					<a href="/plan">{{ $t("footer.site_map") }}</a>
+					<router-link :to="{ name: 'siteMap' }">{{
+						$t("footer.site_map")
+					}}</router-link>
 				</li>
 				<li>
-					<a href="/contact">{{ $t("footer.contact") }}</a>
+					<router-link :to="{ name: 'contact' }">{{
+						$t("footer.contact")
+					}}</router-link>
 				</li>
 			</ul>
 

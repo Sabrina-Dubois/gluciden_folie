@@ -4,7 +4,7 @@
 		<v-card class="d-flex mx-auto my-auto" elevation="4" >
 			<v-container class="text" fluid>
 				<p class="intro">
-					Retrouvez ici les pages principales du site pour naviguer facilement.
+					{{ $t("site_map.description") }}
 				</p>
 				<ul class="sitemap-list">
 					<li>
@@ -35,7 +35,9 @@
 </template>
 
 <script scoped>
-export default {};
+export default {
+	name: "siteMap",
+};
 </script>
 
 <style scoped>

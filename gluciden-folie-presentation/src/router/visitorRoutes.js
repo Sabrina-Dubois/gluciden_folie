@@ -20,15 +20,15 @@ export default [
     component: () => import("@/views/RecipesList.vue"),
   },
   {
-    path: "/recipes/:id",
+    path: "/recettes/:id",
     name: "recipeDetails",
     component: () => import("@/views/RecipeDetails.vue"),
     props: true,
   },
   {
-    path: "/unauthorized",
-    name: "unauthorized",
-    component: () => import("../views/Unauthorized.vue"),
+    path: "/:notFound",
+    name: "notfound",
+    component: () => import("../views/NotFound.vue"),
   },
 
   {

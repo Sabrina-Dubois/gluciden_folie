@@ -25,8 +25,8 @@
     "button-auth": "Créer un compte",
     "button-connexion": "Se connecter",
     "email": {
-      "label-mail": "Email",
-      "placeholder-mail": "Enter your email "
+      "label-mail": "Nom d'utilisateur",
+      "placeholder-mail": "Entrer votre email "
     },
     "password": {
       "label-pass": "Mot de passe",
@@ -52,7 +52,7 @@
     "title": "Modifier une recette",
     "recipe": {
       "name": "Titre de la recette",
-      "label": "Nom de la recette"
+      "label": "Titre de la recette"
     },
     "picture": {
       "picture": "Photo",
@@ -106,33 +106,22 @@
     },
     "button": "Ajouter"
   },
-  "create_sub_category": {
-    "page": {
-      "title": "Ajouter une sous-catégorie",
-      "button": "Ajouter sous-catégorie"
-    }
-  },
   "category_list": {
     "title": "Liste des catégories"
   },
   "update_category": {
-    "title": "Modifier une nouvelle catégorie",
+    "title": "Modifier une catégorie",
     "category": {
-      "name": "Titre de la catégorie",
+      "name": "Nom de la catégorie",
       "label": "Nom de la catégorie"
     },
     "picture": "Photo",
     "label": "Télécharger la photo",
-
     "button": "Enregistrer"
   },
   "errors": {
     "not_found": "Page non trouvée",
     "server_error": "Une erreur est survenue. Veuillez réessayer plus tard."
-  },
-  "test_page": {
-    "title": "Page de test",
-    "text": "Vous êtes sur la page de test. Vous pouvez naviguer vers d'autres pages via la barre de navigation."
   },
   "footer": {
     "notices": "Mentions légales",
@@ -144,6 +133,7 @@
     "copyright": "GLUCID'EN FOLIE. Tous droits réservés."
   },
   "site_map": {
+    "description": "Retrouvez ici les pages principales du site pour naviguer facilement.",
     "title": "Plan du site",
     "home": "Accueil",
     "about": "A propos",

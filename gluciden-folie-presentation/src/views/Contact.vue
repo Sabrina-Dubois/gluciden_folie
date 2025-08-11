@@ -18,13 +18,13 @@
 </template>
 
 <style scoped>
+/* --- Container --- */
 .main-content.custom-bg {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	padding-top: 10px;
-}
-
-.contactForm {
-	max-width: 800px;
-	margin: auto;
 }
 
 .v-form {
@@ -47,15 +47,6 @@
 	color: #d3beb1;
 }
 
-<style scoped>
-/* --- Container --- */
-.main-content.custom-bg {
-	padding: 20px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
 /* --- Titre --- */
 .contact-title {
 	text-align: center;
@@ -68,20 +59,20 @@
 	max-width: 800px;
 	width: 100%;
 	margin: auto;
-	padding: 20px; 
+	padding: 20px;
 }
 
 /* --- Formulaire --- */
 .form-content {
 	display: flex;
 	flex-direction: column;
-	gap: 20px; 
+	gap: 20px;
 }
 
 /* --- Bouton --- */
 .button-container {
 	display: flex;
-	justify-content: center; 
+	justify-content: center;
 	margin-top: 10px;
 }
 

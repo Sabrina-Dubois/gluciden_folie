@@ -25,7 +25,7 @@
     "button-auth": "Create an account",
     "button-connexion": "Connect",
     "email": {
-      "label-mail": "Email",
+      "label-mail": "Username",
       "placeholder-mail": "Enter your email "
     },
     "password": {
@@ -106,25 +106,22 @@
     },
     "button": "Add"
   },
-
   "category_list": {
     "title": "Category List"
   },
   "update_category": {
     "title": "Update category",
     "category": {
-      "name": "Category title",
+      "name": "Category name",
       "label": "Category name"
     },
-
     "picture": "Picture",
     "label": "Download picture",
-
     "button": "Save"
   },
-  "test_page": {
-    "title": "Test Page",
-    "text": "You are on the test page. You can navigate to other pages via the navigation bar."
+  "errors": {
+    "not_found": "Not found Page",
+    "server_error": "Error,can yoretry later."
   },
   "footer": {
     "notices": "Legal notices",
@@ -136,6 +133,7 @@
     "copyright": "GLUCID'EN FOLIE.All rights reserved."
   },
   "site_map": {
+    "description": "Here you will find the main pages of the site for easy navigation.",
     "title": "Site Map",
     "home": "Home",
     "about": "About",
