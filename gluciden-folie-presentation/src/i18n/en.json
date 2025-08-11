@@ -172,6 +172,11 @@
     "message": "Message",
     "button": "Send"
   },
+  "not_found": {
+    "title": "404 - Page not found",
+    "message": "The page you are looking for does not exist.",
+    "button": "Return to home"
+  },
   "validation": {
     "required": "This field is required.",
     "numeric": "This field must be a number.",
@@ -186,5 +191,3 @@
     "validDifficulty": "The difficulty isn't valid"
   }
 }
-
-

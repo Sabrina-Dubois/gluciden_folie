@@ -172,6 +172,11 @@
     "message": "Message",
     "button": "Envoyer"
   },
+  "not_found": {
+    "title": "404 - Page non trouvée",
+    "message": "Oups ! La page que vous cherchez n'existe pas.",
+    "button":"Retourner à l'accueil"
+  },
   "validation": {
     "required": "Ce champ est obligatoire.",
     "numeric": "Ce champ doit être un nombre.",
