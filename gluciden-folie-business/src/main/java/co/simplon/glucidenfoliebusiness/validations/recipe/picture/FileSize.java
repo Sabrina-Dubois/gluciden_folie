@@ -9,22 +9,21 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-
 @Retention(RetentionPolicy.RUNTIME) // compilation
-@Target(ElementType.FIELD)//permettre utilisation que sur des champs pas sur class ni parametres
+@Target(ElementType.FIELD) // permettre utilisation que sur des champs pas sur class ni parametres
 @Documented // Documenter ou exploiter
 @Constraint(validatedBy = FileSizeValidator.class) // contrainte de validation qui fait référence a FileSizeValidator
-public @interface FileSize { //method
-	
-	static final long ONE_MB  = 1024 * 1024;
+public @interface FileSize { // method
+
+	static final long ONE_MB = 1024L * 1024;
 
 	static final long TWO_MB = ONE_MB * 2;
-	
+
 	long max() default FileSize.ONE_MB;
-	
-	String message() default ""; //pourquoi ça ne passe pas 
-	
-	Class <?>[] groups() default {}; //regrouper pls contraintes de validation
-	
+
+	String message() default ""; // pourquoi ça ne passe pas
+
+	Class<?>[] groups() default {}; // regrouper pls contraintes de validation
+
 	Class<? extends Payload>[] payload() default {};
 }

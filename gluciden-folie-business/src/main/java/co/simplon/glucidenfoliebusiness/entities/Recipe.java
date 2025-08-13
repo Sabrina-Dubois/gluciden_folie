@@ -48,7 +48,11 @@ public class Recipe extends AbstractEntity {
 	@JsonBackReference
 	private Account account;
 
+	/**
+	 * Constructeur par défaut requis par JPA. Ne rien implémenter ici.
+	 */
 	public Recipe() {
+		// vide volontairement
 	}
 
 	@Override

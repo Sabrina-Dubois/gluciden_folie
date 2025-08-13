@@ -17,12 +17,9 @@ public class StepService {
 	}
 
 	public List<Step> getStepsByRecipeIdOrderByNumber(Long recipeId) {
-		// Recipe recipe = new Recipe();
-		// recipe.setId(recipeId);
 		return stepRepo.findByRecipeIdOrderByNumberAsc(recipeId);
 	}
 
-	// + Méthode de sauvegarde explicite
 	public List<Step> saveAll(List<Step> steps) {
 		return stepRepo.saveAll(steps);
 	}

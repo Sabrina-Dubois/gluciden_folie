@@ -32,8 +32,11 @@ public class Ingredient extends AbstractEntity {
 		return false;
 	}
 
+	/**
+	 * Constructeur par défaut requis par JPA. Ne rien implémenter ici.
+	 */
 	public Ingredient() {
-
+		// vide volontairement
 	}
 
 	@Override

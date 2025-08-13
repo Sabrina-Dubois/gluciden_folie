@@ -26,13 +26,16 @@ import co.simplon.glucidenfoliebusiness.entities.RecipeIngredientUnityId;
 import co.simplon.glucidenfoliebusiness.entities.Step;
 import co.simplon.glucidenfoliebusiness.entities.Unity;
 import co.simplon.glucidenfoliebusiness.enums.Difficulty;
+import co.simplon.glucidenfoliebusiness.exceptions.AccountNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.IngredientNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.RecipeNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.UnityNotFoundException;
 import co.simplon.glucidenfoliebusiness.repositories.AccountRepository;
 import co.simplon.glucidenfoliebusiness.repositories.IngredientRepository;
 import co.simplon.glucidenfoliebusiness.repositories.RecipeIngredientUnityRepository;
 import co.simplon.glucidenfoliebusiness.repositories.RecipeRepository;
 import co.simplon.glucidenfoliebusiness.repositories.StepRepository;
 import co.simplon.glucidenfoliebusiness.repositories.UnityRepository;
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class RecipeService {
@@ -75,8 +78,7 @@ public class RecipeService {
 		Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = jwt.getClaimAsString("sub");
 
-		Account account = accountsRepo.findByUsernameIgnoreCase(username)
-				.orElseThrow(() -> new RuntimeException("Account not found for username: " + username));
+		Account account = accountsRepo.findByUsernameIgnoreCase(username).orElseThrow(AccountNotFoundException::new);
 		recipe.setAccount(account);
 
 		// Gestion de la photo
@@ -95,9 +97,9 @@ public class RecipeService {
 			for (RecipeIngredientUnityDto riuDto : recipeDto.ingredients()) {
 				Ingredient ingredient;
 				if (riuDto.ingredientId() != null) {
-					ingredient = ingredientsRepo.findById(riuDto.ingredientId()).orElseThrow(
-							() -> new RuntimeException("Ingrédient non trouvé avec l'ID : " + riuDto.ingredientId()));
-				} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
+					ingredient = ingredientsRepo.findById(riuDto.ingredientId())
+							.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
+				} else if (riuDto.ingredient() != null && riuDto.ingredient.Name() != null) {
 					String name = riuDto.ingredient().name().trim();
 					ingredient = ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
 						Ingredient newIngredient = new Ingredient();
@@ -105,11 +107,11 @@ public class RecipeService {
 						return ingredientsRepo.save(newIngredient);
 					});
 				} else {
-					throw new RuntimeException("Aucun ID ni nom d’ingrédient fourni.");
+					throw new IllegalArgumentException("Aucun ID ni nom d’ingrédient fourni.");
 				}
 
 				Unity unity = unityRepo.findById(riuDto.unityId())
-						.orElseThrow(() -> new RuntimeException("Unité non trouvée avec l'ID : " + riuDto.unityId()));
+						.orElseThrow(() -> new UnityNotFoundException(riuDto.unityId()));
 
 				RecipeIngredientUnity riu = new RecipeIngredientUnity();
 				riu.setRecipe(savedRecipe);
@@ -128,10 +130,8 @@ public class RecipeService {
 
 		// Sauvegarder les étapes
 		if (recipeDto.steps() != null) {
-			System.out.println("STEPS DTO : " + recipeDto.steps());
-
 			for (StepCreateDto stepDto : recipeDto.steps()) {
-				System.out.println("StepDTO → number: " + stepDto.number() + ", description: " + stepDto.description());
+
 				Step step = new Step();
 				step.setRecipe(savedRecipe);
 				step.setNumber(stepDto.number());
@@ -149,6 +149,11 @@ public class RecipeService {
 		UUID uuid = UUID.randomUUID();
 		String name = pictureFromDto.getOriginalFilename();
 		int index = name.lastIndexOf('.');
+
+		// Pas d’extension trouvée (pas de point dans le nom)
+		if (index == -1) {
+			return uuid + ".jpg";
+		}
 		String ext = name.substring(index);
 		return uuid + ext;
 	}
@@ -160,7 +165,7 @@ public class RecipeService {
 			File file = new File(dest);
 			pictureFromDto.transferTo(file);
 		} catch (Exception ex) {
-			throw new RuntimeException("Erreur lors du stockage de l'image", ex);
+			throw new IllegalArgumentException("Erreur lors du stockage de l'image", ex);
 		}
 	}
 
@@ -177,7 +182,7 @@ public class RecipeService {
 	/* ********** GET : une recette via son id ********** */
 	@Transactional(readOnly = true)
 	public RecipeReadDto getOne(Long id) {
-		Recipe recipe = recipesRepo.findById(id).orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+		Recipe recipe = recipesRepo.findById(id).orElseThrow(() -> new RecipeNotFoundException(id));
 
 		// Ingrédients
 		List<RecipeIngredientUnity> rius = riuRepo.findByRecipe(recipe);
@@ -201,7 +206,7 @@ public class RecipeService {
 	/* ********** DELETE : une recette ********** */
 	public void deleteOne(Long id) {
 		if (!recipesRepo.existsById(id)) {
-			throw new EntityNotFoundException("Recipe not found");
+			throw new RecipeNotFoundException(id);
 		}
 		// Supprimer les liens avec les ingrédients avant la recette
 		riuRepo.deleteByRecipeId(id);
@@ -217,7 +222,7 @@ public class RecipeService {
 	/* ********** UPDATE : une recette ********** */
 	@Transactional
 	public void updateOne(long id, RecipeUpdateDto inputs) {
-		Recipe recipe = recipesRepo.findById(id).orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+		Recipe recipe = recipesRepo.findById(id).orElseThrow(() -> new RecipeNotFoundException(id));
 
 		recipe.setName(inputs.name());
 
@@ -244,8 +249,8 @@ public class RecipeService {
 			for (RecipeIngredientUnityDto riuDto : newIngredients) {
 				Ingredient ingredient;
 				if (riuDto.ingredientId() != null) {
-					ingredient = ingredientsRepo.findById(riuDto.ingredientId()).orElseThrow(
-							() -> new RuntimeException("Ingrédient non trouvé avec l'ID : " + riuDto.ingredientId()));
+					ingredient = ingredientsRepo.findById(riuDto.ingredientId())
+							.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
 				} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
 					String name = riuDto.ingredient().name().trim();
 					ingredient = ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
@@ -254,11 +259,11 @@ public class RecipeService {
 						return ingredientsRepo.save(newIngredient);
 					});
 				} else {
-					throw new RuntimeException("Aucun ID ni nom d’ingrédient fourni.");
+					throw new IllegalArgumentException("Aucun ID ni nom d’ingrédient fourni.");
 				}
 
 				Unity unity = unityRepo.findById(riuDto.unityId())
-						.orElseThrow(() -> new RuntimeException("Unité non trouvée avec l'ID : " + riuDto.unityId()));
+						.orElseThrow(() -> new UnityNotFoundException(riuDto.unityId()));
 
 				RecipeIngredientUnity riu = new RecipeIngredientUnity();
 				riu.setRecipe(recipe);

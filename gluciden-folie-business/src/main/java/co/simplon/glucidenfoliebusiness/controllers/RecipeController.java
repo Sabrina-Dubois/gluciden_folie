@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,38 +43,14 @@ public class RecipeController {
 		this.recipeService = recipeService;
 	}
 
-	@PostMapping
-	public Recipe create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
-			@RequestParam(value = "difficulty", required = false) Difficulty difficulty,
-			@RequestParam("ingredients") String ingredientsJson,
-			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {
-
-		if (difficulty == null) {
-			difficulty = Difficulty.FACILE;
-		}
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		// Désérialisation des ingrédients
-		List<RecipeIngredientUnityDto> ingredients = objectMapper.readValue(ingredientsJson,
-				new TypeReference<List<RecipeIngredientUnityDto>>() {
-				});
-
-		// Désérialisation des étapes
-		List<StepCreateDto> steps = List.of(); // Liste vide par défaut
-		if (stepsJson != null && !stepsJson.trim().isEmpty()) {
-			steps = objectMapper.readValue(stepsJson, new TypeReference<List<StepCreateDto>>() {
-			});
-		}
-
-		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, difficulty, ingredients, steps);
-		return recipeService.create(recipeCreateDto);
-
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Recipe> create(@Valid @ModelAttribute RecipeCreateDto recipeCreateDto) {
+		Recipe createdRecipe = recipeService.create(recipeCreateDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdRecipe);
 	}
 
 	@GetMapping
 	Collection<Recipe> getAll() {
-		System.out.println("GET /recipes reçu");
 		return recipeService.getAll();
 	}
 

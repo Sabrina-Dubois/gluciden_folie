@@ -23,7 +23,7 @@ public class UnityController {
 	// injection service via controller
 	private final UnityService unityService;
 
-	private UnityController(UnityService unityService) {
+	public UnityController(UnityService unityService) {
 		this.unityService = unityService;
 	}
 

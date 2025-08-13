@@ -10,5 +10,5 @@ import co.simplon.glucidenfoliebusiness.entities.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-	Optional<Role> findByRoleName(String RoleName);
+	Optional<Role> findByRoleName(String roleName);
 }

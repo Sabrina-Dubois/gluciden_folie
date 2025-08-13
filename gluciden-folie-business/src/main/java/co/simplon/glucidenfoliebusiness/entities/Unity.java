@@ -20,7 +20,7 @@ public class Unity extends AbstractEntity {
 	private Set<RecipeIngredientUnity> recipeIngredients = new HashSet<>();
 
 	public Unity() {
-
+		// Constructeur par défaut requis par JPA
 	}
 
 	@Override

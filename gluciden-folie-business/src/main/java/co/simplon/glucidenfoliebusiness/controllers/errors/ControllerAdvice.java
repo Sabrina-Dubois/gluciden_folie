@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import co.simplon.glucidenfoliebusiness.exceptions.AccountNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.IngredientNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.InvalidRecipeException;
+import co.simplon.glucidenfoliebusiness.exceptions.RecipeNotFoundException;
+import co.simplon.glucidenfoliebusiness.exceptions.UnityNotFoundException;
+
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
@@ -27,28 +33,35 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 		return super.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
 	}
 
-	// Gestion des erreurs 400 (Bad Request) pour des validations échouées
-	// @ExceptionHandler(value = MethodArgumentNotValidException.class)
-	// protected ResponseEntity<Object>
-	// handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
-	// WebRequest request) {
-	// return new ResponseEntity<>(ex.getBindingResult().getAllErrors(),
-	// HttpStatus.BAD_REQUEST);
-	// }
+	@ExceptionHandler(AccountNotFoundException.class)
+	public ResponseEntity<String> handleAccountNotFound(AccountNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
 
-	// Gestion des erreurs 404 (Not Found)
-	// @ExceptionHandler(value = ResourceNotFoundException.class)
-	// protected ResponseEntity<Object>
-	// handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest
-	// request) {
-	// return new ResponseEntity<>("Ressource non trouvée", HttpStatus.NOT_FOUND);
-	// }
+	@ExceptionHandler(IngredientNotFoundException.class)
+	public ResponseEntity<String> handleIngredientNotFound(IngredientNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
 
-	// Gestion des erreurs 409 (Conflict), par exemple en cas de doublon
-	// @ExceptionHandler(value = DuplicateResourceException.class)
-	// protected ResponseEntity<Object>
-	// handleDuplicateResourceException(DuplicateResourceException ex,
-	// WebRequest request) {
-	// return new ResponseEntity<>("Ressource déjà existante", HttpStatus.CONFLICT);
-	// }
+	@ExceptionHandler(RecipeNotFoundException.class)
+	public ResponseEntity<String> handleRecipeNotFound(RecipeNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(UnityNotFoundException.class)
+	public ResponseEntity<String> handleUnityNotFound(UnityNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(InvalidRecipeException.class)
+	public ResponseEntity<String> handleInvalidNotFound(InvalidRecipeException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	// Handler générique pour RuntimeException non prévue
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
+
 }

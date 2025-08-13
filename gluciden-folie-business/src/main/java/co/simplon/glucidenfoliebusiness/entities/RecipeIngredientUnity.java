@@ -24,17 +24,17 @@ public class RecipeIngredientUnity {
 	private RecipeIngredientUnityId id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("ingredientId") // correspond à ingredientId dans RecipeIngredientUnityId
+	@MapsId("ingredientId")
 	@JoinColumn(name = "id_ingredient")
 	private Ingredient ingredient;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@MapsId("unityId") // correspond à unityId dans RecipeIngredientUnityId
+	@MapsId("unityId")
 	@JoinColumn(name = "id_unity")
 	private Unity unity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("recipeId") // correspond à recipeId dans RecipeIngredientUnityId
+	@MapsId("recipeId")
 	@JoinColumn(name = "id_recipe")
 	private Recipe recipe;
 
