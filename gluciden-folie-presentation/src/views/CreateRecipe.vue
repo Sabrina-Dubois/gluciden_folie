@@ -79,7 +79,7 @@ import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import Ingredients from "@/components/Ingredients.vue";
 import Steps from "@/components/Steps.vue";
-import i18n from "@/i18n/i18n"; 
+import i18n from "@/i18n/i18n";
 
 export default {
 	name: "createRecipe",
@@ -92,9 +92,13 @@ export default {
 			form: {
 				name: "",
 				picture: null,
-				ingredients: [],
+				//ingredients: [],
+				ingredientList: [
+					{ ingredient: { name: "" }, quantity: null, unityId: null },
+				],
+				steps: [{ number: 1, description: "" }],
 				difficulty: null,
-				steps: [],
+				//steps: [],
 			},
 			imagePreview: null,
 			v$: null,
@@ -119,9 +123,12 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
-			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			if (rules.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
+			if (rules.minLength.$invalid)
+				errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+			if (rules.maxLength.$invalid)
+				errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
 			return errors;
 		},
 		pictureErrors() {
@@ -129,9 +136,12 @@ export default {
 			const rules = this.v$.form.picture;
 
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
-				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid)
+					errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid)
+					errors.push(i18n.global.t("validation.validImageSize"));
 			}
 
 			return errors;
@@ -142,7 +152,8 @@ export default {
 			}
 			const errors = [];
 			const rules = this.v$.form.difficulty;
-			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},
@@ -193,8 +204,8 @@ export default {
 					name: this.form.name,
 					picture: this.form.picture,
 					difficulty: this.difficultyNumberToString(this.form.difficulty),
-					ingredientList: this.form.ingredients,
-					steps: this.form.steps,
+					ingredientList: this.form.ingredientList,
+					steps: this.form.steps
 				});
 			} catch (error) {
 				console.error("Erreur lors de la création de la recette :", error);
@@ -206,30 +217,10 @@ export default {
 </script>
 
 <style scoped>
-.main-content.custom-bg {
-	padding-top: 10px;
-}
-
-.recipeForm {
-	max-width: 800px;
-	margin: auto;
-}
-
 .v-form {
 	background-color: white;
 	width: 100%;
-}
-
-.v-text-field,
-.v-file-input {
-	max-width: auto;
-	margin-bottom: 30px;
-	padding-left: 20px;
-	color: #5d827f;
-}
-
-.custom-rating {
-	color: #5d827f;
+	overflow-x: hidden;
 }
 
 /* *** Boutons *** */
@@ -237,5 +228,83 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
+}
+.custom-btn {
+	display: block;
+	margin: 30px auto 0 auto;
+	width: auto !important;
+	min-width: 150px;
+	padding: 10px 25px;
+	font-weight: 600;
+}
+
+/* *** MOBILE FIRST *** */
+.main-content.custom-bg {
+	padding: 10px 15px 30px; /* un peu plus d’espace en bas */
+}
+
+.recipeForm {
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 15px;
+	box-sizing: border-box;
+}
+
+/* *** Champs *** */
+.v-text-field,
+.v-file-input {
+	width: 100% !important;
+	margin-bottom: 20px;
+	padding-left: 10px;
+	color: #5d827f;
+}
+
+/* *** Titre principal *** */
+h1 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 15px;
+	text-align: center;
+	word-break: break-word;
+}
+h3 {
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+	color: #5d827f;
+	word-break: break-word;
+}
+
+/* *** Image *** */
+.recipe-picture {
+	width: 100% !important;
+	height: auto !important;
+	max-height: 200px;
+	object-fit: contain !important;
+	margin-bottom: 20px;
+	border-radius: 8px;
+}
+
+/* *** Rating *** */
+.custom-rating {
+	color: #5d827f;
+	margin-bottom: 20px;
+}
+
+.ingredients,
+.steps,
+.v-form > div {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* *** DESKTOP *** */
+@media (min-width: 900px) {
+	.recipeForm {
+		max-width: 800px;
+	}
+
+	h1 {
+		font-size: 2.2rem;
+	}
 }
 </style>

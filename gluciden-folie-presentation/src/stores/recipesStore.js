@@ -8,6 +8,7 @@ export const useRecipesStore = defineStore("recipes", {
     picture: null,
     difficulty: 0,
     ingredientList: [],
+    steps: [],
   }),
   actions: {
     // Récupérer les recettes
@@ -22,9 +23,8 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
     // Ajouter une nouvelle recette
-    async addRecipe({ name, picture, difficulty, ingredientList,steps }) {
+    async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
       try {
-        // Validation des ingrédients
         ingredientList.forEach((ingredient) => {
           if (
             !ingredient.ingredient ||
@@ -36,61 +36,82 @@ export const useRecipesStore = defineStore("recipes", {
           }
         });
 
+        /* Pour les ingrédients
+        ingredients.forEach((i, index) => {
+          formData.append(`ingredients[${index}].ingredient.name`, i.ingredient.name);
+          formData.append(`ingredients[${index}].quantity`, i.quantity);
+          formData.append(`ingredients[${index}].unityId`, i.unityId);
+        });
+
+        // Pour les étapes
+        steps.forEach((s, index) => {
+          formData.append(`steps[${index}].number`, s.number);
+          formData.append(`steps[${index}].description`, s.description);
+        }); */
+
         const formData = new FormData();
         if (picture) {
           formData.append("picture", picture);
         }
+
         formData.append("name", name);
-        formData.append("difficulty", difficulty.toUpperCase());
-        formData.append("ingredients", JSON.stringify(ingredientList));
-        formData.append("steps", JSON.stringify(steps));
+        formData.append("difficulty", typeof difficulty === "string" ? difficulty.toUpperCase() : difficulty);
+
+        formData.append(
+          "ingredients",
+          JSON.stringify(
+            ingredientList.map((i) => ({
+              ingredient: { name: i.ingredient.name },
+              quantity: i.quantity ,
+              unityId: i.unityId
+            }))
+          )
+        );
+
+        formData.append(
+          "steps",
+          JSON.stringify(
+            steps.map((i) => ({
+              number: i.number,
+              description: i.description
+            }))
+          )
+        );
 
         const response = await apiClient.post("/recipes", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        // Vérification de la réponse
         if (response.status === 200 || response.status === 201) {
-          const newRecipe = response.data;
-          console.log("Recette reçue du backend avant la validation :", newRecipe); // Log détaillé avant validation
+          this.recipes.push(response.data);
 
-          // Validation de la réponse
-          if (!newRecipe || typeof newRecipe !== "object" || !newRecipe.id || !newRecipe.name) {
-            console.error("La recette renvoyée a un format inattendu :", newRecipe);
-            throw new Error("La recette renvoyée est invalide.");
-          }
-
-          // Ajoute la recette à la liste
-          newRecipe.ingredients = ingredientList;
-          this.recipes.push(newRecipe);
-
-          // Réinitialisation des champs
+          // Reset des champs du store
           this.name = "";
           this.picture = null;
           this.difficulty = 0;
           this.ingredientList = [];
+          this.steps = [];
 
           alert("Recette créée avec succès !");
-          console.log("Recette créée avec succès !");
           return true;
+
         } else {
           console.error("Erreur lors de la création de la recette", response);
           throw new Error("La création de la recette a échoué.");
         }
       } catch (error) {
+        console.log("Recette ajoutée:", response.data);
         console.error("Erreur lors de l'ajout de la recette", error);
         alert("Une erreur s'est produite lors de l'ajout de la recette.");
         return false;
       }
     },
+
     async updateRecipe(id, formData) {
       try {
-        console.log("Payload envoyé pour mise à jour :", formData);
-        const response = await apiClient.put(`/recipes/${id}`, formData, {
-          
-        });
+        const response = await apiClient.put(`/recipes/${id}`, formData, {});
 
-        // Mise à jour de la recette dans le tableau local si besoin
+        // Mise à jour de la recette dans le tableau local
         const index = this.recipes.findIndex((r) => r.id === id);
         if (index !== -1) {
           this.recipes[index] = response.data;
@@ -104,12 +125,8 @@ export const useRecipesStore = defineStore("recipes", {
     },
     async deleteRecipe(recipeId) {
       await apiClient.delete(`/recipes/${recipeId}`);
-      // Option 1 : refaire un fetch complet
-      //await this.fetchRecipes();
 
-      // Option 2 : (plus optimisé) supprimer localement sans refaire un fetch
       this.recipes = this.recipes.filter((r) => r.id !== recipeId);
     },
   },
 });
-

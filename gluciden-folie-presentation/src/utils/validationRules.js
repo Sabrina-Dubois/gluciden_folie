@@ -69,8 +69,6 @@ export const recipeValidation = {
             // validation pour les chiffres (create)
             return value >= 1 && value <= 4;
           } else if (typeof value === "string") {
-            // validation pour les lettres (update)
-            // exemple : accepte uniquement "A", "B", "C", "D"
             const allowedStrings = ["FACILE", "MOYEN", "DIFFICLIE", "EXPERT"];
             return allowedStrings.includes(value);
           } else {

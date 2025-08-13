@@ -127,9 +127,11 @@ export default {
 	margin: auto;
 	padding: 20px;
 }
+
 .recipe-picture {
-	margin: 20px 0;
-	object-fit: cover;
+	width: 100%; 
+	aspect-ratio: 1 / 1; 
+	object-fit: cover; 
 	border-radius: 8px;
 }
 

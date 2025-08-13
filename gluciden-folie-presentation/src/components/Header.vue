@@ -2,7 +2,13 @@
 	<v-app-bar class="custom-app-bar">
 		<!-- Menu principal -->
 		<v-menu
-			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
+			v-if="
+				!isCreateRecipe &&
+				!isCreateCategory &&
+				!isLoginPage &&
+				!isUpdateRecipe &&
+				!isUpdateCategory
+			"
 			v-model="menuOpen"
 			offset-y
 			class="text-center"
@@ -83,7 +89,14 @@
 
 		<!-- Barre de recherche -->
 		<v-text-field
-			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
+			v-if="
+				!isCreateRecipe &&
+				!isCreateCategory &&
+				!isLoginPage &&
+				!isUpdateRecipe &&
+				!isUpdateCategory &&
+				!isCategoriesList
+			"
 			class="custom-text-field hidden-sm-and-down"
 			append-inner-icon="mdi-magnify"
 			density="compact"
@@ -95,7 +108,13 @@
 
 		<!-- Loupe visible seulement en mobile -->
 		<v-btn
-			v-if="!isCreateRecipe && !isCreateCategory && !isLoginPage"
+			v-if="
+				!isCreateRecipe &&
+				!isCreateCategory &&
+				!isLoginPage &&
+				!isUpdateRecipe &&
+				!isUpdateCategory
+			"
 			icon
 			class="hidden-md-and-up"
 		>
@@ -137,23 +156,10 @@ export default {
 	},
 	computed: {
 		isAdmin() {
-			// 1. Récupère le token JWT depuis le localStorage
 			const token = localStorage.getItem("jwt");
-			// 2. Si pas de token, l'utilisateur n'est pas admin
 			if (!token) return false;
 			try {
-				// 3. Décodage du token JWT (qui a 3 parties séparées par des points)
-				// atob() décode une string en base64
-				// On prend la partie payload (index 1) qui contient les infos utilisateur
-				//token.split(".") : Cette méthode découpe le token en trois parties (header, payload, signature).
-
-				//token.split(".")[1] : Cela récupère la partie payload du token (la deuxième section).
-
-				//atob() : Cette fonction est utilisée pour décoder la chaîne en base64 et la convertir en texte lisible.
 				const payload = JSON.parse(atob(token.split(".")[1]));
-				// Solution 1 (si vous utilisez la claim "role")
-				// 4. Vérifie si le tableau 'roles' contient 'ROLE_ADMIN'
-				// Le ?. est l'opérateur de chaînage optionnel (évite les erreurs si roles est undefined)
 				return (
 					payload.role === "ROLE_ADMIN" || payload.roles?.includes("ROLE_ADMIN")
 				);
@@ -169,6 +175,15 @@ export default {
 		},
 		isCreateCategory() {
 			return this.$route.name === "createCategory";
+		},
+		isCategoriesList() {
+			return this.$route.name === "categoriesList";
+		},
+		isUpdateRecipe() {
+			return this.$route.name === "updateRecipe";
+		},
+		isUpdateCategory() {
+			return this.$route.name === "updateCategory";
 		},
 		// Vérification si on est sur la page de login ou register
 		isLoginPage() {
@@ -216,11 +231,6 @@ export default {
 };
 </script>
 
-
-
-
-
-
 <style scoped>
 /* *** Titre *** */
 .title {
@@ -239,7 +249,6 @@ export default {
 	background-color: #d3beb1 !important;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	padding: 0 20px;
 	min-height: 100px;
 	justify-content: space-between;
@@ -278,7 +287,7 @@ export default {
 }
 .v-list-item:hover {
 	background-color: #f5ede8 !important;
-	color: #d3beb1 !important; /* Assurer que la couleur du texte au survol reste héritée */
+	color: #d3beb1 !important;
 }
 .flag-icon {
 	justify-content: center;
