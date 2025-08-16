@@ -28,6 +28,7 @@
 
 				<!-- Nouvelle image -->
 				<v-file-input
+					v-model="form.picture"
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
@@ -37,6 +38,7 @@
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
+					:multiple="false"
 				></v-file-input>
 
 				<!-- Difficultés -->
@@ -58,7 +60,7 @@
 
 				<!-- Ingrédients -->
 				<h3>{{ $t("create_recipe.ingredients") }}</h3>
-				<Ingredients v-model:ingredients="form.ingredients" />
+				<Ingredients v-model:ingredients="form.ingredientList" />
 
 				<!-- Étapes -->
 				<div>
@@ -83,22 +85,17 @@ import i18n from "@/i18n/i18n";
 
 export default {
 	name: "createRecipe",
-	components: {
-		Ingredients,
-		Steps,
-	},
+	components: { Ingredients, Steps },
 	data() {
 		return {
 			form: {
 				name: "",
 				picture: null,
-				//ingredients: [],
 				ingredientList: [
 					{ ingredient: { name: "" }, quantity: null, unityId: null },
 				],
 				steps: [{ number: 1, description: "" }],
 				difficulty: null,
-				//steps: [],
 			},
 			imagePreview: null,
 			v$: null,
@@ -106,11 +103,7 @@ export default {
 		};
 	},
 	validations() {
-		return {
-			form: {
-				...recipeValidation.form,
-			},
-		};
+		return { form: { ...recipeValidation.form } };
 	},
 	created() {
 		this.v$ = useVuelidate();
@@ -118,23 +111,21 @@ export default {
 
 	computed: {
 		nameErrors() {
-			if (!this.v$.form.name.$error) {
-				return [];
-			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid)
-				errors.push(i18n.global.t("validation.required"));
-			if (rules.minLength.$invalid)
-				errors.push(i18n.global.t("validation.minLength", { min: 4 }));
-			if (rules.maxLength.$invalid)
-				errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			if (rules.$error) {
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.minLength.$invalid)
+					errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+				if (rules.maxLength.$invalid)
+					errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			}
 			return errors;
 		},
 		pictureErrors() {
 			const errors = [];
 			const rules = this.v$.form.picture;
-
 			if (rules.$error) {
 				if (rules.required.$invalid)
 					errors.push(i18n.global.t("validation.required"));
@@ -143,44 +134,33 @@ export default {
 				if (rules.validImageSize.$invalid)
 					errors.push(i18n.global.t("validation.validImageSize"));
 			}
-
 			return errors;
 		},
 		difficultyErrors() {
-			if (!this.v$.form.difficulty.$error) {
-				return [];
-			}
 			const errors = [];
 			const rules = this.v$.form.difficulty;
-			if (rules.required.$invalid)
+			if (rules.$error && rules.required.$invalid)
 				errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},
 
 	methods: {
-		handleFileUpload(event) {
-			const file = event.target.files ? event.target.files[0] : null;
-			if (file) {
-				this.form.picture = file;
-				this.imagePreview = URL.createObjectURL(file);
-			} else {
-				this.imagePreview = null;
-				this.form.picture = null;
+		handleFileUpload(files) {
+			if (files && files.length > 0) {
+				const url = URL.createObjectURL(files[0]); // prends le premier fichier
+				console.log(url);
 			}
 		},
 
 		difficultyNumberToString(num) {
 			const difficultyLabels = ["FACILE", "MOYEN", "DIFFICILE", "EXPERT"];
-			if (num && num >= 1 && num <= 4) {
-				return difficultyLabels[num - 1];
-			}
-			return null;
+			return num >= 1 && num <= 4 ? difficultyLabels[num - 1] : null;
 		},
 
 		async addRecipe() {
 			this.submitted = true;
-
+			this.v$.$touch(); // touche toutes les validations
 			await this.v$.$validate();
 
 			if (this.v$.$invalid) {
@@ -190,31 +170,31 @@ export default {
 				);
 				return;
 			}
+
 			if (
-				!Array.isArray(this.form.ingredients) ||
-				this.form.ingredients.length === 0
-			) {
+				!Array.isArray(this.form.ingredientList) ||
+				!this.form.ingredientList.length
+			)
 				return;
-			}
 
 			try {
 				const recipesStore = useRecipesStore();
-
 				await recipesStore.addRecipe({
 					name: this.form.name,
 					picture: this.form.picture,
 					difficulty: this.difficultyNumberToString(this.form.difficulty),
 					ingredientList: this.form.ingredientList,
-					steps: this.form.steps
+					steps: this.form.steps,
 				});
+				this.$router.push({ name: "recipesList" });
 			} catch (error) {
 				console.error("Erreur lors de la création de la recette :", error);
 			}
-			this.$router.push({ name: "recipesList" });
 		},
 	},
 };
 </script>
+
 
 <style scoped>
 .v-form {

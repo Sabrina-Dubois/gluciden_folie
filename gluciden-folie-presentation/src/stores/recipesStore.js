@@ -10,13 +10,15 @@ export const useRecipesStore = defineStore("recipes", {
     ingredientList: [],
     steps: [],
   }),
+
   actions: {
     // Récupérer les recettes
     async fetchRecipes() {
       try {
         const response = await apiClient.get("/recipes");
         if (response.status === 200) {
-          this.recipes = response.data;
+          this.recipes = Array.isArray(response.data) ? response.data : [response.data];
+          return this.recipes;
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des recettes :", error);
@@ -25,108 +27,79 @@ export const useRecipesStore = defineStore("recipes", {
     // Ajouter une nouvelle recette
     async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
       try {
-        ingredientList.forEach((ingredient) => {
-          if (
-            !ingredient.ingredient ||
-            !ingredient.ingredient.name ||
-            !ingredient.quantity ||
-            ingredient.quantity <= 0
-          ) {
-            throw new Error("Chaque ingrédient doit avoir un nom et une quantité.");
-          }
-        });
+        if (!ingredientList || ingredientList.length === 0) {
+          throw new Error("Vous devez ajouter au moins un ingrédient.");
+        }
 
-        /* Pour les ingrédients
-        ingredients.forEach((i, index) => {
-          formData.append(`ingredients[${index}].ingredient.name`, i.ingredient.name);
-          formData.append(`ingredients[${index}].quantity`, i.quantity);
-          formData.append(`ingredients[${index}].unityId`, i.unityId);
-        });
-
-        // Pour les étapes
-        steps.forEach((s, index) => {
-          formData.append(`steps[${index}].number`, s.number);
-          formData.append(`steps[${index}].description`, s.description);
-        }); */
-
+        // Création du FormData
         const formData = new FormData();
+        formData.append("name", name);
+        formData.append("difficulty", difficulty.toString().toUpperCase());
+
         if (picture) {
           formData.append("picture", picture);
         }
 
-        formData.append("name", name);
-        formData.append("difficulty", typeof difficulty === "string" ? difficulty.toUpperCase() : difficulty);
+        // Ajout des ingrédients (notation avec crochets pour que Spring les parse correctement)
+        ingredientList.forEach((i, index) => {
+          if (i.ingredient.id) {
+            formData.append(`ingredients[${index}].ingredient.id`, i.ingredient.id);
+          } else {
+            formData.append(`ingredients[${index}].ingredient.name`, i.ingredient.name);
+          }
+          formData.append(`ingredients[${index}].quantity`, i.quantity);
+          formData.append(`ingredients[${index}].unityId`, i.unityId);
+        });
 
-        formData.append(
-          "ingredients",
-          JSON.stringify(
-            ingredientList.map((i) => ({
-              ingredient: { name: i.ingredient.name },
-              quantity: i.quantity ,
-              unityId: i.unityId
-            }))
-          )
-        );
+        // Ajout des étapes
+        steps.forEach((s, index) => {
+          formData.append(`steps[${index}].number`, s.number);
+          formData.append(`steps[${index}].description`, s.description);
+        });
 
-        formData.append(
-          "steps",
-          JSON.stringify(
-            steps.map((i) => ({
-              number: i.number,
-              description: i.description
-            }))
-          )
-        );
-
+        // Appel API
         const response = await apiClient.post("/recipes", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        if (response.status === 200 || response.status === 201) {
-          this.recipes.push(response.data);
+        // Mise à jour du store
+        this.recipes.push(response.data);
+        this.name = "";
+        this.picture = null;
+        this.difficulty = 0;
+        this.ingredientList = [];
+        this.steps = [];
 
-          // Reset des champs du store
-          this.name = "";
-          this.picture = null;
-          this.difficulty = 0;
-          this.ingredientList = [];
-          this.steps = [];
-
-          alert("Recette créée avec succès !");
-          return true;
-
-        } else {
-          console.error("Erreur lors de la création de la recette", response);
-          throw new Error("La création de la recette a échoué.");
-        }
+        alert("Recette créée avec succès !");
+        return true;
       } catch (error) {
-        console.log("Recette ajoutée:", response.data);
-        console.error("Erreur lors de l'ajout de la recette", error);
-        alert("Une erreur s'est produite lors de l'ajout de la recette.");
+        console.error("Erreur lors de l'ajout de la recette :", error);
+        alert(error.message || "Une erreur s'est produite lors de l'ajout de la recette.");
         return false;
       }
     },
 
     async updateRecipe(id, formData) {
       try {
-        const response = await apiClient.put(`/recipes/${id}`, formData, {});
-
-        // Mise à jour de la recette dans le tableau local
+        const response = await apiClient.put(`/recipes/${id}`, formData);
         const index = this.recipes.findIndex((r) => r.id === id);
         if (index !== -1) {
           this.recipes[index] = response.data;
         }
-
         return true;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de la recette:", error);
         return false;
       }
     },
-    async deleteRecipe(recipeId) {
-      await apiClient.delete(`/recipes/${recipeId}`);
 
-      this.recipes = this.recipes.filter((r) => r.id !== recipeId);
+    async deleteRecipe(recipeId) {
+      try {
+        await apiClient.delete(`/recipes/${recipeId}`);
+        this.recipes = this.recipes.filter((r) => r.id !== recipeId);
+      } catch (error) {
+        console.error("Erreur lors de la suppression de la recette :", error);
+      }
     },
   },
 });

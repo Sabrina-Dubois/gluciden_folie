@@ -82,7 +82,6 @@ import { useIngredientsStore } from "@/stores/ingredientsStore.js";
 import { ingredientValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import i18n from "@/i18n/i18n.js";
-//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "ingredients",
@@ -198,6 +197,12 @@ export default {
 
 			const updatedIngredients = [...this.ingredients, newIng];
 			this.$emit("update:ingredients", updatedIngredients);
+
+			await this.ingredientsStore.addIngredient(
+				this.newIngredient.name,
+				this.newIngredient.quantity,
+				unityId
+			);
 
 			// Réinitialiser le formulaire
 			this.newIngredient = { name: "", quantity: null, unityId: null };
