@@ -36,7 +36,7 @@
 						text-color="white"
 						outlined
 					>
-						{{ ingredient.name }} - {{ ingredient.quantity }}
+						{{ ingredient.ingredient.name }} - {{ ingredient.quantity }}
 						{{ getUnityName(ingredient.unityId) }}
 					</v-chip>
 				</v-chip-group>

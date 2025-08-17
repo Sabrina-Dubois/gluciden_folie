@@ -8,7 +8,11 @@
 					<v-col
 						v-for="recipe in sortedRecipes"
 						:key="recipe.id"
-						cols="12" sm="6" md="3" class="d-flex justify-center" >
+						cols="12"
+						sm="6"
+						md="3"
+						class="d-flex justify-center"
+					>
 						<v-card
 							class="recip-card d-flex flex-column align-center"
 							@click="goToRecipeDetails(recipe.id)"
@@ -50,15 +54,23 @@ import { useRecipesStore } from "@/stores/recipesStore";
 
 export default {
 	name: "recipesList",
-	data() {
-		return {
-			recipesStore: useRecipesStore(), // instance unique du store
-		};
-	},
+	//data() {
+	//return {
+	//recipesStore: useRecipesStore(), // instance unique du store
+	//..};
+	//},
 	mounted() {
-		this.fetchRecipes();
+		const recipesStore = useRecipesStore();
+		recipesStore
+			.fetchRecipes()
+			.then(() => console.log("Recettes chargées:", recipesStore.recipes))
+			.catch((err) => console.error(err));
 	},
 	computed: {
+		recipesStore() {
+			// 🔧 On ne le met plus dans data(), on l'appelle directement ici pour qu'il reste réactif
+			return useRecipesStore();
+		},
 		// On récupère les recettes depuis le store
 		recipes() {
 			// On protège contre les données non valides
@@ -79,8 +91,9 @@ export default {
 	methods: {
 		async fetchRecipes() {
 			try {
-				// On fetch depuis le store
 				await this.recipesStore.fetchRecipes();
+				console.log("Recettes après fetch :", this.recipesStore.recipes);
+				// 🔧 Ajouté pour vérifier que les données sont bien récupérées
 			} catch (error) {
 				console.error("Erreur lors de la récupération des recettes :", error);
 			}

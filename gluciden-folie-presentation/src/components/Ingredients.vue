@@ -10,15 +10,16 @@
 					closable
 					@click:close="deleteIngredient(index)"
 				>
-					{{ ingredient.ingredient.name }} : {{ ingredient.quantity }}
-					{{ getUnityName(ingredient.unityId) }}
+					{{
+						ingredient.ingredient ? ingredient.ingredient.name : ingredient.name
+					}}
+					: {{ ingredient.quantity }} {{ getUnityName(ingredient.unityId) }}
 				</v-chip>
 			</v-chip-group>
 		</div>
 
 		<!-- Formulaire d'ajout d'ingrédient -->
 		<v-row>
-			<!-- Ingrédient -->
 			<v-col cols="12" md="6">
 				<v-combobox
 					v-model="newIngredient.name"
@@ -32,7 +33,6 @@
 				/>
 			</v-col>
 
-			<!-- Quantité -->
 			<v-col cols="6" md="3">
 				<v-text-field
 					v-model.number="newIngredient.quantity"
@@ -46,7 +46,6 @@
 				/>
 			</v-col>
 
-			<!-- Unité -->
 			<v-col cols="6" md="2">
 				<v-combobox
 					v-model="newIngredient.unityId"
@@ -61,7 +60,6 @@
 				/>
 			</v-col>
 
-			<!-- Bouton Ajouter -->
 			<v-col cols="12" md="1" class="d-flex align-center justify-end">
 				<v-icon
 					color="primary"
@@ -122,23 +120,19 @@ export default {
 			);
 		},
 		nameErrors() {
-			if (!this.v$.name.$error) {
-				return [];
-			}
+			if (!this.v$.name.$error) return [];
 			const errors = [];
-			const rules = this.v$.name;
-			if (rules.required.$invalid)
+			if (this.v$.name.required.$invalid)
 				errors.push(i18n.global.t("validation.required"));
-			if (rules.minLength.$invalid)
+			if (this.v$.name.minLength.$invalid)
 				errors.push(i18n.global.t("validation.minLength", { min: 4 }));
-			if (rules.maxLength.$invalid)
+			if (this.v$.name.maxLength.$invalid)
 				errors.push(i18n.global.t("validation.maxLength", { max: 25 }));
 			return errors;
 		},
 		quantityErrors() {
 			const errors = [];
 			const rules = this.v$.quantity;
-
 			if (rules.$error) {
 				if (rules.required.$invalid)
 					errors.push(i18n.global.t("validation.required"));
@@ -147,19 +141,13 @@ export default {
 				if (rules.positive?.$invalid)
 					errors.push(i18n.global.t("validation.positiveNumber"));
 			}
-
 			return errors;
 		},
 		unityIdErrors() {
-			if (!this.v$.unityId.$error) {
-				return [];
-			}
+			if (!this.v$.unityId.$error) return [];
 			const errors = [];
-			const rules = this.v$.unityId;
-			if (rules.$error) {
-				if (rules.required.$invalid)
-					errors.push(i18n.global.t("validation.required"));
-			}
+			if (this.v$.unityId.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},
@@ -170,20 +158,14 @@ export default {
 	methods: {
 		getUnityName(unityData) {
 			if (!unityData) return "?";
-
-			// Si unityData est un objet (ex: {id: 1, name: "g"}), on extrait l'id
 			const unityId = typeof unityData === "object" ? unityData.id : unityData;
-
 			const unity = this.unitiesUnique.find((u) => u.id === unityId);
 			return unity ? unity.name : "?";
 		},
 		async addIngredient() {
-			await this.v$.$validate();
+			this.v$.$touch();
+			if (this.v$.$invalid || !this.canAdd) return;
 
-			if (this.v$.$invalid) return;
-			if (!this.canAdd) return;
-
-			// On extrait l'id de l'unité si c'est un objet
 			const unityId =
 				typeof this.newIngredient.unityId === "object"
 					? this.newIngredient.unityId.id
@@ -198,14 +180,10 @@ export default {
 			const updatedIngredients = [...this.ingredients, newIng];
 			this.$emit("update:ingredients", updatedIngredients);
 
-			await this.ingredientsStore.addIngredient(
-				this.newIngredient.name,
-				this.newIngredient.quantity,
-				unityId
-			);
+			this.recipesStore.addIngredient(newIng);
 
-			// Réinitialiser le formulaire
 			this.newIngredient = { name: "", quantity: null, unityId: null };
+			this.v$.$reset();
 		},
 		deleteIngredient(index) {
 			const updatedIngredients = [...this.ingredients];

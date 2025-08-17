@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import jakarta.persistence.Column;
@@ -36,6 +37,12 @@ public class Recipe extends AbstractEntity {
 	private Difficulty difficulty;
 
 	@OneToMany(mappedBy = "recipe")
+	@JsonManagedReference
+	@JsonProperty("ingredients")
+	private List<RecipeIngredientUnity> recipeIngredients = new ArrayList<>();
+
+	@OneToMany(mappedBy = "recipe")
+	@JsonManagedReference
 	private List<Step> steps = new ArrayList<>();
 
 	@JsonIgnore
@@ -45,7 +52,7 @@ public class Recipe extends AbstractEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
-	@JsonBackReference
+	@JsonIgnore
 	private Account account;
 
 	/**
@@ -123,6 +130,14 @@ public class Recipe extends AbstractEntity {
 
 	public void setSteps(List<Step> steps) {
 		this.steps = steps;
+	}
+
+	public List<RecipeIngredientUnity> getRecipeIngredients() {
+		return recipeIngredients;
+	}
+
+	public void setRecipeIngredients(List<RecipeIngredientUnity> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
 	}
 
 }

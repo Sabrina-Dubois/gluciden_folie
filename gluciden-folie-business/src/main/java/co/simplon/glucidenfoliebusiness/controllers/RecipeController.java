@@ -44,9 +44,12 @@ public class RecipeController {
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Recipe> create(@Valid @ModelAttribute RecipeCreateDto recipeCreateDto) {
+	public ResponseEntity<RecipeReadDto> create(@Valid @ModelAttribute RecipeCreateDto recipeCreateDto) {
 		Recipe createdRecipe = recipeService.create(recipeCreateDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(createdRecipe);
+
+		// On recharge la recette avec tous ses ingrédients + steps via getOne
+		RecipeReadDto recipeReadDto = recipeService.getOne(createdRecipe.getId());
+		return ResponseEntity.status(HttpStatus.CREATED).body(recipeReadDto);
 	}
 
 	@GetMapping

@@ -2,7 +2,7 @@ package co.simplon.glucidenfoliebusiness.entities;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +22,7 @@ public class Step extends AbstractEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "id_recipe", referencedColumnName = "id", nullable = false)
-	@JsonIgnore
+	@JsonBackReference
 	private Recipe recipe;
 
 	public Step() {

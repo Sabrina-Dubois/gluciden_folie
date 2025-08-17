@@ -9,32 +9,22 @@ import jakarta.persistence.Embeddable;
 /**
  * Classe représentant la clé composite pour l'entité RecipeIngredientUnity.
  * Cette clé est composée des IDs des entités Recipe, Ingredient et Unity.
- * 
- * Cette classe doit : - Implémenter Serializable - Avoir un constructeur vide
- * (obligatoire pour JPA) - Redéfinir equals() et hashCode() pour permettre à
- * JPA de comparer les clés
  */
-@Embeddable // Indique que cette classe peut être intégrée dans une autre entité comme clé
-			// composite
+@Embeddable
 public class RecipeIngredientUnityId implements Serializable {
 
-	// Identifiant de la recette
 	@Column(name = "id_recipe")
 	private Long recipeId;
 
-	// Identifiant de l'ingrédient
 	@Column(name = "id_ingredient")
 	private Long ingredientId;
 
-	// Identifiant de l'unité
 	@Column(name = "id_unity")
 	private Long unityId;
 
-	// Constructeur vide obligatoire pour JPA
 	public RecipeIngredientUnityId() {
 	}
 
-	// Constructeur avec tous les paramètres
 	public RecipeIngredientUnityId(Long recipeId, Long ingredientId, Long unityId) {
 		this.recipeId = recipeId;
 		this.ingredientId = ingredientId;
@@ -47,10 +37,6 @@ public class RecipeIngredientUnityId implements Serializable {
 				ingredientId, unityId);
 	}
 
-	/**
-	 * equals() sert à comparer deux instances de clé composite. JPA utilise cette
-	 * méthode pour vérifier si deux clés sont identiques.
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -62,17 +48,11 @@ public class RecipeIngredientUnityId implements Serializable {
 				&& Objects.equals(unityId, that.unityId);
 	}
 
-	/**
-	 * hashCode() doit être cohérent avec equals() et permet une meilleure gestion
-	 * dans les collections.
-	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(recipeId, ingredientId, unityId);
-
 	}
 
-	// Getters et setters
 	public Long getRecipeId() {
 		return recipeId;
 	}

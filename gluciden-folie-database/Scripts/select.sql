@@ -5,8 +5,8 @@ SELECT * FROM t_accounts a ;
 SELECT * FROM t_ingredients i;
 SELECT * FROM t_recipes_ingredients_unities riu ;
 SELECT * FROM t_unities u ;
-SELECT * FROM t_roles;
-SELECT * FROM t_steps;
+SELECT * FROM t_roles ro;
+SELECT * FROM t_steps s;
 
 SELECT column_name FROM information_schema.columns WHERE table_name = 't_categories';
 
@@ -19,6 +19,10 @@ FROM t_recipes r
 WHERE r.username NOT IN (SELECT a.username FROM t_accounts a);
 
 --
+
+ALTER TABLE t_ingredients DROP COLUMN id_unity;
+
+
 
 -- Voir les colonnes de la table t_ingredients
 SELECT column_name 
@@ -64,7 +68,11 @@ SELECT
         'ingredient', i.ingredient_name,
         'quantity', riu.quantity,
         'unity', u.unity_name
-    ) ORDER BY i.ingredient_name) AS ingredients
+    ) ORDER BY i.ingredient_name) AS ingredients,
+    JSON_AGG(JSON_BUILD_OBJECT(
+        'number', s.step_number,
+        'description', s.step_description
+    ) ORDER BY s.step_number) AS steps
 FROM t_recipes r
 JOIN t_accounts a ON r.id_account = a.id
 LEFT JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
@@ -73,31 +81,6 @@ LEFT JOIN t_unities u ON riu.id_unity = u.id
 GROUP BY r.id, r.recipe_name, r.difficulty, r.recipe_picture, a.username
 ORDER BY r.id;
 
-SELECT 
-    r.id AS recipe_id,
-    r.recipe_name,
-    r.difficulty,
-    r.recipe_picture,
-    a.username AS author,
-    JSON_AGG(JSON_BUILD_OBJECT(
-        'ingredient', i.ingredient_name,
-        'quantity', riu.quantity,
-        'unity', u.unity_name
-    ) ORDER BY i.ingredient_name) AS ingredients
-FROM t_recipes r
-JOIN t_accounts a ON r.id_account = a.id
-JOIN t_recipes_ingredients_unities riu ON r.id = riu.id_recipe
-JOIN t_ingredients i ON riu.id_ingredient = i.id
-JOIN t_unities u ON riu.id_unity = u.id
-WHERE r.id IN (
-    SELECT r_sub.id
-    FROM t_recipes r_sub
-    JOIN t_recipes_ingredients_unities riu_sub ON r_sub.id = riu_sub.id_recipe
-    JOIN t_ingredients i_sub ON riu_sub.id_ingredient = i_sub.id
-    WHERE LOWER(i_sub.ingredient_name) = 'farine'
-)
-GROUP BY r.id, r.recipe_name, r.difficulty, r.recipe_picture, a.username
-ORDER BY r.id;
 
 -- 1 ingrédient farine --
 SELECT r.id, r.recipe_name

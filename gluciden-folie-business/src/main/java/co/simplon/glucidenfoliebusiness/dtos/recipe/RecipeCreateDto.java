@@ -8,13 +8,15 @@ import org.springframework.web.multipart.MultipartFile;
 import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import co.simplon.glucidenfoliebusiness.validations.recipe.picture.FileSize;
 import co.simplon.glucidenfoliebusiness.validations.recipe.picture.FileType;
+import co.simplon.glucidenfoliebusiness.validations.step.ValidSteps;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record RecipeCreateDto(@NotBlank @Size(min = 4, max = 100) String name,
+@ValidSteps
+public record RecipeCreateDto(@Valid @NotBlank @Size(min = 4, max = 100) String name,
 
 		@NotNull @FileType(types = {
 				MediaType.IMAGE_JPEG_VALUE,
@@ -22,8 +24,8 @@ public record RecipeCreateDto(@NotBlank @Size(min = 4, max = 100) String name,
 
 		@NotNull Difficulty difficulty,
 
-		List<RecipeIngredientUnityDto> ingredients,
+		List<@Valid RecipeIngredientUnityDto> ingredients,
 
-		@NotEmpty List<StepCreateDto> steps){
+		@NotEmpty List<@Valid StepCreateDto> steps){
 
 }

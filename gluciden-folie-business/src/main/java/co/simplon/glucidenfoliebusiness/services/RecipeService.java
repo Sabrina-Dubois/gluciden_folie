@@ -99,7 +99,7 @@ public class RecipeService {
 				if (riuDto.ingredientId() != null) {
 					ingredient = ingredientsRepo.findById(riuDto.ingredientId())
 							.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
-				} else if (riuDto.ingredient() != null && riuDto.ingredient.Name() != null) {
+				} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
 					String name = riuDto.ingredient().name().trim();
 					ingredient = ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
 						Ingredient newIngredient = new Ingredient();
@@ -188,11 +188,11 @@ public class RecipeService {
 		List<RecipeIngredientUnity> rius = riuRepo.findByRecipe(recipe);
 
 		List<RecipeReadDto.IngredientInfo> ingredients = rius.stream().map(riu -> {
-			String ingredientName = riu.getIngredient().getName();
+			RecipeReadDto.IngredientDto ingredientDto = new RecipeReadDto.IngredientDto(riu.getIngredient().getName());
 			Double quantity = riu.getQuantity();
-			Long unityId = riu.getUnity().getId(); // ← nom lisible de l’unité
+			Long unityId = riu.getUnity() != null ? riu.getUnity().getId() : null;
 
-			return new RecipeReadDto.IngredientInfo(ingredientName, unityId, quantity);
+			return new RecipeReadDto.IngredientInfo(ingredientDto, unityId, quantity);
 		}).toList();
 
 		// Convertir les étapes en DTO

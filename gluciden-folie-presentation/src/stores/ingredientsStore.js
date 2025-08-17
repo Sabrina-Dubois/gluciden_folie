@@ -27,13 +27,13 @@ export const useIngredientsStore = defineStore("ingredients", {
         console.error("Erreur lors de la récupération des unités:", error);
       }
     },
-    // Ajouter un nouvel ingrédients
-    async addIngredient(name, quantity, unity) {
+    // Ajouter un nouvel ingrédient
+    async addIngredient(name, quantity, unityId) {
       try {
         const data = {
-          name: name,
+          name: name, // <-- corrigé ici, plus de `ingredient: { name }`
           quantity: quantity,
-          unity: unity,
+          unityId: unityId,
         };
 
         const response = await apiClient.post("/ingredients", data, {

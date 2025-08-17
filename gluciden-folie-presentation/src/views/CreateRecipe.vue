@@ -92,7 +92,7 @@ export default {
 				name: "",
 				picture: null,
 				ingredientList: [
-					{ ingredient: { name: "" }, quantity: null, unityId: null },
+					// },
 				],
 				steps: [{ number: 1, description: "" }],
 				difficulty: null,

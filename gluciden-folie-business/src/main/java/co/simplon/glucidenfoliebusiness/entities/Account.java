@@ -3,6 +3,8 @@ package co.simplon.glucidenfoliebusiness.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -25,6 +27,7 @@ public class Account extends AbstractEntity {
 	private Role role;
 
 	@OneToMany(mappedBy = "account")
+	@JsonIgnore
 	private Set<Category> categories = new HashSet<>();
 
 	@OneToMany(mappedBy = "account")

@@ -1,91 +1,96 @@
+// src/stores/recipesStore.js
 import { defineStore } from "pinia";
-import apiClient from "../api/axiosConfig";
+import apiClient from "../api/axiosConfig"; // Axios pré-configuré pour l'API
 
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
-    recipes: [],
-    name: "",
+    recipes: [], // Liste de toutes les recettes
+    name: "", // Nom d'une nouvelle recette
     picture: null,
-    difficulty: 0,
-    ingredientList: [],
-    steps: [],
+    difficulty: 0, // Difficulté d'une nouvelle recette
+    ingredientList: [], // Liste des ingrédients pour la recette
+    steps: [], // Liste des étapes pour la recette
   }),
 
   actions: {
-    // Récupérer les recettes
+    /**
+     * Récupérer toutes les recettes depuis l'API
+     */
     async fetchRecipes() {
       try {
+        console.log("Avant la requête");
+
         const response = await apiClient.get("/recipes");
-        if (response.status === 200) {
-          this.recipes = Array.isArray(response.data) ? response.data : [response.data];
-          return this.recipes;
+
+        if (Array.isArray(response.data)) {
+          this.recipes = response.data;
+        } else if (response.data) {
+          this.recipes = [response.data];
+        } else {
+          this.recipes = [];
         }
+
+        console.log("Recettes chargées:", this.recipes);
+        return this.recipes;
       } catch (error) {
         console.error("Erreur lors de la récupération des recettes :", error);
+        this.recipes = [];
       }
     },
-    // Ajouter une nouvelle recette
+
+    /**
+     * Ajouter une nouvelle recette
+     * @param {Object} param0
+     */
     async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
-      try {
-        if (!ingredientList || ingredientList.length === 0) {
-          throw new Error("Vous devez ajouter au moins un ingrédient.");
-        }
+  try {
+    const formData = new FormData();
+    
+    // 1. Champs de base
+    formData.append("name", name);
+    formData.append("difficulty", difficulty);
+    if (picture) formData.append("picture", picture);
 
-        // Création du FormData
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("difficulty", difficulty.toString().toUpperCase());
+    // 2. Formatage EXACT des ingrédients
+    ingredientList.forEach((ingredient, index) => {
+      // Structure EXACTE comme dans votre exemple
+      formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
+      formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+      formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
+    });
 
-        if (picture) {
-          formData.append("picture", picture);
-        }
+    // 3. Formatage des étapes
+    steps.forEach((step, index) => {
+      formData.append(`steps[${index}].number`, (index + 1).toString());
+      formData.append(`steps[${index}].description`, step.description);
+    });
 
-        // Ajout des ingrédients (notation avec crochets pour que Spring les parse correctement)
-        ingredientList.forEach((i, index) => {
-          if (i.ingredient.id) {
-            formData.append(`ingredients[${index}].ingredient.id`, i.ingredient.id);
-          } else {
-            formData.append(`ingredients[${index}].ingredient.name`, i.ingredient.name);
-          }
-          formData.append(`ingredients[${index}].quantity`, i.quantity);
-          formData.append(`ingredients[${index}].unityId`, i.unityId);
-        });
-
-        // Ajout des étapes
-        steps.forEach((s, index) => {
-          formData.append(`steps[${index}].number`, s.number);
-          formData.append(`steps[${index}].description`, s.description);
-        });
-
-        // Appel API
-        const response = await apiClient.post("/recipes", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        // Mise à jour du store
-        this.recipes.push(response.data);
-        this.name = "";
-        this.picture = null;
-        this.difficulty = 0;
-        this.ingredientList = [];
-        this.steps = [];
-
-        alert("Recette créée avec succès !");
-        return true;
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de la recette :", error);
-        alert(error.message || "Une erreur s'est produite lors de l'ajout de la recette.");
-        return false;
+    // 4. Envoi avec headers
+    const response = await apiClient.post("/recipes", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
       }
-    },
+    });
 
+    return response.data;
+  } catch (error) {
+    console.error("Erreur complète:", {
+      request: [...formData.entries()],
+      response: error.response?.data
+    });
+    throw error;
+  }
+},
+    /**
+     * Mettre à jour une recette existante
+     * @param {Number} id - ID de la recette
+     * @param {FormData} formData - Données à mettre à jour
+     */
     async updateRecipe(id, formData) {
       try {
         const response = await apiClient.put(`/recipes/${id}`, formData);
         const index = this.recipes.findIndex((r) => r.id === id);
-        if (index !== -1) {
-          this.recipes[index] = response.data;
-        }
+        if (index !== -1) this.recipes[index] = response.data;
         return true;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de la recette:", error);
@@ -93,6 +98,10 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
 
+    /**
+     * Supprimer une recette
+     * @param {Number} recipeId - ID de la recette à supprimer
+     */
     async deleteRecipe(recipeId) {
       try {
         await apiClient.delete(`/recipes/${recipeId}`);
