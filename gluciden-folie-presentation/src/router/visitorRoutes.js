@@ -32,7 +32,7 @@ export default [
   },
 
   {
-    path: "/liste-catégories",
+    path: "/liste-categories",
     name: "categoriesList",
     component: () => import("../views/CategoriesList.vue"),
   },

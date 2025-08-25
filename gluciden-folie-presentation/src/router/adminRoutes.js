@@ -20,10 +20,11 @@ export default [
   },
 
   {
-    path: "/modifier-catégorie/:id",
+    path: "/modifier-categorie/:id",
     name: "updateCategory",
     component: () => import("@/views/UpdateCategory.vue"),
     meta: { requiresAdmin: true },
   },
 
 ];
+

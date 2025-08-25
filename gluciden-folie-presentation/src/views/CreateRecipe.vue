@@ -148,7 +148,7 @@ export default {
 	methods: {
 		handleFileUpload(files) {
 			if (files && files.length > 0) {
-				const url = URL.createObjectURL(files[0]); // prends le premier fichier
+				const url = URL.createObjectURL(files[0]); 
 				console.log(url);
 			}
 		},
@@ -197,10 +197,17 @@ export default {
 
 
 <style scoped>
+/* *** Formulaire *** */
 .v-form {
 	background-color: white;
 	width: 100%;
 	overflow-x: hidden;
+}
+.recipeForm {
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 15px;
+	box-sizing: border-box;
 }
 
 /* *** Boutons *** */
@@ -220,14 +227,7 @@ export default {
 
 /* *** MOBILE FIRST *** */
 .main-content.custom-bg {
-	padding: 10px 15px 30px; /* un peu plus d’espace en bas */
-}
-
-.recipeForm {
-	max-width: 100%;
-	margin: 0 auto;
-	padding: 15px;
-	box-sizing: border-box;
+	padding: 10px 15px 30px; 
 }
 
 /* *** Champs *** */
@@ -269,7 +269,6 @@ h3 {
 	color: #5d827f;
 	margin-bottom: 20px;
 }
-
 .ingredients,
 .steps,
 .v-form > div {
