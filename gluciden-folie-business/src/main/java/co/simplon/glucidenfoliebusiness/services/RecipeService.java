@@ -66,96 +66,105 @@ public class RecipeService {
 	public Recipe create(RecipeCreateDto recipeDto) {
 		Recipe recipe = new Recipe();
 		recipe.setName(recipeDto.name());
+		recipe.setDifficulty(defaultDifficulty(recipeDto.difficulty()));
 
-		// Valeur par défaut -> difficulté
-		Difficulty difficulty = recipeDto.difficulty();
-		if (difficulty == null) {
-			difficulty = Difficulty.FACILE;
-		}
-		recipe.setDifficulty(difficulty);
+		recipe.setAccount(getConnectedAccount());
 
-		// Récupérer l'utilisateur connecté
-		Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = jwt.getClaimAsString("sub");
+		handleRecipePicture(recipeDto.picture(), recipe);
 
-		Account account = accountsRepo.findByUsernameIgnoreCase(username).orElseThrow(AccountNotFoundException::new);
-		recipe.setAccount(account);
-
-		// Gestion de la photo
-		MultipartFile pictureFromDto = recipeDto.picture();
-		if (pictureFromDto != null && !pictureFromDto.isEmpty()) {
-			String pictureToRecipe = buildPicture(pictureFromDto);
-			storePicture(pictureFromDto, pictureToRecipe);
-			recipe.setPicture(pictureToRecipe);
-		}
-
-		// Sauvegarder la recette
 		Recipe savedRecipe = recipesRepo.save(recipe);
 
-		// Sauvegarder les ingrédients liés
-		if (recipeDto.ingredients() != null) {
-			for (RecipeIngredientUnityDto riuDto : recipeDto.ingredients()) {
-				Ingredient ingredient;
-				if (riuDto.ingredientId() != null) {
-					ingredient = ingredientsRepo.findById(riuDto.ingredientId())
-							.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
-				} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
-					String name = riuDto.ingredient().name().trim();
-					ingredient = ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
-						Ingredient newIngredient = new Ingredient();
-						newIngredient.setName(name);
-						return ingredientsRepo.save(newIngredient);
-					});
-				} else {
-					throw new IllegalArgumentException("Aucun ID ni nom d’ingrédient fourni.");
-				}
+		saveRecipeIngredients(recipeDto.ingredients(), savedRecipe);
 
-				Unity unity = unityRepo.findById(riuDto.unityId())
-						.orElseThrow(() -> new UnityNotFoundException(riuDto.unityId()));
-
-				RecipeIngredientUnity riu = new RecipeIngredientUnity();
-				riu.setRecipe(savedRecipe);
-				riu.setIngredient(ingredient);
-				riu.setUnity(unity);
-				riu.setQuantity(riuDto.quantity());
-
-				// Clé composite
-				RecipeIngredientUnityId riuId = new RecipeIngredientUnityId(savedRecipe.getId(), ingredient.getId(),
-						unity.getId());
-				riu.setId(riuId);
-
-				riuRepo.save(riu);
-			}
-		}
-
-		// Sauvegarder les étapes
-		if (recipeDto.steps() != null) {
-			for (StepCreateDto stepDto : recipeDto.steps()) {
-
-				Step step = new Step();
-				step.setRecipe(savedRecipe);
-				step.setNumber(stepDto.number());
-				step.setDescription(stepDto.description());
-				stepRepo.save(step);
-			}
-
-		}
+		saveRecipeSteps(recipeDto.steps(), savedRecipe);
 
 		return savedRecipe;
 	}
 
+	private Difficulty defaultDifficulty(Difficulty difficulty) {
+		return difficulty != null ? difficulty : Difficulty.FACILE;
+	}
+
+	private Account getConnectedAccount() {
+		Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = jwt.getClaimAsString("sub");
+		return accountsRepo.findByUsernameIgnoreCase(username).orElseThrow(AccountNotFoundException::new);
+	}
+
+	private void handleRecipePicture(MultipartFile picture, Recipe recipe) {
+		if (picture != null && !picture.isEmpty()) {
+			String pictureToRecipe = buildPicture(picture);
+			storePicture(picture, pictureToRecipe);
+			recipe.setPicture(pictureToRecipe);
+		}
+	}
+
+	private void saveRecipeIngredients(List<RecipeIngredientUnityDto> ingredientsDto, Recipe recipe) {
+		if (ingredientsDto == null)
+			return;
+
+		for (RecipeIngredientUnityDto riuDto : ingredientsDto) {
+			Ingredient ingredient = resolveIngredient(riuDto);
+			Unity unity = unityRepo.findById(riuDto.unityId())
+					.orElseThrow(() -> new UnityNotFoundException(riuDto.unityId()));
+
+			RecipeIngredientUnity riu = new RecipeIngredientUnity();
+			riu.setRecipe(recipe);
+			riu.setIngredient(ingredient);
+			riu.setUnity(unity);
+			riu.setQuantity(riuDto.quantity());
+			riu.setId(new RecipeIngredientUnityId(recipe.getId(), ingredient.getId(), unity.getId()));
+
+			riuRepo.save(riu);
+		}
+	}
+
+	private Ingredient resolveIngredient(RecipeIngredientUnityDto riuDto) {
+		if (riuDto.ingredientId() != null) {
+			return ingredientsRepo.findById(riuDto.ingredientId())
+					.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
+		} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
+			String name = riuDto.ingredient().name().trim();
+			return ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
+				Ingredient newIngredient = new Ingredient();
+				newIngredient.setName(name);
+				return ingredientsRepo.save(newIngredient);
+			});
+		} else {
+			throw new IllegalArgumentException("Aucun ID ni nom d’ingrédient fourni.");
+		}
+	}
+
+	private void saveRecipeSteps(List<StepCreateDto> stepsDto, Recipe recipe) {
+		if (stepsDto == null)
+			return;
+
+		for (StepCreateDto stepDto : stepsDto) {
+			Step step = new Step();
+			step.setRecipe(recipe);
+			step.setNumber(stepDto.number());
+			step.setDescription(stepDto.description());
+			stepRepo.save(step);
+		}
+	}
+
 	/* ********** NOMMER LA PHOTO ********** */
 	private String buildPicture(MultipartFile pictureFromDto) {
-		UUID uuid = UUID.randomUUID();
-		String name = pictureFromDto.getOriginalFilename();
-		int index = name.lastIndexOf('.');
+		if (pictureFromDto == null || pictureFromDto.isEmpty()) {
+			throw new IllegalArgumentException("Le fichier est vide ou nul.");
+		}
 
-		// Pas d’extension trouvée (pas de point dans le nom)
-		if (index == -1) {
+		UUID uuid = UUID.randomUUID();
+		String originalName = pictureFromDto.getOriginalFilename();
+
+		if (originalName == null || originalName.trim().isEmpty()) {
 			return uuid + ".jpg";
 		}
-		String ext = name.substring(index);
-		return uuid + ext;
+
+		int index = originalName.lastIndexOf('.');
+		String extension = (index != -1) ? originalName.substring(index) : ".jpg"; // extension par défaut si absent
+
+		return uuid + extension;
 	}
 
 	/* ********** ENREGISTRER LA PHOTO SUR DISQUE ********** */
@@ -221,106 +230,68 @@ public class RecipeService {
 
 	/* ********** UPDATE : une recette ********** */
 	@Transactional
-	public void updateOne(long id, RecipeUpdateDto inputs) {
+	public Recipe updateOne(long id, RecipeUpdateDto inputs) {
 		Recipe recipe = recipesRepo.findById(id).orElseThrow(() -> new RecipeNotFoundException(id));
 
 		recipe.setName(inputs.name());
+		recipe.setDifficulty(defaultDifficulty(inputs.difficulty()));
 
-		// ********** PHOTO **********
-		MultipartFile newPicture = inputs.picture();
-		if (newPicture != null && !newPicture.isEmpty()) {
-			String newPictureName = buildPicture(newPicture);
-			storePicture(newPicture, newPictureName);
-			recipe.setPicture(newPictureName);
-		}
+		handleRecipePicture(inputs.picture(), recipe);
 
-		// ********** DIFFICULTÉS **********
-		Difficulty difficulty = inputs.difficulty();
-		if (difficulty == null) {
-			difficulty = Difficulty.FACILE;
-		}
-		recipe.setDifficulty(difficulty);
+		// Mettre à jour les ingrédients
+		updateRecipeIngredients(recipe, inputs.ingredients());
 
-		// ********** INGREDIENTS **********
-		List<RecipeIngredientUnityDto> newIngredients = inputs.ingredients();
-		if (newIngredients != null && !newIngredients.isEmpty()) {
+		// Mettre à jour les étapes
+		updateRecipeSteps(recipe, inputs.steps());
+
+		return recipesRepo.save(recipe);
+	}
+
+	/* ********** Mise à jour des ingrédients ********** */
+	private void updateRecipeIngredients(Recipe recipe, List<RecipeIngredientUnityDto> ingredientsDto) {
+		if (ingredientsDto == null || ingredientsDto.isEmpty()) {
 			riuRepo.deleteByRecipeId(recipe.getId());
-
-			for (RecipeIngredientUnityDto riuDto : newIngredients) {
-				Ingredient ingredient;
-				if (riuDto.ingredientId() != null) {
-					ingredient = ingredientsRepo.findById(riuDto.ingredientId())
-							.orElseThrow(() -> new IngredientNotFoundException(riuDto.ingredientId()));
-				} else if (riuDto.ingredient() != null && riuDto.ingredient().name() != null) {
-					String name = riuDto.ingredient().name().trim();
-					ingredient = ingredientsRepo.findByNameIgnoreCase(name).orElseGet(() -> {
-						Ingredient newIngredient = new Ingredient();
-						newIngredient.setName(name);
-						return ingredientsRepo.save(newIngredient);
-					});
-				} else {
-					throw new IllegalArgumentException("Aucun ID ni nom d’ingrédient fourni.");
-				}
-
-				Unity unity = unityRepo.findById(riuDto.unityId())
-						.orElseThrow(() -> new UnityNotFoundException(riuDto.unityId()));
-
-				RecipeIngredientUnity riu = new RecipeIngredientUnity();
-				riu.setRecipe(recipe);
-				riu.setIngredient(ingredient);
-				riu.setUnity(unity);
-				riu.setQuantity(riuDto.quantity());
-
-				RecipeIngredientUnityId riuId = new RecipeIngredientUnityId(recipe.getId(), ingredient.getId(),
-						unity.getId());
-				riu.setId(riuId);
-
-				riuRepo.save(riu);
-			}
-
+			return;
 		}
-		// ********** ÉTAPES **********
-		List<StepCreateDto> newSteps = inputs.steps();
 
-		// Récupérer les étapes existantes
-		List<Step> existingSteps = stepRepo.findByRecipeIdOrderByNumberAsc(id);
+		// Supprimer les anciens liens
+		riuRepo.deleteByRecipeId(recipe.getId());
 
-		if (newSteps != null) {
-			// Mettre à jour ou ajouter
-			for (StepCreateDto stepDto : newSteps) {
-				// Chercher si étape existante avec le même numéro
-				Step step = existingSteps.stream().filter(s -> s.getNumber() == stepDto.number()).findFirst()
-						.orElse(null);
+		// Sauvegarder les nouveaux
+		saveRecipeIngredients(ingredientsDto, recipe);
+	}
 
-				if (step != null) {
-					// Mise à jour de l'étape existante
-					step.setDescription(stepDto.description());
-					stepRepo.save(step);
-				} else {
-					// Nouvelle étape à ajouter
-					Step newStep = new Step();
-					newStep.setNumber(stepDto.number());
-					newStep.setDescription(stepDto.description());
-					newStep.setRecipe(recipe);
-					stepRepo.save(newStep);
-				}
+	/* ********** Mise à jour des étapes ********** */
+	private void updateRecipeSteps(Recipe recipe, List<StepCreateDto> stepsDto) {
+		List<Step> existingSteps = stepRepo.findByRecipeIdOrderByNumberAsc(recipe.getId());
+
+		if (stepsDto == null || stepsDto.isEmpty()) {
+			stepRepo.deleteAll(existingSteps);
+			return;
+		}
+
+		for (StepCreateDto stepDto : stepsDto) {
+			Step step = existingSteps.stream().filter(s -> s.getNumber() == stepDto.number()).findFirst().orElse(null);
+
+			if (step != null) {
+				step.setDescription(stepDto.description());
+				stepRepo.save(step);
+			} else {
+				Step newStep = new Step();
+				newStep.setRecipe(recipe);
+				newStep.setNumber(stepDto.number());
+				newStep.setDescription(stepDto.description());
+				stepRepo.save(newStep);
 			}
+		}
 
-			// Supprimer les étapes existantes qui ne sont plus dans la liste reçue
-			List<Integer> newStepNumbers = newSteps.stream().map(StepCreateDto::number).toList();
-			for (Step step : existingSteps) {
-				if (!newStepNumbers.contains(step.getNumber())) {
-					stepRepo.delete(step);
-				}
-			}
-
-		} else {
-			for (Step step : existingSteps) {
+		// Supprimer les étapes existantes non présentes dans la nouvelle liste
+		List<Integer> newStepNumbers = stepsDto.stream().map(StepCreateDto::number).toList();
+		for (Step step : existingSteps) {
+			if (!newStepNumbers.contains(step.getNumber())) {
 				stepRepo.delete(step);
 			}
 		}
-
-		recipesRepo.save(recipe);
 	}
 
 	/* ********** Ajouter un ingrédient à une recette ********** */

@@ -39,7 +39,7 @@ BEGIN
   INSERT INTO t_recipes (recipe_name, difficulty, recipe_picture, id_account)
   VALUES (
     'Cookies healthy aux flocons d''avoine',
-    'Facile',
+    'FACILE',
     '9be1669d-dc4c-45be-98d6-10d9996c60d5.jpg',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
@@ -92,7 +92,7 @@ BEGIN
   INSERT INTO t_recipes (recipe_name, difficulty, recipe_picture, id_account)
   VALUES (
     'Mousse au chocolat végane',
-    'Facile',
+    'FACILE',
     'db7cf8b7-ca20-4445-8af4-79575adc01a5.png',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
@@ -143,7 +143,7 @@ BEGIN
   INSERT INTO t_recipes (recipe_name, difficulty, recipe_picture, id_account)
   VALUES (
     'Chocolat chaud au lait de noisette',
-    'Facile',
+    'FACILE',
     '240bfccc-e4ae-4ea3-b309-3b84ce37ac20.jpg',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )
@@ -182,8 +182,8 @@ BEGIN
   -- 1. Crée la recette et récupère son ID
   INSERT INTO t_recipes (recipe_name, difficulty, recipe_picture, id_account)
   VALUES (
-    'Crêpes healthy sans gluten',
-    'Facile',
+'Crêpes healthy sans gluten',
+    'FACILE',
     '438c35d6-f07a-464f-b794-92f1aa7328ec.jpg',
     (SELECT id FROM t_accounts WHERE username = 'dubois.sabrina84@gmail.com')
   )

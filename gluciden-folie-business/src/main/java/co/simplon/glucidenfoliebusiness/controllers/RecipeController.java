@@ -47,14 +47,13 @@ public class RecipeController {
 	public ResponseEntity<RecipeReadDto> create(@Valid @ModelAttribute RecipeCreateDto recipeCreateDto) {
 		Recipe createdRecipe = recipeService.create(recipeCreateDto);
 
-		// On recharge la recette avec tous ses ingrédients + steps via getOne
 		RecipeReadDto recipeReadDto = recipeService.getOne(createdRecipe.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(recipeReadDto);
 	}
 
 	@GetMapping
-	Collection<Recipe> getAll() {
-		return recipeService.getAll();
+	public Collection<RecipeReadDto> getAll() {
+		return recipeService.getAll().stream().map(recipe -> recipeService.getOne(recipe.getId())).toList();
 	}
 
 	@GetMapping("/{id}")
