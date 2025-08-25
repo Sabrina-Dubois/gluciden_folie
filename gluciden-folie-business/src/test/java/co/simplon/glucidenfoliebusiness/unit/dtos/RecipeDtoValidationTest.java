@@ -21,6 +21,11 @@ import jakarta.validation.ValidatorFactory;
 class RecipeDtoValidationTest {
 
 	private Validator validator;
+	private static final String VALID_RECIPE_NAME = "Recette valide";
+	private static final String VALID_RECIPE_FILE = "file";
+	private static final String VALID_IMAGE_NAME = "test.png";
+	private static final String VALID_IMAGE_TYPE = "image/png";
+	private static final byte[] VALID_IMAGE_BYTES = "dummy".getBytes();
 
 	@BeforeEach
 	void setup() {
@@ -33,65 +38,65 @@ class RecipeDtoValidationTest {
 	// =======================
 
 	@Test
-	void shouldFail_WhenNameTooShort() {
+	void shouldFailWhenNameTooShort() {
 		// KO : nom trop court (moins de 4 caractères)
 		RecipeCreateDto dto = new RecipeCreateDto("abc",
-				new MockMultipartFile("file", "test.png", "image/png", "dummy".getBytes()), Difficulty.FACILE,
-				List.of(validIngredient()), List.of(validStep()));
+				new MockMultipartFile(VALID_RECIPE_FILE, VALID_IMAGE_NAME, VALID_IMAGE_TYPE, VALID_IMAGE_BYTES),
+				Difficulty.FACILE, List.of(validIngredient()), List.of(validStep()));
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).anyMatch(v -> v.getMessage().contains("between 4 and 100"));
 	}
 
 	@Test
-	void shouldBeValid_WhenNameCorrect() {
+	void shouldBeValidWhenNameCorrect() {
 		// OK : nom correct
-		RecipeCreateDto dto = new RecipeCreateDto("Recette Valide",
-				new MockMultipartFile("file", "test.png", "image/png", "dummy".getBytes()), Difficulty.FACILE,
-				List.of(validIngredient()), List.of(validStep()));
+		RecipeCreateDto dto = new RecipeCreateDto(VALID_RECIPE_NAME,
+				new MockMultipartFile(VALID_RECIPE_FILE, VALID_IMAGE_NAME, VALID_IMAGE_TYPE, VALID_IMAGE_BYTES),
+				Difficulty.FACILE, List.of(validIngredient()), List.of(validStep()));
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).isEmpty();
 	}
 
 	@Test
-	void shouldFail_WhenPictureIsNull() {
+	void shouldFailWhenPictureIsNull() {
 		// KO : image manquante
-		RecipeCreateDto dto = new RecipeCreateDto("Recette valide", null, Difficulty.FACILE, List.of(validIngredient()),
-				List.of(validStep()));
+		RecipeCreateDto dto = new RecipeCreateDto(VALID_RECIPE_NAME, null, Difficulty.FACILE,
+				List.of(validIngredient()), List.of(validStep()));
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).anyMatch(v -> v.getMessage().contains("must not be null"));
 	}
 
 	@Test
-	void shouldBeValid_WhenPictureProvided() {
+	void shouldBeValidWhenPictureProvided() {
 		// OK : image fournie
-		RecipeCreateDto dto = new RecipeCreateDto("Recette valide",
-				new MockMultipartFile("file", "test.png", "image/png", "dummy".getBytes()), Difficulty.FACILE,
-				List.of(validIngredient()), List.of(validStep()));
+		RecipeCreateDto dto = new RecipeCreateDto(VALID_RECIPE_NAME,
+				new MockMultipartFile(VALID_RECIPE_FILE, VALID_IMAGE_NAME, VALID_IMAGE_TYPE, VALID_IMAGE_BYTES),
+				Difficulty.FACILE, List.of(validIngredient()), List.of(validStep()));
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).isEmpty();
 	}
 
 	@Test
-	void shouldFail_WhenStepsEmpty() {
+	void shouldFailWhenStepsEmpty() {
 		// KO : pas d'étapes fournies
-		RecipeCreateDto dto = new RecipeCreateDto("Recette valide",
-				new MockMultipartFile("file", "test.png", "image/png", "dummy".getBytes()), Difficulty.FACILE,
-				List.of(validIngredient()), List.of());
+		RecipeCreateDto dto = new RecipeCreateDto(VALID_RECIPE_NAME,
+				new MockMultipartFile(VALID_RECIPE_FILE, VALID_IMAGE_NAME, VALID_IMAGE_TYPE, VALID_IMAGE_BYTES),
+				Difficulty.FACILE, List.of(validIngredient()), List.of());
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).anyMatch(v -> v.getMessage().contains("must not be empty"));
 	}
 
 	@Test
-	void shouldBeValid_WhenStepsProvided() {
+	void shouldBeValidWhenStepsProvided() {
 		// OK : étapes présentes
-		RecipeCreateDto dto = new RecipeCreateDto("Recette valide",
-				new MockMultipartFile("file", "test.png", "image/png", "dummy".getBytes()), Difficulty.FACILE,
-				List.of(validIngredient()), List.of(validStep()));
+		RecipeCreateDto dto = new RecipeCreateDto(VALID_RECIPE_NAME,
+				new MockMultipartFile(VALID_RECIPE_FILE, VALID_IMAGE_NAME, VALID_IMAGE_TYPE, VALID_IMAGE_BYTES),
+				Difficulty.FACILE, List.of(validIngredient()), List.of(validStep()));
 
 		Set<ConstraintViolation<RecipeCreateDto>> violations = validator.validate(dto);
 		assertThat(violations).isEmpty();
@@ -102,7 +107,7 @@ class RecipeDtoValidationTest {
 	// =======================
 
 	@Test
-	void shouldFail_WhenIngredientIdAndNameAreNull() {
+	void shouldFailWhenIngredientIdAndNameAreNull() {
 		// Création du DTO avec ingredientId et ingredientName null
 		RecipeIngredientUnityDto dto = new RecipeIngredientUnityDto(null, null, 1L, 100.0);
 
@@ -114,7 +119,7 @@ class RecipeDtoValidationTest {
 	}
 
 	@Test
-	void shouldBeValid_WhenIngredientIdOrNameProvided() {
+	void shouldBeValidWhenIngredientIdOrNameProvided() {
 		RecipeIngredientUnityDto dto1 = new RecipeIngredientUnityDto(1L, null, 1L, 100.0);
 
 		Set<ConstraintViolation<RecipeIngredientUnityDto>> violations1 = validator.validate(dto1);
@@ -124,7 +129,7 @@ class RecipeDtoValidationTest {
 	}
 
 	@Test
-	void shouldFail_WhenQuantityNegative() {
+	void shouldFailWhenQuantityNegative() {
 		// KO : quantité négative
 		RecipeIngredientUnityDto dto = new RecipeIngredientUnityDto(1L, null, 1L, -5.0);
 		Set<ConstraintViolation<RecipeIngredientUnityDto>> violations = validator.validate(dto);
@@ -132,7 +137,7 @@ class RecipeDtoValidationTest {
 	}
 
 	@Test
-	void shouldBeValid_WhenQuantityPositive() {
+	void shouldBeValidWhenQuantityPositive() {
 		// OK : quantité positive
 		RecipeIngredientUnityDto dto = new RecipeIngredientUnityDto(1L, null, 1L, 2.0);
 		Set<ConstraintViolation<RecipeIngredientUnityDto>> violations = validator.validate(dto);
@@ -144,7 +149,7 @@ class RecipeDtoValidationTest {
 	// =======================
 
 	@Test
-	void shouldFail_WhenStepDescriptionBlank() {
+	void shouldFailWhenStepDescriptionBlank() {
 		// KO : description vide
 		StepCreateDto step = new StepCreateDto(1, "   ");
 		Set<ConstraintViolation<StepCreateDto>> violations = validator.validate(step);
@@ -152,7 +157,7 @@ class RecipeDtoValidationTest {
 	}
 
 	@Test
-	void shouldBeValid_WhenStepCorrect() {
+	void shouldBeValidWhenStepCorrect() {
 		// OK : description valide
 		StepCreateDto step = validStep();
 		Set<ConstraintViolation<StepCreateDto>> violations = validator.validate(step);
