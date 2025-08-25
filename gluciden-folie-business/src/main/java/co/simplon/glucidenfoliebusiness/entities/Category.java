@@ -2,6 +2,8 @@ package co.simplon.glucidenfoliebusiness.entities;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -17,6 +19,7 @@ public class Category extends AbstractEntity {
 
 	@ManyToOne // Chaque catégorie appartient à un utilisateur
 	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
+	@JsonIgnore
 	private Account account;
 
 	@Override

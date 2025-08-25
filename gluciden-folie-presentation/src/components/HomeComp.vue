@@ -1,148 +1,190 @@
 <template>
-	<v-container class="home-comp-container" fluid>
-		<h1>{{ $t("home.title") }}</h1>
-		
-		<v-card class="d-flex mb-4">
-			<h3>{{ $t("home.recipeOfTheDay.title") }}</h3>
-			<v-container fluid>
-				<v-row>
-					<!-- Description -->
-					<v-col cols-6 class="d-flex align-center">
-						<p class="description">
-							{{ $t("home.recipeOfTheDay.description") }}
-						</p>
-					</v-col>
+  <v-container class="home-comp-container" fluid>
+    <h1>{{ $t("home.title") }}</h1>
 
-					<!-- Card image & boutons -->
-					<v-col v-for="card in cards" :key="card.title" :cols="card.flex">
-						<v-card class="recip-card d-flex justify-end" width="480px" flat>
-							<v-img
-								:src="cards[0].src"
-								class="align-end"
-								height="200px"
-								width="430px"
-								cover
-								rounded=""
-							>
-								<v-card-title class="card-title">
-									{{ cards[0].title }}
-								</v-card-title>
-							</v-img>
+    <v-card class="d-flex mb-4 flex-wrap" elevation="4">
+      <h3 class="section-title">{{ $t("home.recipeOfTheDay.title") }}</h3>
 
-							<v-card-actions class="d-flex">
-								<v-spacer></v-spacer>
-								<v-btn icon="mdi-heart"></v-btn>
-								<v-btn icon="mdi-share-variant"></v-btn>
-								<v-spacer></v-spacer>
-							</v-card-actions>
-						</v-card>
-					</v-col>
-				</v-row>
-			</v-container>
-		</v-card>
+      <v-container fluid>
+        <v-row
+          class="recipe-row"
+          align="center"
+          justify="space-between"
+        >
+          <!-- Image (affichée en premier si mobile) -->
+          <v-col
+            cols="12"
+            md="6"
+            class="image-col"
+            :class="{ 'order-1': isMobile }"
+          >
+            <v-card flat>
+              <v-img
+                :src="cards[0].src"
+                class="recipe-image"
+                :class="{ 'mobile-square': isMobile }"
+                cover
+                rounded
+              >
+                <v-card-title class="card-title">
+                  {{ cards[0].title }}
+                </v-card-title>
+              </v-img>
 
-		<!-- Carroussel -->
-		<v-card>
-		<h3> {{ $t("home.foodieFavorite.title") }}</h3>
-		<v-card class="carroussel">
-			<v-carousel hide-delimiters>
-				<v-carousel-item
-					v-for="(item, i) in items"
-					:key="i"
-					:src="item.src"
-					cover
-				>
-					<div class="text"> Mousse au chocolat </div>
-				</v-carousel-item>
-			</v-carousel>
-		</v-card>
-		</v-card>
-	</v-container>
+              <v-card-actions class="d-flex">
+                <v-spacer></v-spacer>
+                <v-btn icon="mdi-heart"></v-btn>
+                <v-btn icon="mdi-share-variant"></v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+
+          <!-- Description -->
+          <v-col
+            cols="12"
+            md="6"
+            class="description-col"
+            :class="{ 'order-2': isMobile }"
+          >
+            <p class="description">
+              {{ $t("home.recipeOfTheDay.description") }}
+            </p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+
+    <!-- Carrousel -->
+    <v-card>
+      <h3>{{ $t("home.foodieFavorite.title") }}</h3>
+      <v-card class="carroussel" elevation="4">
+        <v-carousel hide-delimiters>
+          <v-carousel-item
+            v-for="(item, i) in items"
+            :key="i"
+            :src="item.src"
+            cover
+          >
+            <div class="text">{{ item.title }}</div>
+          </v-carousel-item>
+        </v-carousel>
+      </v-card>
+    </v-card>
+  </v-container>
 </template>
 
-<script scoped>
+<script>
 export default {
-	name: "homeComp",
-	data() {
-		//fonction qui retourne un objet contenant les données réactives du composant->retourne un array items qui contient les src des images à afficher dans le carrousel.
-		return {
-			items: [
-				{ src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg" },
-				{ src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg" },
-				{ src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg" },
-				{ src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg" },
-			],
-			cards: [
-				{
-					title: "Carrot cake",
-					src: "https://flipdish.imgix.net/y1Xqez7kfY0ueFmsx4BA7agj0Y.jpg",
-					flex: 6,
-				},
-			],
-		};
-	},
+  name: "homeComp",
+  data() {
+    return {
+      items: [
+        { src: "/images/Pancakes.jpg", title: "Pancakes" },
+        { src: "/images/Tarte aux pommes.jpg", title: "Tarte aux pommes" },
+        { src: "/images/Pudding chia coco.jpg", title: "Pudding chia coco" },
+        { src: "/images/Banana bread.jpeg", title: "Banana bread" },
+      ],
+      cards: [
+        {
+          title: "Carrot cake",
+          src: "https://flipdish.imgix.net/y1Xqez7kfY0ueFmsx4BA7agj0Y.jpg",
+        },
+      ],
+      isMobile: false,
+    };
+  },
+  mounted() {
+    this.checkScreenSize();
+    window.addEventListener("resize", this.checkScreenSize);
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.checkScreenSize);
+  },
+  methods: {
+    checkScreenSize() {
+      this.isMobile = window.innerWidth <= 768;
+    },
+  },
 };
 </script>
 
 <style scoped>
+/* *** Container *** */
 .home-comp-container {
-	max-width: 900px;
-	margin: auto;
-	padding: 0 16px;
+  max-width: 900px;
+  margin: auto;
+  padding: 0 16px;
 }
-
 .mb-4 {
-	margin-bottom: 16px;
+  margin-bottom: 16px;
 }
-/* Day recipe */
 
+/* *** Section titre *** */
+.section-title {
+  margin: 16px 0;
+  font-size: 24px;
+  color: #5d827f;
+}
+
+/* *** Image *** */
+.recipe-image {
+  width: 100%;
+  height: 300px; /* Grande image en desktop */
+}
+.mobile-square {
+  aspect-ratio: 1 / 1; /* Carrée en mobile */
+  height: auto !important;
+}
+
+/* *** Description *** */
 .description {
-	color: #5d827f;
-	font-size: 20px;
-	text-align: center;
-	margin-top: 70px;
+  color: #5d827f;
+  font-size: 20px;
+  text-align: center;
+  padding: 16px;
 }
 
+/* *** Titre image *** */
 .card-title {
-	color: #5d827f;
-	font-size: 25px;
+  color: white;
+  font-size: 25px;
+  text-align: top;
 }
 
+/* *** Bouton *** */
 .v-btn {
-	color: #5d827f;
-	size: "large";
-	margin: 0px 20px;
-	background-color: #f5ede8;
+  color: #5d827f;
+  margin: 0px 20px;
+  background-color: #f5ede8;
 }
-
 .v-btn:hover,
 .v-btn--active {
-	background-color: #5d827f;
-	color: #f5ede8 !important;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #5d827f;
+  color: #f5ede8 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.v-app-bar-title {
-	flex: 1;
-	text-align: start;
-	font-size: 40px;
-	font-weight: bold !important;
-	color: #5d827f;
-}
-
-/* Carrousel */
-
+/* *** Carrousel *** */
 .text {
-	position: absolute;
-	width: 100%;
-	text-align: center;
-	color: white;
-	font-size: 25px;
-	padding: 10px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 25px;
+  padding: 10px;
 }
 .carroussel {
-	overflow: visible;
-	max-width: 900px;
-	margin: auto;
+  overflow: visible;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* *** Gestion ordre mobile *** */
+.order-1 {
+  order: 1;
+}
+.order-2 {
+  order: 2;
 }
 </style>

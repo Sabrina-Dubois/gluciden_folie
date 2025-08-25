@@ -1,9 +1,7 @@
 package co.simplon.glucidenfoliebusiness.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -67,27 +65,29 @@ public class SecurityConfig implements WebMvcConfigurer {
 	@Bean
 	JwtDecoder jwtDecoder() {
 		SecretKey secretKey = new SecretKeySpec(secret.getBytes(), "HMACSHA256");
-		NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
-		return decoder;
+		return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
 	}
 
 	// Config du filtre de sécurité
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		final String RECIPES_PATH = "/recipes/**";
+		final String CATEGORIES_PATH = "/categories/**";
+		final String UNITIES_PATH = "/unities/**";
+		final String ADMIN_PATH = "ADMIN";
+
 		return http.cors(Customizer.withDefaults()) // Active CORS avec la config définie dans CorsConfig
-				.csrf((csrf) -> csrf.disable())
+				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(
 						auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login").permitAll()
-								// Accès en lecture pour tous les utilisateurs (USER + ADMIN)
-								// .requestMatchers(HttpMethod.GET, "/recipes/**",
-								// "/categories/**").hasAnyRole("USER", "ADMIN")
-								.requestMatchers(HttpMethod.GET, "/recipes/**", "/categories/**").permitAll()
-								// 📝 Accès en écriture/modification/suppression réservé aux ADMIN
-								.requestMatchers(HttpMethod.POST, "/recipes", "/categories/**").hasRole("ADMIN")
-								.requestMatchers(HttpMethod.PUT, "/recipes/**", "/categories/**").hasRole("ADMIN")
-								.requestMatchers(HttpMethod.DELETE, "/recipes/**", "/categories/**").hasRole("ADMIN")
-								.anyRequest().authenticated())
-				// la méthode build configure le security chaine avec une config spécifique
+								// .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
+								// "/swagger-ui.html").permitAll()
+								.requestMatchers("/", "/home").permitAll()
+								.requestMatchers(HttpMethod.GET, RECIPES_PATH, CATEGORIES_PATH, UNITIES_PATH)
+								.permitAll().requestMatchers(HttpMethod.POST, RECIPES_PATH, CATEGORIES_PATH)
+								.hasRole(ADMIN_PATH).requestMatchers(HttpMethod.PUT, RECIPES_PATH, CATEGORIES_PATH)
+								.hasRole(ADMIN_PATH).requestMatchers(HttpMethod.DELETE, RECIPES_PATH, CATEGORIES_PATH)
+								.hasRole(ADMIN_PATH).anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter())))
 				.build();
 	}
@@ -103,7 +103,6 @@ public class SecurityConfig implements WebMvcConfigurer {
 			}
 			return new JwtAuthenticationToken(jwt, authorities);
 		};
-
 	}
 
 	// Gestion des exceptions liées à la base de données
@@ -112,14 +111,4 @@ public class SecurityConfig implements WebMvcConfigurer {
 		String errorMessage = "Erreur accès a la DB : " + ex.getMessage();
 		return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.CONFLICT);
 	}
-
-	// Implémentation de la méthode interne de gestion des exceptions
-	private ResponseEntity<Object> handleExceptionInternal(Exception ex, String message, HttpStatus status) {
-		Map<String, Object> body = new HashMap<>();
-		body.put("error", message);
-		body.put("status", status.value());
-		return new ResponseEntity<>(body, status);
-
-	}
-
 }

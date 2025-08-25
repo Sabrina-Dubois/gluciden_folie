@@ -1,6 +1,6 @@
 <template>
 	<v-container fluid>
-		<v-card class="mx-auto my-5 pa-4" max-width="800">
+		<v-card class="mx-auto my-5 pa-4" max-width="800" elevation="4">
 			<div v-if="recipe">
 				<h1>{{ recipe.name }}</h1>
 				<img
@@ -36,7 +36,7 @@
 						text-color="white"
 						outlined
 					>
-						{{ ingredient.name }} - {{ ingredient.quantity }}
+						{{ ingredient.ingredient.name }} - {{ ingredient.quantity }}
 						{{ getUnityName(ingredient.unityId) }}
 					</v-chip>
 				</v-chip-group>
@@ -86,8 +86,9 @@ export default {
 			return "";
 		},
 		difficultyIndex() {
-			const levels = ["Facile", "Moyenne", "Difficile", "Expert"];
-			return levels.indexOf(this.recipe?.difficulty) + 1;
+			const levels = ["FACILE", "MOYEN", "DIFFICILE", "EXPERT"];
+			if (!this.recipe || !this.recipe.difficulty) return 0;
+			return levels.indexOf(this.recipe.difficulty.toUpperCase()) + 1;
 		},
 	},
 
@@ -126,9 +127,11 @@ export default {
 	margin: auto;
 	padding: 20px;
 }
+
 .recipe-picture {
-	margin: 20px 0;
-	object-fit: cover;
+	width: 100%; 
+	aspect-ratio: 1 / 1; 
+	object-fit: cover; 
 	border-radius: 8px;
 }
 

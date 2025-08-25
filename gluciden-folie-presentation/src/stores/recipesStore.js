@@ -1,115 +1,114 @@
+// src/stores/recipesStore.js
 import { defineStore } from "pinia";
-import apiClient from "../api/axiosConfig";
+import apiClient from "../api/axiosConfig"; // Axios pré-configuré pour l'API
 
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
-    recipes: [],
-    name: "",
+    recipes: [], // Liste de toutes les recettes
+    name: "", // Nom d'une nouvelle recette
     picture: null,
-    difficulty: 0,
-    ingredientList: [],
+    difficulty: 0, // Difficulté d'une nouvelle recette
+    ingredientList: [], // Liste des ingrédients pour la recette
+    steps: [], // Liste des étapes pour la recette
   }),
+
   actions: {
-    // Récupérer les recettes
+    /**
+     * Récupérer toutes les recettes depuis l'API
+     */
     async fetchRecipes() {
       try {
+        console.log("Avant la requête");
+
         const response = await apiClient.get("/recipes");
-        if (response.status === 200) {
+
+        if (Array.isArray(response.data)) {
           this.recipes = response.data;
+        } else if (response.data) {
+          this.recipes = [response.data];
+        } else {
+          this.recipes = [];
         }
+
+        console.log("Recettes chargées:", this.recipes);
+        return this.recipes;
       } catch (error) {
         console.error("Erreur lors de la récupération des recettes :", error);
+        this.recipes = [];
       }
     },
-    // Ajouter une nouvelle recette
-    async addRecipe({ name, picture, difficulty, ingredientList,steps }) {
-      try {
-        // Validation des ingrédients
-        ingredientList.forEach((ingredient) => {
-          if (
-            !ingredient.ingredient ||
-            !ingredient.ingredient.name ||
-            !ingredient.quantity ||
-            ingredient.quantity <= 0
-          ) {
-            throw new Error("Chaque ingrédient doit avoir un nom et une quantité.");
-          }
-        });
 
-        const formData = new FormData();
-        if (picture) {
-          formData.append("picture", picture);
-        }
-        formData.append("name", name);
-        formData.append("difficulty", difficulty);
-        formData.append("ingredients", JSON.stringify(ingredientList));
-        formData.append("steps", JSON.stringify(steps));
+    /**
+     * Ajouter une nouvelle recette
+     * @param {Object} param0
+     */
+    async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
+  try {
+    const formData = new FormData();
+    
+    // 1. Champs de base
+    formData.append("name", name);
+    formData.append("difficulty", difficulty);
+    if (picture) formData.append("picture", picture);
 
-        const response = await apiClient.post("/recipes", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+    // 2. Formatage EXACT des ingrédients
+    ingredientList.forEach((ingredient, index) => {
+      // Structure EXACTE comme dans votre exemple
+      formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
+      formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+      formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
+    });
 
-        // Vérification de la réponse
-        if (response.status === 200 || response.status === 201) {
-          const newRecipe = response.data;
-          console.log("Recette reçue du backend avant la validation :", newRecipe); // Log détaillé avant validation
+    // 3. Formatage des étapes
+    steps.forEach((step, index) => {
+      formData.append(`steps[${index}].number`, (index + 1).toString());
+      formData.append(`steps[${index}].description`, step.description);
+    });
 
-          // Validation de la réponse
-          if (!newRecipe || typeof newRecipe !== "object" || !newRecipe.id || !newRecipe.name) {
-            console.error("La recette renvoyée a un format inattendu :", newRecipe);
-            throw new Error("La recette renvoyée est invalide.");
-          }
-
-          // Ajoute la recette à la liste
-          newRecipe.ingredients = ingredientList;
-          this.recipes.push(newRecipe);
-
-          // Réinitialisation des champs
-          this.name = "";
-          this.picture = null;
-          this.difficulty = 0;
-          this.ingredientList = [];
-
-          alert("Recette créée avec succès !");
-          console.log("Recette créée avec succès !");
-          return true;
-        } else {
-          console.error("Erreur lors de la création de la recette", response);
-          throw new Error("La création de la recette a échoué.");
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de la recette", error);
-        alert("Une erreur s'est produite lors de l'ajout de la recette.");
-        return false;
+    // 4. Envoi avec headers
+    const response = await apiClient.post("/recipes", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
       }
-    },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur complète:", {
+      request: [...formData.entries()],
+      response: error.response?.data
+    });
+    throw error;
+  }
+},
+    /**
+     * Mettre à jour une recette existante
+     * @param {Number} id - ID de la recette
+     * @param {FormData} formData - Données à mettre à jour
+     */
     async updateRecipe(id, formData) {
       try {
-        console.log("Payload envoyé pour mise à jour :", formData);
-        const response = await apiClient.put(`/recipes/${id}`, formData, {
-          
-        });
-
-        // Mise à jour de la recette dans le tableau local si besoin
+        const response = await apiClient.put(`/recipes/${id}`, formData);
         const index = this.recipes.findIndex((r) => r.id === id);
-        if (index !== -1) {
-          this.recipes[index] = response.data;
-        }
-
+        if (index !== -1) this.recipes[index] = response.data;
         return true;
       } catch (error) {
         console.error("Erreur lors de la mise à jour de la recette:", error);
         return false;
       }
     },
-    async deleteRecipe(recipeId) {
-      await apiClient.delete(`/recipes/${recipeId}`);
-      // Option 1 : refaire un fetch complet
-      //await this.fetchRecipes();
 
-      // Option 2 : (plus optimisé) supprimer localement sans refaire un fetch
-      this.recipes = this.recipes.filter((r) => r.id !== recipeId);
+    /**
+     * Supprimer une recette
+     * @param {Number} recipeId - ID de la recette à supprimer
+     */
+    async deleteRecipe(recipeId) {
+      try {
+        await apiClient.delete(`/recipes/${recipeId}`);
+        this.recipes = this.recipes.filter((r) => r.id !== recipeId);
+      } catch (error) {
+        console.error("Erreur lors de la suppression de la recette :", error);
+      }
     },
   },
 });
-

@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -29,9 +33,16 @@ public class Recipe extends AbstractEntity {
 	private String picture;
 
 	@Column(name = "difficulty")
-	private String difficulty;
+	@Enumerated(EnumType.STRING)
+	private Difficulty difficulty;
 
 	@OneToMany(mappedBy = "recipe")
+	@JsonManagedReference
+	@JsonProperty("ingredients")
+	private List<RecipeIngredientUnity> recipeIngredients = new ArrayList<>();
+
+	@OneToMany(mappedBy = "recipe")
+	@JsonManagedReference
 	private List<Step> steps = new ArrayList<>();
 
 	@JsonIgnore
@@ -41,10 +52,14 @@ public class Recipe extends AbstractEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "id_account", referencedColumnName = "id", nullable = false)
-	@JsonBackReference
+	@JsonIgnore
 	private Account account;
 
+	/**
+	 * Constructeur par défaut requis par JPA. Ne rien implémenter ici.
+	 */
 	public Recipe() {
+		// vide volontairement
 	}
 
 	@Override
@@ -93,11 +108,11 @@ public class Recipe extends AbstractEntity {
 		this.categories = categories;
 	}
 
-	public String getDifficulty() {
+	public Difficulty getDifficulty() {
 		return difficulty;
 	}
 
-	public void setDifficulty(String difficulty) {
+	public void setDifficulty(Difficulty difficulty) {
 		this.difficulty = difficulty;
 	}
 
@@ -115,6 +130,14 @@ public class Recipe extends AbstractEntity {
 
 	public void setSteps(List<Step> steps) {
 		this.steps = steps;
+	}
+
+	public List<RecipeIngredientUnity> getRecipeIngredients() {
+		return recipeIngredients;
+	}
+
+	public void setRecipeIngredients(List<RecipeIngredientUnity> recipeIngredients) {
+		this.recipeIngredients = recipeIngredients;
 	}
 
 }

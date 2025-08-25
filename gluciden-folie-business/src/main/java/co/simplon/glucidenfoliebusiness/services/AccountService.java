@@ -37,8 +37,8 @@ public class AccountService {
 	public Account getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
-			Jwt jwt = (Jwt) authentication.getPrincipal();
+		if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+
 			String username = jwt.getClaim("sub");
 			return accountsRepo.findByUsernameIgnoreCase(username)
 					.orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
@@ -49,11 +49,11 @@ public class AccountService {
 
 	@Transactional
 	public void create(AccountCreateDto inputs) {
-		// Création du compte
+		/** Création du compte */
 		Account entity = new Account();
 		entity.setUsername(inputs.username());
 
-		// Vérifications du username
+		/** Vérifications du username */
 		if (inputs.username() == null || inputs.username().trim().isEmpty()) {
 			throw new IllegalArgumentException("Le nom d'utilisateur ne peut pas être vide.");
 		}
@@ -61,20 +61,15 @@ public class AccountService {
 			throw new IllegalArgumentException("L'utilisateur avec ce nom existe déjà.");
 		}
 
-		// Gestion des rôles
 		Role role;
-		// Cas par défaut: rôle USER
 		role = roleRepo.findByRoleName("USER")
 				.orElseThrow(() -> new RuntimeException("Rôle USER par défaut non trouvé"));
 
 		entity.setRole(role);
 
-		// Mot de passe est bien encodé avec BCrypt?
 		String encodedPassword = encoder.encode(inputs.password());
 		entity.setPassword(encodedPassword);
-		// entity.setPassword(encoder.encode(inputs.password()));
 
-		// Sauvegarde
 		accountsRepo.save(entity);
 	}
 

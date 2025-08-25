@@ -1,7 +1,6 @@
 package co.simplon.glucidenfoliebusiness.services;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -54,7 +53,8 @@ public class CategoryService {
 
 		// Convertir chaque entité Category en CategoryViewDto
 		return categoryEntities.stream().map(category -> new CategoryViewDto(category.getId(), category.getName()))
-				.collect(Collectors.toList());
+				.toList();
+
 	}
 
 	// Suprimer une catégorie

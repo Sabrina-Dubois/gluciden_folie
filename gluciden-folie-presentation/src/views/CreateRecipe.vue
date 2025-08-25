@@ -1,9 +1,9 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("create_recipe.title") }}</h1>
-		<v-card class="recipeForm" max-width="800px">
+		<v-card class="recipeForm" elevation="4" max-width="800px">
 			<!-- Formulaire création -->
-			<v-form @submit.prevent="addRecipe" :model="v$">
+			<v-form @submit.prevent="addRecipe">
 				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
 				<v-text-field
 					v-model="form.name"
@@ -38,6 +38,7 @@
 					chips
 					prepend-icon="mdi-camera"
 					variant="underlined"
+					:multiple="false"
 				></v-file-input>
 
 				<!-- Difficultés -->
@@ -53,14 +54,13 @@
 						full-icon="mdi-circle"
 						hover
 						dense
-						@change="v$.form.difficulty.$touch()"
-					>
-					</v-rating>
+						@update:modelValue="v$.form.difficulty.$touch()"
+					></v-rating>
 				</div>
 
 				<!-- Ingrédients -->
 				<h3>{{ $t("create_recipe.ingredients") }}</h3>
-				<Ingredients v-model:ingredients="form.ingredients" />
+				<Ingredients v-model:ingredients="form.ingredientList" />
 
 				<!-- Étapes -->
 				<div>
@@ -79,25 +79,23 @@
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
-//import { messages } from "../utils/validationMessages.js";
 import Ingredients from "@/components/Ingredients.vue";
 import Steps from "@/components/Steps.vue";
-import i18n from "@/i18n/i18n"; 
+import i18n from "@/i18n/i18n";
 
 export default {
 	name: "createRecipe",
-	components: {
-		Ingredients,
-		Steps,
-	},
+	components: { Ingredients, Steps },
 	data() {
 		return {
 			form: {
 				name: "",
 				picture: null,
-				ingredients: [],
+				ingredientList: [
+					// },
+				],
+				steps: [{ number: 1, description: "" }],
 				difficulty: null,
-				steps: [],
 			},
 			imagePreview: null,
 			v$: null,
@@ -105,11 +103,7 @@ export default {
 		};
 	},
 	validations() {
-		return {
-    form: {
-      ...recipeValidation.form,
-	}
-    }
+		return { form: { ...recipeValidation.form } };
 	},
 	created() {
 		this.v$ = useVuelidate();
@@ -117,52 +111,56 @@ export default {
 
 	computed: {
 		nameErrors() {
-			if (!this.v$.form.name.$error) {
-				return [];
-			}
 			const errors = [];
 			const rules = this.v$.form.name;
-			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-			if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 4 }));
-			if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			if (rules.$error) {
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.minLength.$invalid)
+					errors.push(i18n.global.t("validation.minLength", { min: 4 }));
+				if (rules.maxLength.$invalid)
+					errors.push(i18n.global.t("validation.maxLength", { max: 100 }));
+			}
 			return errors;
 		},
 		pictureErrors() {
 			const errors = [];
 			const rules = this.v$.form.picture;
-
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-				if (rules.validImageType.$invalid) errors.push(i18n.global.t("validation.validImageType"));
-				if (rules.validImageSize.$invalid) errors.push(i18n.global.t("validation.validImageSize"));
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.validImageType.$invalid)
+					errors.push(i18n.global.t("validation.validImageType"));
+				if (rules.validImageSize.$invalid)
+					errors.push(i18n.global.t("validation.validImageSize"));
 			}
-
 			return errors;
 		},
 		difficultyErrors() {
-			if (!this.v$.form.difficulty.$error) {
-				return [];
-			}
 			const errors = [];
 			const rules = this.v$.form.difficulty;
-			if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
+			if (rules.$error && rules.required.$invalid)
+				errors.push(i18n.global.t("validation.required"));
 			return errors;
 		},
 	},
 
 	methods: {
-		handleFileUpload(event) {
-			const file = event.target.files[0];
-			if (file) {
-				this.form.picture = file;
-				this.imagePreview = URL.createObjectURL(file);
-			} else {
-				this.imagePreview = null;
+		handleFileUpload(files) {
+			if (files && files.length > 0) {
+				const url = URL.createObjectURL(files[0]); 
+				console.log(url);
 			}
 		},
+
+		difficultyNumberToString(num) {
+			const difficultyLabels = ["FACILE", "MOYEN", "DIFFICILE", "EXPERT"];
+			return num >= 1 && num <= 4 ? difficultyLabels[num - 1] : null;
+		},
+
 		async addRecipe() {
 			this.submitted = true;
-
+			this.v$.$touch(); // touche toutes les validations
 			await this.v$.$validate();
 
 			if (this.v$.$invalid) {
@@ -172,64 +170,44 @@ export default {
 				);
 				return;
 			}
+
 			if (
-				!Array.isArray(this.form.ingredients) ||
-				this.form.ingredients.length === 0
-			) {
+				!Array.isArray(this.form.ingredientList) ||
+				!this.form.ingredientList.length
+			)
 				return;
-			}
-			const difficultyLabels = ["Facile", "Moyenne", "Difficile", "Expert"];
-			const difficultyText =
-				this.form.difficulty &&
-				this.form.difficulty >= 1 &&
-				this.form.difficulty <= 4
-					? difficultyLabels[this.form.difficulty - 1]
-					: "Non précisée";
 
 			try {
 				const recipesStore = useRecipesStore();
-
 				await recipesStore.addRecipe({
 					name: this.form.name,
 					picture: this.form.picture,
-					difficulty: difficultyText,
-					ingredientList: this.form.ingredients,
+					difficulty: this.difficultyNumberToString(this.form.difficulty),
+					ingredientList: this.form.ingredientList,
 					steps: this.form.steps,
 				});
+				this.$router.push({ name: "recipesList" });
 			} catch (error) {
 				console.error("Erreur lors de la création de la recette :", error);
 			}
-			this.$router.push({ name: "recipesList" });
 		},
 	},
 };
 </script>
 
+
 <style scoped>
-.main-content.custom-bg {
-	padding-top: 10px;
-}
-
-.recipeForm {
-	max-width: 800px;
-	margin: auto;
-}
-
+/* *** Formulaire *** */
 .v-form {
 	background-color: white;
 	width: 100%;
+	overflow-x: hidden;
 }
-
-.v-text-field,
-.v-file-input {
-	max-width: auto;
-	margin-bottom: 30px;
-	padding-left: 20px;
-	color: #5d827f;
-}
-
-.custom-rating{
-	color: #5d827f;
+.recipeForm {
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 15px;
+	box-sizing: border-box;
 }
 
 /* *** Boutons *** */
@@ -237,5 +215,75 @@ export default {
 	justify-items: center;
 	background-color: #5d827f;
 	color: #d3beb1;
+}
+.custom-btn {
+	display: block;
+	margin: 30px auto 0 auto;
+	width: auto !important;
+	min-width: 150px;
+	padding: 10px 25px;
+	font-weight: 600;
+}
+
+/* *** MOBILE FIRST *** */
+.main-content.custom-bg {
+	padding: 10px 15px 30px; 
+}
+
+/* *** Champs *** */
+.v-text-field,
+.v-file-input {
+	width: 100% !important;
+	margin-bottom: 20px;
+	padding-left: 10px;
+	color: #5d827f;
+}
+
+/* *** Titre principal *** */
+h1 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 15px;
+	text-align: center;
+	word-break: break-word;
+}
+h3 {
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+	color: #5d827f;
+	word-break: break-word;
+}
+
+/* *** Image *** */
+.recipe-picture {
+	width: 100% !important;
+	height: auto !important;
+	max-height: 200px;
+	object-fit: contain !important;
+	margin-bottom: 20px;
+	border-radius: 8px;
+}
+
+/* *** Rating *** */
+.custom-rating {
+	color: #5d827f;
+	margin-bottom: 20px;
+}
+.ingredients,
+.steps,
+.v-form > div {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* *** DESKTOP *** */
+@media (min-width: 900px) {
+	.recipeForm {
+		max-width: 800px;
+	}
+
+	h1 {
+		font-size: 2.2rem;
+	}
 }
 </style>

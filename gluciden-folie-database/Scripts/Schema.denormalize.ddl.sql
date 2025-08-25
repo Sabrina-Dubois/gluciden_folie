@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS t_roles;
 
 CREATE TABLE t_roles (
     id INT GENERATED ALWAYS AS IDENTITY,
-    role_name VARCHAR(20),
+    role_name VARCHAR(20) NOT NULL,
     role_default BOOLEAN,
     CONSTRAINT t_id_roles_pkey PRIMARY KEY(id),
     CONSTRAINT t_roles_ukey UNIQUE(role_name)

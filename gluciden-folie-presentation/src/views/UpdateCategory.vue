@@ -1,10 +1,10 @@
 <template>
 	<div class="main-content custom-bg">
 		<h1>{{ $t("update_category.title") }}</h1>
-		<v-card class="categoryForm d-flex align-center">
+		<v-card class="categoryForm d-flex align-center" elevation="4">
 			<!-- Formulaire pour modifier une catégorie -->
 			<v-form @submit.prevent="updateCategory">
-				<h3>{{ $t("update_category.category.name") }}</h3>
+
 				<v-text-field
 					v-model="categoryName"
 					:label="$t(`update_category.category.label`) + ' *'"
@@ -32,7 +32,6 @@ import apiClient from "../api/axiosConfig";
 import { categoryValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import i18n from "@/i18n/i18n"; 
-//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "updateCategory",

@@ -2,6 +2,8 @@ package co.simplon.glucidenfoliebusiness.entities;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -12,7 +14,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 /**
- * Entité JPA représentant la table t_recipes_ingredients_unites. Cette entité
+ * Entité JPA représentant la table t_recipes_ingredients_unities. Cette entité
  * utilise une clé composite définie par RecipeIngredientUnityId. Elle relie une
  * recette, un ingrédient et une unité avec une quantité.
  */
@@ -23,19 +25,20 @@ public class RecipeIngredientUnity {
 	@EmbeddedId
 	private RecipeIngredientUnityId id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("ingredientId") // correspond à ingredientId dans RecipeIngredientUnityId
+	@ManyToOne(fetch = FetchType.EAGER)
+	@MapsId("ingredientId") // Lie l'ID de l'ingrédient avec la clé composite
 	@JoinColumn(name = "id_ingredient")
 	private Ingredient ingredient;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@MapsId("unityId") // correspond à unityId dans RecipeIngredientUnityId
+	@MapsId("unityId") // Lie l'ID de l'unité avec la clé composite
 	@JoinColumn(name = "id_unity")
 	private Unity unity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("recipeId") // correspond à recipeId dans RecipeIngredientUnityId
+	@MapsId("recipeId") // Lie l'ID de la recette avec la clé composite
 	@JoinColumn(name = "id_recipe")
+	@JsonBackReference
 	private Recipe recipe;
 
 	// Quantité de l'ingrédient dans la recette avec cette unité
@@ -53,11 +56,28 @@ public class RecipeIngredientUnity {
 		this.unity = unity;
 		this.quantity = quantity;
 
-		this.id = new RecipeIngredientUnityId(recipe.getId(), ingredient.getId(), unity.getId());
+		// mise à jour de l'ID composite si les entités ont déjà un ID
+		if (recipe != null)
+			this.id.setRecipeId(recipe.getId());
+		if (ingredient != null)
+			this.id.setIngredientId(ingredient.getId());
+		if (unity != null)
+			this.id.setUnityId(unity.getId());
+
+		// Correction importante : il faut vérifier que les IDs ne sont pas null
+		// Si les entités n'ont pas encore d'ID, il faut d'abord les persister pour que
+		// JPA génère les IDs
+		// Long recipeId = recipe != null ? recipe.getId() : null;
+		// Long ingredientId = ingredient != null ? ingredient.getId() : null;
+		// Long unityId = unity != null ? unity.getId() : null;
+
+		// this.id = new RecipeIngredientUnityId(recipeId, ingredientId, unityId);
+		// Dans le constructeur complet
+		this.id = new RecipeIngredientUnityId(recipe != null ? recipe.getId() : null,
+				ingredient != null ? ingredient.getId() : null, unity != null ? unity.getId() : null);
 
 	}
 
-	// equals() basé sur l'ID composite
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -72,7 +92,6 @@ public class RecipeIngredientUnity {
 		return Objects.hash(id);
 	}
 
-	// toString utile pour le debug
 	@Override
 	public String toString() {
 		return "RecipeIngredientUnity{" + "recipeId=" + (id != null ? id.getRecipeId() : null) + ", ingredientId="
@@ -81,13 +100,16 @@ public class RecipeIngredientUnity {
 	}
 
 	// *** Getters et setters ***
-
 	public Recipe getRecipe() {
 		return recipe;
 	}
 
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
+		// Mettre à jour l'ID composite si la recette change
+		if (this.id == null)
+			this.id = new RecipeIngredientUnityId();
+		this.id.setRecipeId(recipe != null ? recipe.getId() : null);
 	}
 
 	public Ingredient getIngredient() {
@@ -96,6 +118,9 @@ public class RecipeIngredientUnity {
 
 	public void setIngredient(Ingredient ingredient) {
 		this.ingredient = ingredient;
+		if (this.id == null)
+			this.id = new RecipeIngredientUnityId();
+		this.id.setIngredientId(ingredient != null ? ingredient.getId() : null);
 	}
 
 	public Unity getUnity() {
@@ -104,6 +129,9 @@ public class RecipeIngredientUnity {
 
 	public void setUnity(Unity unity) {
 		this.unity = unity;
+		if (this.id == null)
+			this.id = new RecipeIngredientUnityId();
+		this.id.setUnityId(unity != null ? unity.getId() : null);
 	}
 
 	public Double getQuantity() {

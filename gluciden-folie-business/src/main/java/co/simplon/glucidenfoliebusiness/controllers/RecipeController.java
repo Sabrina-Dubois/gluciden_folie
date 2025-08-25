@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +29,7 @@ import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeReadDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.RecipeUpdateDto;
 import co.simplon.glucidenfoliebusiness.dtos.recipe.StepCreateDto;
 import co.simplon.glucidenfoliebusiness.entities.Recipe;
+import co.simplon.glucidenfoliebusiness.enums.Difficulty;
 import co.simplon.glucidenfoliebusiness.services.RecipeService;
 import jakarta.validation.Valid;
 
@@ -40,39 +43,17 @@ public class RecipeController {
 		this.recipeService = recipeService;
 	}
 
-	@PostMapping
-	public Recipe create(@RequestParam("name") String name, @RequestParam("picture") MultipartFile picture,
-			@RequestParam(value = "difficulty", required = false) String difficulty,
-			@RequestParam("ingredients") String ingredientsJson,
-			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<RecipeReadDto> create(@Valid @ModelAttribute RecipeCreateDto recipeCreateDto) {
+		Recipe createdRecipe = recipeService.create(recipeCreateDto);
 
-		if (difficulty == null || difficulty.trim().isEmpty()) {
-			difficulty = "Facile";
-		}
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		// Désérialisation des ingrédients
-		List<RecipeIngredientUnityDto> ingredients = objectMapper.readValue(ingredientsJson,
-				new TypeReference<List<RecipeIngredientUnityDto>>() {
-				});
-
-		// Désérialisation des étapes
-		List<StepCreateDto> steps = List.of(); // Liste vide par défaut
-		if (stepsJson != null && !stepsJson.trim().isEmpty()) {
-			steps = objectMapper.readValue(stepsJson, new TypeReference<List<StepCreateDto>>() {
-			});
-		}
-
-		RecipeCreateDto recipeCreateDto = new RecipeCreateDto(name, picture, difficulty, ingredients, steps);
-		return recipeService.create(recipeCreateDto);
-
+		RecipeReadDto recipeReadDto = recipeService.getOne(createdRecipe.getId());
+		return ResponseEntity.status(HttpStatus.CREATED).body(recipeReadDto);
 	}
 
 	@GetMapping
-	Collection<Recipe> getAll() {
-		System.out.println("GET /recipes reçu");
-		return recipeService.getAll();
+	public Collection<RecipeReadDto> getAll() {
+		return recipeService.getAll().stream().map(recipe -> recipeService.getOne(recipe.getId())).toList();
 	}
 
 	@GetMapping("/{id}")
@@ -91,7 +72,7 @@ public class RecipeController {
 
 	@PutMapping("/{id}")
 	void updateOne(@PathVariable("id") Long id, @Valid @RequestParam("name") String name,
-			@RequestParam(value = "difficulty", required = false) String difficulty,
+			@RequestParam(value = "difficulty", required = false) Difficulty difficulty,
 			@RequestParam(value = "ingredients", required = false) String ingredientsJson,
 			@RequestParam(value = "picture", required = false) MultipartFile picture,
 			@RequestParam(value = "steps", required = false) String stepsJson) throws JsonProcessingException {

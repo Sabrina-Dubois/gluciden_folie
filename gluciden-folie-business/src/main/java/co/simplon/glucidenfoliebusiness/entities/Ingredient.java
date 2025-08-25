@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -16,7 +18,8 @@ public class Ingredient extends AbstractEntity {
 	@Column(name = "ingredient_name", nullable = false, unique = true)
 	private String name;
 
-	@OneToMany(mappedBy = "ingredient") // L'ID composite est référencé ici.
+	@OneToMany(mappedBy = "ingredient")
+	@JsonManagedReference
 	private Set<RecipeIngredientUnity> recipeIngredients = new HashSet<>();
 
 	@Override
@@ -32,13 +35,16 @@ public class Ingredient extends AbstractEntity {
 		return false;
 	}
 
+	/**
+	 * Constructeur par défaut requis par JPA. Ne rien implémenter ici.
+	 */
 	public Ingredient() {
-
+		// vide volontairement
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name);
+		return Objects.hash(getId() != null ? getId() : name);
 	}
 
 	@Override
