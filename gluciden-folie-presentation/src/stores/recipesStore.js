@@ -1,25 +1,19 @@
-// src/stores/recipesStore.js
 import { defineStore } from "pinia";
-import apiClient from "../api/axiosConfig"; // Axios pré-configuré pour l'API
+import apiClient from "../api/axiosConfig";
 
 export const useRecipesStore = defineStore("recipes", {
   state: () => ({
-    recipes: [], // Liste de toutes les recettes
-    name: "", // Nom d'une nouvelle recette
+    recipes: [],
+    name: "",
     picture: null,
-    difficulty: 0, // Difficulté d'une nouvelle recette
-    ingredientList: [], // Liste des ingrédients pour la recette
-    steps: [], // Liste des étapes pour la recette
+    difficulty: 0,
+    ingredientList: [],
+    steps: [],
   }),
 
   actions: {
-    /**
-     * Récupérer toutes les recettes depuis l'API
-     */
     async fetchRecipes() {
       try {
-        console.log("Avant la requête");
-
         const response = await apiClient.get("/recipes");
 
         if (Array.isArray(response.data)) {
@@ -29,8 +23,6 @@ export const useRecipesStore = defineStore("recipes", {
         } else {
           this.recipes = [];
         }
-
-        console.log("Recettes chargées:", this.recipes);
         return this.recipes;
       } catch (error) {
         console.error("Erreur lors de la récupération des recettes :", error);
@@ -38,54 +30,41 @@ export const useRecipesStore = defineStore("recipes", {
       }
     },
 
-    /**
-     * Ajouter une nouvelle recette
-     * @param {Object} param0
-     */
     async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
-  try {
-    const formData = new FormData();
-    
-    // 1. Champs de base
-    formData.append("name", name);
-    formData.append("difficulty", difficulty);
-    if (picture) formData.append("picture", picture);
+      let formData;
+      try {
+        const formData = new FormData();
 
-    // 2. Formatage EXACT des ingrédients
-    ingredientList.forEach((ingredient, index) => {
-      // Structure EXACTE comme dans votre exemple
-      formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
-      formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
-      formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
-    });
+        formData.append("name", name);
+        formData.append("difficulty", difficulty);
+        if (picture) formData.append("picture", picture);
 
-    // 3. Formatage des étapes
-    steps.forEach((step, index) => {
-      formData.append(`steps[${index}].number`, (index + 1).toString());
-      formData.append(`steps[${index}].description`, step.description);
-    });
+        ingredientList.forEach((ingredient, index) => {
+          formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
+          formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+          formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
+        });
 
-    // 4. Envoi avec headers
-    const response = await apiClient.post("/recipes", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
+        steps.forEach((step, index) => {
+          formData.append(`steps[${index}].number`, (index + 1).toString());
+          formData.append(`steps[${index}].description`, step.description);
+        });
+
+        const response = await apiClient.post("/recipes", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error("Erreur complète:", {
+          request: [...formData.entries()],
+          response: error.response?.data,
+        });
+        throw error;
       }
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Erreur complète:", {
-      request: [...formData.entries()],
-      response: error.response?.data
-    });
-    throw error;
-  }
-},
-    /**
-     * Mettre à jour une recette existante
-     * @param {Number} id - ID de la recette
-     * @param {FormData} formData - Données à mettre à jour
-     */
+    },
     async updateRecipe(id, formData) {
       try {
         const response = await apiClient.put(`/recipes/${id}`, formData);
@@ -97,11 +76,6 @@ export const useRecipesStore = defineStore("recipes", {
         return false;
       }
     },
-
-    /**
-     * Supprimer une recette
-     * @param {Number} recipeId - ID de la recette à supprimer
-     */
     async deleteRecipe(recipeId) {
       try {
         await apiClient.delete(`/recipes/${recipeId}`);

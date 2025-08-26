@@ -75,7 +75,6 @@ import apiClient from "../api/axiosConfig";
 import useVuelidate from "@vuelidate/core";
 import { accountValidation } from "../utils/validationRules";
 import i18n from "@/i18n/i18n.js"; 
-//import { messages } from "../utils/validationMessages.js";
 
 export default {
 	name: "authentification",
@@ -105,7 +104,6 @@ export default {
 		}
 
 		if (token && !this.isLogin) {
-			// Si le token est présent et qu'on est sur la page d'inscription, rediriger vers la page de login
 			this.$router.push({
 				name: "authentification",
 				params: { action: "login" },
@@ -147,14 +145,13 @@ export default {
 			this.showPassword = !this.showPassword;
 		},
 		logout() {
-			localStorage.removeItem("jwt"); // Supprime le token du localStorage
-			this.$router.push({ name: "home" }); // Redirection vers la page de connexion
+			localStorage.removeItem("jwt");
+			this.$router.push({ name: "home" });
 		},
 		async newAuth() {
 			this.submitted = true;
 			this.v$.$touch();
 			if (this.v$.$invalid) {
-				console.log("Formulaire invalide");
 				return;
 			}
 
@@ -163,7 +160,6 @@ export default {
 				if (this.isLogin) {
 					const response = await apiClient.post("accounts/login", { username : this.username, password : this.password });
 					if (response.status === 200) {
-						console.log("Utilisateur connecté avec succès !");
 						localStorage.setItem("jwt", response.data.token);
 						this.$router.push({ name: "home" });
 					} else {

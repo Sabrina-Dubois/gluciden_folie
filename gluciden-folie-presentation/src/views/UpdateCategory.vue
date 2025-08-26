@@ -37,15 +37,15 @@ export default {
 	name: "updateCategory",
 	data() {
 		return {
-			id: this.$route.params.id, // Récupération de l'ID de la catégorie
+			id: this.$route.params.id,
 			categoryName: "",
 			v$: null,
 			submitted: false,
 		};
 	},
 	created() {
-    this.v$ = useVuelidate(); // Initialisation de Vuelidate
-    this.initCategory(); // Récupère la catégorie à modifier
+    this.v$ = useVuelidate();
+    this.initCategory();
   },
 	validations() {
 		return categoryValidation;
@@ -60,7 +60,6 @@ export default {
 			}
 		},
 
-		// Mise à jour de la catégorie
 		async updateCategory() {
 			this.submitted = true;
 			this.v$.$touch();
@@ -74,8 +73,6 @@ export default {
 		},
 		getCategoryNameErrorMessages() {
 			const errors = [];
-			console.log("Validation status:", this.v$.categoryName);
-
 			if (this.v$.categoryName.$error) {
 				if (this.v$.categoryName.required.$invalid) {
 					errors.push(i18n.global.t("validation.required"));

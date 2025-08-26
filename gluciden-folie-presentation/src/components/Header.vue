@@ -170,7 +170,7 @@ export default {
 			}
 		},
 		isAuthenticated() {
-			return !!localStorage.getItem("jwt"); // Vérifie la présence du token
+			return !!localStorage.getItem("jwt");
 		},
 		isCreateRecipe() {
 			return this.$route.name === "createRecipe";
@@ -187,7 +187,6 @@ export default {
 		isUpdateCategory() {
 			return this.$route.name === "updateCategory";
 		},
-		// Vérification si on est sur la page de login ou register
 		isLoginPage() {
 			return (
 				this.$route.params.action === "login" ||

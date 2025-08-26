@@ -59,11 +59,6 @@ export default {
 			localSteps: [],
 		};
 	},
-	//mounted() {
-	// Initialisation une seule fois
-	//this.localSteps = [...this.steps];
-	//},
-
 	watch: {
 		steps: {
 			immediate: true,
@@ -87,7 +82,6 @@ export default {
 	methods: {
 		addStep() {
 			this.localSteps.push({ description: "" });
-			console.log("Après push :", this.localSteps);
 			this.emitSteps();
 		},
 		removeStep(index) {
@@ -101,8 +95,6 @@ export default {
 					number: index + 1,
 					description: step.description?.trim() ?? "",
 				}));
-
-			console.log("Emit steps", stepsWithNumbers);
 			this.$emit("update:steps", stepsWithNumbers);
 		},
 	},

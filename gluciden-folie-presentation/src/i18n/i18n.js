@@ -7,13 +7,8 @@ const i18n = createI18n({
   fallbackLocale: "en",
   messages: {
     en,
-    fr
+    fr,
   },
 });
-
-// const userLang = navigator.language || navigator.userLanguage;
-//     if (!userLang.startsWith('fr')) {
-//         i18n.global.locale = 'en' ;
-//     }
 
 export default i18n;

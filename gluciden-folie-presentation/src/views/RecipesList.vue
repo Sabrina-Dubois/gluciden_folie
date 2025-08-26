@@ -62,26 +62,20 @@ export default {
 	name: "recipesList",
 	mounted() {
 		const recipesStore = useRecipesStore();
-		recipesStore
-			.fetchRecipes()
-			.then(() => console.log("Recettes chargées:", recipesStore.recipes))
-			.catch((err) => console.error(err));
+		recipesStore.fetchRecipes().catch((err) => console.error(err));
 	},
 	computed: {
 		recipesStore() {
-			// 🔧 On ne le met plus dans data(), on l'appelle directement ici pour qu'il reste réactif
 			return useRecipesStore();
 		},
-		// On récupère les recettes depuis le store
 		recipes() {
-			// On protège contre les données non valides
 			return Array.isArray(this.recipesStore.recipes)
 				? this.recipesStore.recipes
 				: [];
 		},
 		sortedRecipes() {
 			return this.recipes
-				.filter((recipe) => recipe.name) // filtrer les recettes sans nom
+				.filter((recipe) => recipe.name)
 				.sort((a, b) => a.name.localeCompare(b.name));
 		},
 		imageUrl() {
@@ -93,8 +87,6 @@ export default {
 		async fetchRecipes() {
 			try {
 				await this.recipesStore.fetchRecipes();
-				console.log("Recettes après fetch :", this.recipesStore.recipes);
-				// 🔧 Ajouté pour vérifier que les données sont bien récupérées
 			} catch (error) {
 				console.error("Erreur lors de la récupération des recettes :", error);
 			}
@@ -102,7 +94,6 @@ export default {
 		async deleteRecipe(recipeId) {
 			try {
 				await this.recipesStore.deleteRecipe(recipeId);
-				// rafraîchit la liste après suppression
 				await this.recipesStore.fetchRecipes();
 			} catch (error) {
 				console.error("Erreur lors de la suppression :", error);

@@ -100,7 +100,6 @@ export default {
 				name: "",
 				picture: null,
 				ingredientList: [
-					// },
 				],
 				steps: [{ number: 1, description: "" }],
 				difficulty: null,
@@ -157,7 +156,6 @@ export default {
 		handleFileUpload(files) {
 			if (files && files.length > 0) {
 				const url = URL.createObjectURL(files[0]);
-				console.log(url);
 			}
 		},
 
@@ -168,14 +166,10 @@ export default {
 
 		async addRecipe() {
 			this.submitted = true;
-			this.v$.$touch(); // touche toutes les validations
+			this.v$.$touch();
 			await this.v$.$validate();
 
 			if (this.v$.$invalid) {
-				console.log(
-					"Formulaire invalide",
-					JSON.parse(JSON.stringify(this.v$.$errors))
-				);
 				return;
 			}
 
