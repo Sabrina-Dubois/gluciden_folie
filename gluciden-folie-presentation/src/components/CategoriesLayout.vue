@@ -26,7 +26,7 @@ export default {
 	computed: {
 		categories() {
 			const categoriesStore = useCategoriesStore();
-			return categoriesStore.categories; // On récupère directement depuis le store
+			return categoriesStore.categories;
 		},
 	},
 	mounted() {
@@ -38,7 +38,7 @@ export default {
 	methods: {
 		async onCategoryCreated() {
 			const categoriesStore = useCategoriesStore();
-			await categoriesStore.fetchCategories(); // Re-fetch categories after a new one is added
+			await categoriesStore.fetchCategories();
 		},
 	},
 };

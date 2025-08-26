@@ -5,7 +5,7 @@
 		<!-- Création de la catégorie-->
 		<v-card class="categoryForm d-flex align-center" elevation="4">
 			<v-form @submit.prevent="createCategory">
-				<h3>{{ $t("create_category.category.name") }}</h3>
+				<h2>{{ $t("create_category.category.name") }}</h2>
 				<!-- Création de la catégorie-->
 				<v-text-field
 					v-model="categoryName"
@@ -28,7 +28,6 @@ import { useCategoriesStore } from "@/stores/categoriesStore.js";
 import { categoryValidation } from "../utils/validationRules.js";
 import useVuelidate from "@vuelidate/core";
 import i18n from "@/i18n/i18n.js"; 
-// from "../utils/validationMessages.js";
 
 export default {
 	name: "createCategory",
@@ -43,7 +42,7 @@ export default {
 		return categoryValidation;
 	},
 	created() {
-		this.v$ = useVuelidate(); // Initialisation de Vuelidate ,
+		this.v$ = useVuelidate();
 	},
 	computed: {
 		categoryNameErrors() {
@@ -61,11 +60,10 @@ export default {
 
 	methods: {
 		async createCategory() {
-			this.submitted = true; // formulaire soumis
-			this.v$.$touch(); // Marque tous les champs comme touchés
+			this.submitted = true;
+			this.v$.$touch();
 			if (this.v$.$invalid) {
-				console.log("Formulaire invalide");
-				return; // Si le formulaire est invalide, arrête la soumission }
+				return;
 			}
 			if (this.categoryName.trim() !== "") {
 				try {

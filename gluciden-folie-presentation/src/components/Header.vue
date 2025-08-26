@@ -14,9 +14,8 @@
 			class="text-center"
 		>
 			<template v-slot:activator="{ props }">
-				<v-btn icon v-bind="props">
-					<v-icon>mdi-menu</v-icon>
-				</v-btn>
+				<v-btn icon="mdi-menu" v-bind="props"
+					aria-label="$t('header.menu_button')"></v-btn>
 			</template>
 
 			<v-list>
@@ -117,6 +116,7 @@
 			"
 			icon
 			class="hidden-md-and-up"
+			aria-label="Rechercher"
 		>
 			<v-icon>mdi-magnify</v-icon>
 		</v-btn>
@@ -131,6 +131,7 @@
 			ml-5
 			rounded=""
 			prepend-icon="mdi-account"
+			:aria-label="isAuthenticated ? 'Se déconnecter' : 'Se connecter'"
 		>
 			{{ isAuthenticated ? "Se déconnecter" : "Se connecter" }}
 		</v-btn>
@@ -139,6 +140,7 @@
 			@click="goToConnection"
 			icon
 			class="hidden-md-and-up"
+			:aria-label="isAuthenticated ? 'Se déconnecter' : 'Se connecter'"
 		>
 			<v-icon>mdi-account</v-icon>
 		</v-btn>
@@ -168,7 +170,7 @@ export default {
 			}
 		},
 		isAuthenticated() {
-			return !!localStorage.getItem("jwt"); // Vérifie la présence du token
+			return !!localStorage.getItem("jwt");
 		},
 		isCreateRecipe() {
 			return this.$route.name === "createRecipe";
@@ -185,7 +187,6 @@ export default {
 		isUpdateCategory() {
 			return this.$route.name === "updateCategory";
 		},
-		// Vérification si on est sur la page de login ou register
 		isLoginPage() {
 			return (
 				this.$route.params.action === "login" ||

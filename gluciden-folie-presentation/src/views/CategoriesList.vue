@@ -25,8 +25,13 @@
 								<v-btn
 									icon="mdi-pencil"
 									@click="updateCategory(category.id)"
+									aria-label="$t('category_list.buttons.update')"
 								></v-btn>
-								<v-btn icon="mdi-delete" @click="deleteCategory(category.id)">
+								<v-btn
+									icon="mdi-delete"
+									@click="deleteCategory(category.id)"
+									aria-label="$t('category_list.buttons.delete')"
+								>
 								</v-btn>
 							</v-card-actions>
 						</v-card>
@@ -81,7 +86,7 @@ export default {
 	border-radius: 12px;
 	padding: 16px;
 	width: 100%;
-	min-height: 150px; 
+	min-height: 150px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

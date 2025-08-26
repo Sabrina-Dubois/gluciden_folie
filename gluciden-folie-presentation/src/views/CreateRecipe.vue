@@ -4,7 +4,7 @@
 		<v-card class="recipeForm" elevation="4" max-width="800px">
 			<!-- Formulaire création -->
 			<v-form @submit.prevent="addRecipe">
-				<h3>{{ $t("create_recipe.recipe.name") }}</h3>
+				<h2>{{ $t("create_recipe.recipe.name") }}</h2>
 				<v-text-field
 					v-model="form.name"
 					:label="$t('create_recipe.recipe.name') + ' *'"
@@ -14,7 +14,7 @@
 					hide-details="auto"
 				></v-text-field>
 
-				<h3>{{ $t("create_recipe.picture") }}</h3>
+				<h2>{{ $t("create_recipe.picture") }}</h2>
 
 				<!-- Image existante -->
 				<v-img
@@ -32,6 +32,7 @@
 					@change="handleFileUpload"
 					accept="image/png, image/jpeg"
 					:label="$t('create_recipe.label') + ' *'"
+					:aria-label="$t('create_recipe.label')"
 					:error="v$.form.picture.$error"
 					:error-messages="pictureErrors"
 					class="required-field"
@@ -42,12 +43,13 @@
 				></v-file-input>
 
 				<!-- Difficultés -->
-				<h3>{{ $t("create_recipe.difficulty") }}</h3>
+				<h2>{{ $t("create_recipe.difficulty") }}</h2>
 				<div class="custom-rating">
 					<v-rating
 						v-model="form.difficulty"
 						class="required-field"
 						:length="4"
+						:aria-label="$t('create_recipe.difficulty')"
 						:error="v$.form.difficulty.$error"
 						:error-messages="difficultyErrors"
 						empty-icon="mdi-circle-outline"
@@ -59,7 +61,7 @@
 				</div>
 
 				<!-- Ingrédients -->
-				<h3>{{ $t("create_recipe.ingredients") }}</h3>
+				<h2>{{ $t("create_recipe.ingredients") }}</h2>
 				<Ingredients v-model:ingredients="form.ingredientList" />
 
 				<!-- Étapes -->
@@ -67,7 +69,13 @@
 					<Steps v-model:steps="form.steps" />
 				</div>
 
-				<v-btn class="custom-btn" ml-5 rounded="" type="submit">
+				<v-btn
+					class="custom-btn"
+					ml-5
+					rounded=""
+					type="submit"
+					:aria-label="$t('create_recipe.button')"
+				>
 					{{ $t("create_recipe.button") }}
 				</v-btn>
 			</v-form>
@@ -92,7 +100,6 @@ export default {
 				name: "",
 				picture: null,
 				ingredientList: [
-					// },
 				],
 				steps: [{ number: 1, description: "" }],
 				difficulty: null,
@@ -148,8 +155,7 @@ export default {
 	methods: {
 		handleFileUpload(files) {
 			if (files && files.length > 0) {
-				const url = URL.createObjectURL(files[0]); 
-				console.log(url);
+				const url = URL.createObjectURL(files[0]);
 			}
 		},
 
@@ -160,14 +166,10 @@ export default {
 
 		async addRecipe() {
 			this.submitted = true;
-			this.v$.$touch(); // touche toutes les validations
+			this.v$.$touch();
 			await this.v$.$validate();
 
 			if (this.v$.$invalid) {
-				console.log(
-					"Formulaire invalide",
-					JSON.parse(JSON.stringify(this.v$.$errors))
-				);
 				return;
 			}
 
@@ -227,7 +229,7 @@ export default {
 
 /* *** MOBILE FIRST *** */
 .main-content.custom-bg {
-	padding: 10px 15px 30px; 
+	padding: 10px 15px 30px;
 }
 
 /* *** Champs *** */
@@ -247,7 +249,7 @@ h1 {
 	text-align: center;
 	word-break: break-word;
 }
-h3 {
+h2 {
 	font-size: 1.2rem;
 	margin-bottom: 10px;
 	color: #5d827f;
@@ -259,7 +261,7 @@ h3 {
 	width: 100% !important;
 	height: auto !important;
 	max-height: 200px;
-	object-fit: contain !important;
+	object-fit: contai !important;
 	margin-bottom: 20px;
 	border-radius: 8px;
 }
@@ -287,3 +289,4 @@ h3 {
 	}
 }
 </style>
+ƒ

@@ -1,6 +1,6 @@
 <template>
 	<v-card flat class="pa-4">
-		<h3 class="mb-4">{{ $t("steps.title") }}</h3>
+		<h2 class="mb-4">{{ $t("steps.title") }}</h2>
 
 		<!-- Étapes une par une -->
 		<v-card
@@ -32,7 +32,7 @@
 		</v-btn>
 
 		<!-- Zone résumé -->
-		<h3>{{ $t("steps.instructions.title") }}</h3>
+		<h2>{{ $t("steps.instructions.title") }}</h2>
 		<v-textarea
 			:value="allStepsText"
 			:label="$t('steps.instructions.label') + ' *'"
@@ -59,11 +59,6 @@ export default {
 			localSteps: [],
 		};
 	},
-	//mounted() {
-	// Initialisation une seule fois
-	//this.localSteps = [...this.steps];
-	//},
-
 	watch: {
 		steps: {
 			immediate: true,
@@ -87,7 +82,6 @@ export default {
 	methods: {
 		addStep() {
 			this.localSteps.push({ description: "" });
-			console.log("Après push :", this.localSteps);
 			this.emitSteps();
 		},
 		removeStep(index) {
@@ -101,8 +95,6 @@ export default {
 					number: index + 1,
 					description: step.description?.trim() ?? "",
 				}));
-
-			console.log("Emit steps", stepsWithNumbers);
 			this.$emit("update:steps", stepsWithNumbers);
 		},
 	},

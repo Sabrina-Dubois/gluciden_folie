@@ -34,10 +34,9 @@ export default {
 		},
 	},
 	watch: {
-		// Watch pour suivre les changements de catégories
 		categories(newCategories) {
 			if (newCategories.length > 0 && !this.tab) {
-				this.tab = newCategories[0].name; // Si on n'a pas encore de tab sélectionné, on sélectionne la première catégorie
+				this.tab = newCategories[0].name;
 			}
 		},
 	},

@@ -14,12 +14,14 @@
 					dense
 					outlined
 					required
+					aria-required="true"
 				/>
 
 				<!-- Image actuelle -->
 				<v-img
 					v-if="imagePreview"
 					:src="imagePreview"
+					:alt="form.name ? form.name : $t('update_recipe.picture.alt')"
 					class="recipe-picture"
 					height="200px"
 					cover
@@ -54,10 +56,14 @@
 				/>
 
 				<!-- Ingrédients -->
-				<Ingredients v-model:ingredients="form.ingredients" />
+				<Ingredients
+					class="ingredients-component"
+					v-model:ingredients="form.ingredients"
+				/>
 
 				<!-- Étapes -->
 				<Steps
+					class="steps-component"
 					:steps="form.steps"
 					@update:steps="
 						(val) => {
@@ -67,7 +73,12 @@
 				/>
 
 				<!-- Bouton de validation -->
-				<v-btn class="custom-btn" type="submit" large>
+				<v-btn
+					class="custom-btn"
+					type="submit"
+					large
+					:aria-label="$t('update_recipe.button')"
+				>
 					{{ $t("update_recipe.button") }}
 				</v-btn>
 			</v-form>
@@ -76,7 +87,6 @@
 </template>
 
 <script>
-// (Pas de changement sur le script, on garde pareil)
 import apiClient from "../api/axiosConfig";
 import { useRecipesStore } from "@/stores/recipesStore.js";
 import { recipeValidation } from "../utils/validationRules.js";
@@ -306,8 +316,8 @@ h1 {
 	flex-direction: column;
 }
 
-Ingredients,
-Steps {
+ingredients-component,
+steps-component {
 	max-width: 100%;
 	overflow-wrap: break-word;
 	word-wrap: break-word;

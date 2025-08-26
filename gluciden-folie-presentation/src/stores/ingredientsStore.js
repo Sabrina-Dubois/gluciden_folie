@@ -8,7 +8,6 @@ export const useIngredientsStore = defineStore("ingredients", {
   }),
 
   actions: {
-    // Recupérer ingrédients
     async fetchIngredients() {
       try {
         const response = await apiClient.get("/ingredients");
@@ -27,11 +26,10 @@ export const useIngredientsStore = defineStore("ingredients", {
         console.error("Erreur lors de la récupération des unités:", error);
       }
     },
-    // Ajouter un nouvel ingrédient
     async addIngredient(name, quantity, unityId) {
       try {
         const data = {
-          name: name, // <-- corrigé ici, plus de `ingredient: { name }`
+          name: name,
           quantity: quantity,
           unityId: unityId,
         };
@@ -39,10 +37,7 @@ export const useIngredientsStore = defineStore("ingredients", {
         const response = await apiClient.post("/ingredients", data, {
           headers: { "Content-Type": "application/json" },
         });
-
-        console.log("Données envoyées : ", data);
         if (response.status === 200 || response.status === 201) {
-          console.log("Ingrédient ajouté avec succès !");
           return true;
         } else {
           console.error("Erreur lors de l'ajout de l'ingrédient");

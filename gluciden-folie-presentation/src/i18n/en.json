@@ -6,14 +6,19 @@
     "update_recipe": "Update recipe",
     "list_categories": "Categories list",
     "button": "Connection",
-    "create-category": "Create category",
+    "menu_button": "Menu",
+    "create_category": "Create category",
     "update_category": "Update recipe"
   },
   "home": {
     "title": "Welcome to GLUCID'EN FOLIE",
     "recipeOfTheDay": {
       "title": "Recipe of the Day",
-      "description": "Travel to England with our recipe of the day: an authentic 'Carrot Cake'. Moist and spiced, it’s perfect for a delicious, healthy, and typically British treat!"
+      "description": "Travel to England with our recipe of the day: an authentic 'Carrot Cake'. Moist and spiced, it’s perfect for a delicious, healthy, and typically British treat!",
+      "buttons": {
+        "addToFavorites": "Add to favorites",
+        "shareRecipe": "Share recipe"
+      }
     },
     "foodieFavorite": {
       "title": "Foodie's Favorite"
@@ -46,7 +51,12 @@
     "button": "Create"
   },
   "recipe_list": {
-    "title": "Recipe List"
+    "title": "Recipe List",
+    "buttons": {
+      "addToFavorites": "Add to favorites",
+      "update": "Add to favorites",
+      "delete": "Share recipe"
+    }
   },
   "update_recipe": {
     "title": "Update recipe",
@@ -64,7 +74,8 @@
     },
     "ingredients": {
       "name": "Ingredients",
-      "label": "Ingredients Name"
+      "label": "Ingredients Name",
+      "button": "Add an ingredient"
     },
     "button": "Save"
   },
@@ -107,7 +118,11 @@
     "button": "Add"
   },
   "category_list": {
-    "title": "Category List"
+    "title": "Category List",
+    "buttons": {
+      "update": "Update category",
+      "delete": "Delete category"
+    }
   },
   "update_category": {
     "title": "Update category",

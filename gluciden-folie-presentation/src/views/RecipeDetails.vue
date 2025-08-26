@@ -12,7 +12,7 @@
 				/>
 
 				<!-- Difficultés -->
-				<h3 class="text-center">{{ $t("recipe_details.difficulty") }}</h3>
+				<h2 class="text-center">{{ $t("recipe_details.difficulty") }}</h2>
 				<div class="d-flex justify-center align-center mb-4">
 					<v-rating
 						:model-value="difficultyIndex"
@@ -26,7 +26,7 @@
 				</div>
 
 				<!-- Ingrédients -->
-				<h3>{{ $t("recipe_details.ingredients") }}</h3>
+				<h2>{{ $t("recipe_details.ingredients") }}</h2>
 				<v-chip-group column>
 					<v-chip
 						v-for="ingredient in recipe.ingredients"
@@ -42,7 +42,7 @@
 				</v-chip-group>
 
 				<!-- Étapes -->
-				<h3>{{ $t("recipe_details.steps") }}</h3>
+				<h2>{{ $t("recipe_details.steps") }}</h2>
 				<v-card class="step-card" variant="outlined">
 					<v-list>
 						<v-list-item v-for="(step, index) in recipe.steps" :key="index">

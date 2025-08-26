@@ -37,7 +37,6 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401) {
-      console.log("Erreur 401 : Jeton invalide ou expiré.");
       // Supprimer le jeton
       localStorage.removeItem("jwt");
 
