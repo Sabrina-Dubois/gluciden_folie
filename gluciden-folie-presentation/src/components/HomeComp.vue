@@ -3,7 +3,7 @@
     <h1>{{ $t("home.title") }}</h1>
 
     <v-card class="d-flex mb-4 flex-wrap" elevation="4">
-      <h3 class="section-title">{{ $t("home.recipeOfTheDay.title") }}</h3>
+      <h2 class="section-title">{{ $t("home.recipeOfTheDay.title") }}</h2>
 
       <v-container fluid>
         <v-row
@@ -21,6 +21,7 @@
             <v-card flat>
               <v-img
                 :src="cards[0].src"
+                :alt="cards[0].title"
                 class="recipe-image"
                 :class="{ 'mobile-square': isMobile }"
                 cover
@@ -33,8 +34,8 @@
 
               <v-card-actions class="d-flex">
                 <v-spacer></v-spacer>
-                <v-btn icon="mdi-heart"></v-btn>
-                <v-btn icon="mdi-share-variant"></v-btn>
+                <v-btn icon="mdi-heart" aria-label="$t('home.recipeOfTheDay.buttons.addToFavorites')"></v-btn>
+                <v-btn icon="mdi-share-variant" aria-label="$t('home.recipeOfTheDay.buttons.shareRecipe')"></v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -57,7 +58,7 @@
 
     <!-- Carrousel -->
     <v-card>
-      <h3>{{ $t("home.foodieFavorite.title") }}</h3>
+      <h2>{{ $t("home.foodieFavorite.title") }}</h2>
       <v-card class="carroussel" elevation="4">
         <v-carousel hide-delimiters>
           <v-carousel-item
@@ -67,6 +68,7 @@
             cover
           >
             <div class="text">{{ item.title }}</div>
+            <img :src="item.src" :alt="item.title" class="d-none" />
           </v-carousel-item>
         </v-carousel>
       </v-card>

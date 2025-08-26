@@ -1,6 +1,6 @@
 <template>
 	<v-card flat class="pa-4">
-		<h3 class="mb-4">{{ $t("steps.title") }}</h3>
+		<h2 class="mb-4">{{ $t("steps.title") }}</h2>
 
 		<!-- Étapes une par une -->
 		<v-card
@@ -32,7 +32,7 @@
 		</v-btn>
 
 		<!-- Zone résumé -->
-		<h3>{{ $t("steps.instructions.title") }}</h3>
+		<h2>{{ $t("steps.instructions.title") }}</h2>
 		<v-textarea
 			:value="allStepsText"
 			:label="$t('steps.instructions.label') + ' *'"

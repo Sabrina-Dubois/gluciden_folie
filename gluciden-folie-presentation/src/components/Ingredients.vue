@@ -66,6 +66,7 @@
 					class="add-icon"
 					:class="{ 'icon-disabled': !canAdd }"
 					@click="addIngredient"
+					aria-label="$t('ingredients.button')"
 				>
 					mdi-plus-circle
 				</v-icon>

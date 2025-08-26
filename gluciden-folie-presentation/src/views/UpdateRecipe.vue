@@ -14,12 +14,14 @@
 					dense
 					outlined
 					required
+					aria-required="true"
 				/>
 
 				<!-- Image actuelle -->
 				<v-img
 					v-if="imagePreview"
 					:src="imagePreview"
+					:alt="form.name ? form.name : $t('update_recipe.picture.alt')"
 					class="recipe-picture"
 					height="200px"
 					cover
@@ -67,7 +69,12 @@
 				/>
 
 				<!-- Bouton de validation -->
-				<v-btn class="custom-btn" type="submit" large>
+				<v-btn
+					class="custom-btn"
+					type="submit"
+					large
+					:aria-label="$t('update_recipe.button')"
+				>
 					{{ $t("update_recipe.button") }}
 				</v-btn>
 			</v-form>

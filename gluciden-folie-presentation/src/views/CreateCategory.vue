@@ -5,7 +5,7 @@
 		<!-- Création de la catégorie-->
 		<v-card class="categoryForm d-flex align-center" elevation="4">
 			<v-form @submit.prevent="createCategory">
-				<h3>{{ $t("create_category.category.name") }}</h3>
+				<h2>{{ $t("create_category.category.name") }}</h2>
 				<!-- Création de la catégorie-->
 				<v-text-field
 					v-model="categoryName"

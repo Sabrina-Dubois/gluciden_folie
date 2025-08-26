@@ -21,6 +21,7 @@
 							<v-img
 								:key="recipe.picture + recipe.id"
 								:src="imageUrl(recipe)"
+								:alt="recipe.name"
 								class="recipe-picture"
 								height="200px"
 								cover
@@ -31,14 +32,19 @@
 								</v-card-title>
 							</v-img>
 							<v-card-actions class="button d-flex">
-								<v-btn icon="mdi-heart"></v-btn>
+								<v-btn
+									icon="mdi-heart"
+									aria-label="$t('recipe_list.addToFavorites')"
+								></v-btn>
 								<v-btn
 									icon="mdi-pencil"
 									@click.stop="updateRecipe(recipe.id)"
+									aria-label="$t('recipe_list.update')"
 								></v-btn>
 								<v-btn
 									icon="mdi-delete"
 									@click.stop="deleteRecipe(recipe.id)"
+									aria-label="$t('recipe_list.delete')"
 								></v-btn>
 							</v-card-actions>
 						</v-card>
@@ -54,11 +60,6 @@ import { useRecipesStore } from "@/stores/recipesStore";
 
 export default {
 	name: "recipesList",
-	//data() {
-	//return {
-	//recipesStore: useRecipesStore(), // instance unique du store
-	//..};
-	//},
 	mounted() {
 		const recipesStore = useRecipesStore();
 		recipesStore

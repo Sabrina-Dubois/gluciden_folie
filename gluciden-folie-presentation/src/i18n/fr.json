@@ -6,6 +6,7 @@
     "update_recipe": "Modifier une recette",
     "list_categories": "Liste des catégories",
     "button": "Connexion",
+    "menu_button": "Menu",
     "create-category": "Créer une catégorie",
     "update_category": "Modifier une catégorie"
   },
@@ -13,7 +14,11 @@
     "title": "Bienvenue sur GLUCID'EN FOLIE",
     "recipeOfTheDay": {
       "title": "Recette du jour",
-      "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot Cake'. Moelleux et épicé, parfait pour une pause gourmande, saine et typiquement britannique !"
+      "description": "Voyagez en Angleterre avec notre recette du jour : un authentique 'Carrot Cake'. Moelleux et épicé, parfait pour une pause gourmande, saine et typiquement britannique !",
+      "buttons": {
+        "addToFavorites": "Ajouter aux favoris",
+        "shareRecipe": "Partager la recette"
+      }
     },
     "foodieFavorite": {
       "title": "Coup de cœur des gourmands"
@@ -64,7 +69,8 @@
     },
     "ingredients": {
       "name": "Ingrédients",
-      "label": "Nom des ingrédients"
+      "label": "Nom des ingrédients",
+      "button": "Ajouter un ingrédient"
     },
     "button": "Enregistrer"
   },
@@ -107,7 +113,11 @@
     "button": "Ajouter"
   },
   "category_list": {
-    "title": "Liste des catégories"
+    "title": "Liste des catégories",
+    "buttons": {
+        "update": "Modifier la catégorie",
+        "delete": "Supprimer la catégorie"
+      }
   },
   "update_category": {
     "title": "Modifier une catégorie",
@@ -175,7 +185,7 @@
   "not_found": {
     "title": "404 - Page non trouvée",
     "message": "Oups ! La page que vous cherchez n'existe pas.",
-    "button":"Retourner à l'accueil"
+    "button": "Retourner à l'accueil"
   },
   "validation": {
     "required": "Ce champ est obligatoire.",
