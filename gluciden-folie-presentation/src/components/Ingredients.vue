@@ -181,7 +181,13 @@ export default {
 			const updatedIngredients = [...this.ingredients, newIng];
 			this.$emit("update:ingredients", updatedIngredients);
 
-			this.recipesStore.addIngredient(newIng);
+			//this.recipesStore.addIngredient(newIng);
+			// Si tu veux l'ajouter dans la DB via le store ingredients
+			await this.ingredientsStore.addIngredient(
+				this.newIngredient.name,
+				this.newIngredient.quantity,
+				unityId
+			);
 
 			this.newIngredient = { name: "", quantity: null, unityId: null };
 			this.v$.$reset();

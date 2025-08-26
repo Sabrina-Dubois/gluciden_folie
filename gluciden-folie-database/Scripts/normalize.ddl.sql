@@ -14,9 +14,7 @@ CREATE TABLE t_roles(
 CREATE TABLE t_accounts(
        username VARCHAR(255) NOT NULL,
        password VARCHAR(72) NOT NULL, 
-       --role_name VARCHAR(16) NOT NULL,
    CONSTRAINT t_accounts_pkey PRIMARY KEY(username)
-   --CONSTRAINT fkey_role_name FOREIGN KEY(role_name) REFERENCES t_roles(role_name)
 );
 
 CREATE TABLE t_categories(
