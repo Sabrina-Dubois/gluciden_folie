@@ -57,7 +57,7 @@
 
 <script scoped>
 import { useRecipesStore } from "@/stores/recipesStore";
-const pictureFilePath = import.meta.env.VITE_IMAGE_URL;
+const pictureFilePath = import.meta.env.DEST_FILE_PATH;
 
 export default {
 	name: "recipesList",
