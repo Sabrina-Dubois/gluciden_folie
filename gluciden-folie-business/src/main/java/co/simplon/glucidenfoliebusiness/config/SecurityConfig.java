@@ -82,7 +82,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 						auth -> auth.requestMatchers(HttpMethod.POST, "/accounts", "/accounts/login").permitAll()
 								// .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
 								// "/swagger-ui.html").permitAll()
-								.requestMatchers("/", "/home").permitAll()
+								.requestMatchers("/", "/home").permitAll().requestMatchers("/uploads/**").permitAll()
 								.requestMatchers(HttpMethod.GET, RECIPES_PATH, CATEGORIES_PATH, UNITIES_PATH)
 								.permitAll().requestMatchers(HttpMethod.POST, RECIPES_PATH, CATEGORIES_PATH)
 								.hasRole(ADMIN_PATH).requestMatchers(HttpMethod.PUT, RECIPES_PATH, CATEGORIES_PATH)

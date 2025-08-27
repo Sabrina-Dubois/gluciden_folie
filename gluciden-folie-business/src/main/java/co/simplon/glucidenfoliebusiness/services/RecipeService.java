@@ -162,12 +162,12 @@ public class RecipeService {
 		}
 
 		int index = originalName.lastIndexOf('.');
-		String extension = (index != -1) ? originalName.substring(index) : ".jpg"; // extension par défaut si absent
+		String extension = (index != -1) ? originalName.substring(index) : ".jpg";
 
 		return uuid + extension;
 	}
 
-	/* ********** ENREGISTRER LA PHOTO SUR DISQUE ********** */
+	/* ********** ENREGISTRER LA PHOTO ********** */
 	private void storePicture(MultipartFile pictureFromDto, String pictureToRecipe) {
 		try {
 			String dest = String.format("%s/%s", uploadsDest, pictureToRecipe);

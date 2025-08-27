@@ -9,7 +9,6 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// Mapping des images : URL -> dossier physique sur le VPS
 		registry.addResourceHandler("/uploads/**")
 				.addResourceLocations("file:/srv/readresolve.tech/ash/gluciden-folie-business/uploads/");
 	}
