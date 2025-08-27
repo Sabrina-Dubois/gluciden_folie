@@ -31,9 +31,9 @@ export const useRecipesStore = defineStore("recipes", {
     },
 
     async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
-      //let formData = new FormData();
+      const formData = new FormData();
       try {
-        const formData = new FormData();
+        //const formData = new FormData();
         formData.append("name", name);
         formData.append("difficulty", difficulty);
         if (picture) formData.append("picture", picture);
@@ -49,11 +49,6 @@ export const useRecipesStore = defineStore("recipes", {
           formData.append(`steps[${index}].description`, step.description);
         });
 
-        console.log("FormData envoyé :");
-        for (let pair of formData.entries()) {
-          console.log(pair[0], ":", pair[1]);
-        }
-
         const response = await apiClient.post("/recipes", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -63,7 +58,7 @@ export const useRecipesStore = defineStore("recipes", {
         return response.data;
       } catch (error) {
         console.error("Erreur complète:", {
-          request: [...formData.entries()],
+          request: formData ? [...formData.entries()] : null,
           response: error.response?.data,
         });
         throw error;

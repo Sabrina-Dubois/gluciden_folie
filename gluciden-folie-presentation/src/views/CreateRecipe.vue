@@ -99,8 +99,7 @@ export default {
 			form: {
 				name: "",
 				picture: null,
-				ingredientList: [
-				],
+				ingredientList: [],
 				steps: [{ number: 1, description: "" }],
 				difficulty: null,
 			},
@@ -155,7 +154,9 @@ export default {
 	methods: {
 		handleFileUpload(files) {
 			if (files && files.length > 0) {
-				const url = URL.createObjectURL(files[0]);
+				//const url = URL.createObjectURL(files[0])
+				this.form.picture = files[0]; // <-- obligatoire
+				this.imagePreview = URL.createObjectURL(files[0]);
 			}
 		},
 
