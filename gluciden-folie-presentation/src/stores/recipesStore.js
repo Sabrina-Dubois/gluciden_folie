@@ -33,25 +33,20 @@ export const useRecipesStore = defineStore("recipes", {
     async addRecipe({ name, picture, difficulty, ingredientList, steps }) {
       const formData = new FormData();
       try {
-        //const formData = new FormData();
         formData.append("name", name);
         formData.append("difficulty", difficulty);
         if (picture) formData.append("picture", picture);
 
-        //ingredientList.forEach((ingredient, index) => {
-        //formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
-        //formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
-        //
-        //formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
-        //});
+        ingredientList.forEach((ingredient, index) => {
+          formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
+          formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+          formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
+        });
 
-        //steps.forEach((step, index) => {
-        //formData.append(`steps[${index}].number`, (index + 1).toString());
-        //formData.append(`steps[${index}].description`, step.description);
-        //});
-
-        formData.append("ingredientsJson", JSON.stringify(ingredientList));
-        formData.append("stepsJson", JSON.stringify(steps));
+        steps.forEach((step, index) => {
+          formData.append(`steps[${index}].number`, (index + 1).toString());
+          formData.append(`steps[${index}].description`, step.description);
+        });
 
         const response = await apiClient.post("/recipes", formData, {
           headers: {
@@ -62,7 +57,7 @@ export const useRecipesStore = defineStore("recipes", {
         return response.data;
       } catch (error) {
         console.error("Erreur complète:", {
-          request: formData ? [...formData.entries()] : null,
+          request: [...formData.entries()],
           response: error.response?.data,
         });
         throw error;
