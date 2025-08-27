@@ -57,6 +57,7 @@
 
 <script scoped>
 import { useRecipesStore } from "@/stores/recipesStore";
+const pictureFilePath = import.meta.env.VITE_IMAGE_URL;
 
 export default {
 	name: "recipesList",
@@ -80,7 +81,7 @@ export default {
 		},
 		imageUrl() {
 			return (recipe) =>
-				"/images/" + recipe.picture + "?t=" + new Date().getTime();
+				pictureFilePath + recipe.picture + "?t=" + new Date().getTime();
 		},
 	},
 	methods: {

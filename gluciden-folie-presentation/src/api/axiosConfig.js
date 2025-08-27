@@ -9,7 +9,6 @@ const apiClient = axios.create({
   //withCredentials: true,
 });
 
-// Intercepteur -> ajoute Token automatique
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jwt");
@@ -19,9 +18,8 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
-    // Si on envoie du FormData, laisser Axios définir le Content-Type
     if (config.data instanceof FormData) {
-      delete config.headers["Content-Type"]; // Axios le gère automatiquement
+      delete config.headers["Content-Type"]; 
     }
     return config;
   },
@@ -37,14 +35,11 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401) {
-      // Supprimer le jeton
       localStorage.removeItem("jwt");
 
-      // Éviter la boucle infinie en vérifiant un flag custom "_retry"
       if (!originalRequest._retry && window.location.pathname !== "/login") {
-        originalRequest._retry = true; // Marque la requête comme "déjà gérée"
+        originalRequest._retry = true;
 
-        // Redirige vers /login
         await router.push("/login");
       }
     }
