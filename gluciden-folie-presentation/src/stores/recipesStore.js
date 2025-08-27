@@ -38,16 +38,20 @@ export const useRecipesStore = defineStore("recipes", {
         formData.append("difficulty", difficulty);
         if (picture) formData.append("picture", picture);
 
-        ingredientList.forEach((ingredient, index) => {
-          formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
-          formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
-          formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
-        });
+        //ingredientList.forEach((ingredient, index) => {
+        //formData.append(`ingredients[${index}].ingredient.name`, ingredient.ingredient.name);
+        //formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+        //
+        //formData.append(`ingredients[${index}].unityId`, ingredient.unityId.toString());
+        //});
 
-        steps.forEach((step, index) => {
-          formData.append(`steps[${index}].number`, (index + 1).toString());
-          formData.append(`steps[${index}].description`, step.description);
-        });
+        //steps.forEach((step, index) => {
+        //formData.append(`steps[${index}].number`, (index + 1).toString());
+        //formData.append(`steps[${index}].description`, step.description);
+        //});
+
+        formData.append("ingredientsJson", JSON.stringify(ingredientList));
+        formData.append("stepsJson", JSON.stringify(steps));
 
         const response = await apiClient.post("/recipes", formData, {
           headers: {

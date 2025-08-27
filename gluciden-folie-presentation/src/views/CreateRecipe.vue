@@ -155,7 +155,7 @@ export default {
 		handleFileUpload(files) {
 			if (files && files.length > 0) {
 				//const url = URL.createObjectURL(files[0])
-				this.form.picture = files[0]; // <-- obligatoire
+				this.form.picture = files[0];
 				this.imagePreview = URL.createObjectURL(files[0]);
 			}
 		},
