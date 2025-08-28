@@ -1,19 +1,19 @@
-@import './main.css';
+@import "./main.css";
 
 body {
-    font-family: "Montserrat Alternates", serif;
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Montserrat Alternates", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .v-application__wrap {
-  background: #f5ede8 !important; 
-  width: auto; 
+  background: #f5ede8 !important;
+  width: auto;
 }
 
 /* *** Titres *** */
 h1 {
-  color:#F29EB0 !important;
+  color: #f29eb0 !important;
   text-align: center;
   font-family: "Julius Sans One", sans-serif;
   font-style: bold;
@@ -22,10 +22,10 @@ h1 {
 }
 h2,
 h3 {
-	color: #5d827f;
+  color: #5d827f;
   text-align: center;
   font-size: 25px;
-	margin: 20px;
+  margin: 20px;
 }
 
 .title {
@@ -35,34 +35,39 @@ h3 {
 }
 /* *** Cards *** */
 .v-card {
-	background-color: white;
-	text-align: center;
-	
-	padding: 20px;
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    
+  background-color: white;
+  text-align: center;
+
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .v-card > * {
-    margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 /* *** Boutons *** */
-.v-btn {
-	justify-items: center;
-	background-color: #5d827f;
-	color: #d3beb1;
+.v-btn:focus,
+button:focus {
+  outline: 2px solid #f29eb0;
+  outline-offset: 4px;
+}
+
+.v-btn{
+  justify-items: center;
+  background-color: #5d827f;
+  color: #d3beb1;
 }
 
 /* *** Css généric header *** */
 .v-toolbar__content {
-    height: 115px !important;
+  height: 115px !important;
 }
 
 .v-toolbar-title__placeholder {
-    overflow: visible!important;
+  overflow: visible !important;
 }
 
 .v-ripple__container {
@@ -73,45 +78,35 @@ h3 {
 .v-btn:hover .v-btn__overlay {
   background-color: transparent;
   opacity: 1;
-} 
-
+}
 
 :root {
-    --v-activated-opacity: 0 !important;
-    --v-theme-overlay-multiplier: 0 !important;
+  --v-activated-opacity: 0 !important;
+  --v-theme-overlay-multiplier: 0 !important;
 
-/* *** Validation *** */
-.v-text-field--error .v-input__control,
-.v-file-input--error .v-input__control {
-	border-color: #b00020
+  /* *** Validation *** */
+  .v-text-field--error .v-input__control,
+  .v-file-input--error .v-input__control {
+    border-color: #b00020;
+  }
+  .v-text-field--error .v-input__label,
+  .v-file-input--error .v-input__label {
+    color: #b00020;
+  }
+  .v-text-field--error .v-input__icon,
+  .v-file-input--error .v-input__icon {
+    color: #b00020;
+  }
+  .v-messages__message {
+    color: #b00020 !important;
+  }
+
+  /* *** Mobile First *** */
+  @media (min-width: 769px) {
+    .custom-footer {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px;
+    }
+  }
 }
-.v-text-field--error .v-input__label,
-.v-file-input--error .v-input__label {
-	color: #b00020;
-}
-.v-text-field--error .v-input__icon,
-.v-file-input--error .v-input__icon {
-	color: #b00020;
-}
-.v-messages__message {
-	color: #b00020 !important;
-}
-
-/* *** Mobile First *** */
-@media (min-width: 769px) {
-	.custom-footer {
-		flex-direction: row;
-		justify-content: space-between;
-		padding: 20px;
-	}
-}
-
-}
-
-
-
-
-
-
-
-
