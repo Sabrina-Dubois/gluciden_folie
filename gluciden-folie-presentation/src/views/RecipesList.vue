@@ -37,11 +37,13 @@
 									aria-label="$t('recipe_list.addToFavorites')"
 								></v-btn>
 								<v-btn
+									v-if="isAdmin"
 									icon="mdi-pencil"
 									@click.stop="updateRecipe(recipe.id)"
 									aria-label="$t('recipe_list.update')"
 								></v-btn>
 								<v-btn
+									v-if="isAdmin"
 									icon="mdi-delete"
 									@click.stop="deleteRecipe(recipe.id)"
 									aria-label="$t('recipe_list.delete')"
@@ -82,6 +84,18 @@ export default {
 		imageUrl() {
 			return (recipe) =>
 				pictureFilePath + recipe.picture + "?t=" + new Date().getTime();
+		},
+		isAdmin() {
+			const token = localStorage.getItem("jwt");
+			if (!token) return false;
+			try {
+				const payload = JSON.parse(atob(token.split(".")[1]));
+				return (
+					payload.role === "ROLE_ADMIN" || payload.roles?.includes("ROLE_ADMIN")
+				);
+			} catch {
+				return false;
+			}
 		},
 	},
 	methods: {

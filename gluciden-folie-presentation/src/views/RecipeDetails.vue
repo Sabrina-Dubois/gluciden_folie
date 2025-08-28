@@ -69,6 +69,7 @@
 
 <script>
 import apiClient from "@/api/axiosConfig";
+const pictureFilePath = import.meta.env.VITE_DEST_FILE_PATH;
 
 export default {
 	name: "recipeDetails",
@@ -81,7 +82,7 @@ export default {
 	computed: {
 		recipePictureUrl() {
 			if (this.recipe && this.recipe.picture) {
-				return `/images/${this.recipe.picture}?t=${Date.now()}`;
+				return `${pictureFilePath}${this.recipe.picture}?t=${Date.now()}`;
 			}
 			return "";
 		},
