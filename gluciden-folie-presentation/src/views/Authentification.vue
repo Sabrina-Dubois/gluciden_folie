@@ -7,7 +7,7 @@
 				</h1>
 				<v-card class="connection" elevation="4">
 					<v-form @submit.prevent="newAuth" :model="v$">
-						<!-- Email -->
+						<!-- Email / Username -->
 						<div class="field-container">
 							<label class="custom-label"
 								>{{ $t("auth.email.label-mail") }} *</label
@@ -74,7 +74,7 @@
 import apiClient from "../api/axiosConfig";
 import useVuelidate from "@vuelidate/core";
 import { accountValidation } from "../utils/validationRules";
-import i18n from "@/i18n/i18n.js"; 
+import i18n from "@/i18n/i18n.js";
 
 export default {
 	name: "authentification",
@@ -94,14 +94,10 @@ export default {
 	created() {
 		this.v$ = useVuelidate();
 		const token = localStorage.getItem("jwt");
-
 		const action = this.$route.params.action;
 
-		if (action === "login") {
-			this.isLogin = true;
-		} else if (action === "register") {
-			this.isLogin = false;
-		}
+		if (action === "login") this.isLogin = true;
+		else if (action === "register") this.isLogin = false;
 
 		if (token && !this.isLogin) {
 			this.$router.push({
@@ -115,11 +111,14 @@ export default {
 			const errors = [];
 			const rules = this.v$.username;
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-				if (this.v$.username.validEmail.$invalid)
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.validEmail.$invalid)
 					errors.push(i18n.global.t("validation.validEmail"));
-				if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 8 }));
-				if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 50 }));
+				if (rules.minLength.$invalid)
+					errors.push(i18n.global.t("validation.minLength", { min: 8 }));
+				if (rules.maxLength.$invalid)
+					errors.push(i18n.global.t("validation.maxLength", { max: 50 }));
 			}
 			return errors;
 		},
@@ -127,10 +126,14 @@ export default {
 			const errors = [];
 			const rules = this.v$.password;
 			if (rules.$error) {
-				if (rules.required.$invalid) errors.push(i18n.global.t("validation.required"));
-				if (rules.validPassword.$invalid) errors.push(i18n.global.t("validation.validPassword"));
-				if (rules.minLength.$invalid) errors.push(i18n.global.t("validation.minLength", { min: 8 }));
-				if (rules.maxLength.$invalid) errors.push(i18n.global.t("validation.maxLength", { max: 72 }));
+				if (rules.required.$invalid)
+					errors.push(i18n.global.t("validation.required"));
+				if (rules.validPassword.$invalid)
+					errors.push(i18n.global.t("validation.validPassword"));
+				if (rules.minLength.$invalid)
+					errors.push(i18n.global.t("validation.minLength", { min: 8 }));
+				if (rules.maxLength.$invalid)
+					errors.push(i18n.global.t("validation.maxLength", { max: 72 }));
 			}
 			return errors;
 		},
@@ -151,42 +154,49 @@ export default {
 		async newAuth() {
 			this.submitted = true;
 			this.v$.$touch();
-			if (this.v$.$invalid) {
-				return;
-			}
+			if (this.v$.$invalid) return;
 
 			const userData = { username: this.username, password: this.password };
+
 			try {
 				if (this.isLogin) {
-					const response = await apiClient.post("accounts/login", { username : this.username, password : this.password });
-					if (response.status === 200) {
+					// LOGIN
+					const response = await apiClient.post("/accounts/login", userData, {
+						headers: { "Content-Type": "application/json" },
+					});
+					if (response.status === 200 && response.data?.token) {
 						localStorage.setItem("jwt", response.data.token);
 						this.$router.push({ name: "home" });
 					} else {
-						alert("Erreur de connexion");
+						alert("Erreur de connexion. Veuillez vérifier vos identifiants.");
 					}
 				} else {
-					const response = await apiClient.post("/accounts", userData);
+					// REGISTER
+					const response = await apiClient.post("/accounts", userData, {
+						headers: { "Content-Type": "application/json" },
+					});
 					if (response.status === 201) {
 						this.$router.push({
 							name: "authentification",
 							params: { action: "login" },
 						});
 					} else {
-						alert("Erreur lors de la création du compte");
+						alert("Erreur lors de la création du compte.");
 					}
 				}
 			} catch (error) {
 				console.error(
-					"Erreur lors de la connexion : ",
-					error.response ? error.response.data : error.message
+					"Erreur lors de la connexion :",
+					error.response ?? error.message
 				);
-				if (error.response && error.response.status === 401) {
+				if (error.response?.status === 401) {
 					alert(
-						"Identifiants incorrects. Veuillez vérifier votre email et votre mot de passe."
+						"Identifiants incorrects. Veuillez vérifier votre email et mot de passe."
 					);
+				} else if (error.response?.status === 415) {
+					alert("Erreur de type de contenu. Veuillez réessayer.");
 				} else {
-					alert("Une erreur s'est produite. Veuillez réessayer plus tard.");
+					alert("Une erreur est survenue. Veuillez réessayer plus tard.");
 				}
 			}
 		},
@@ -202,7 +212,6 @@ export default {
 .connection {
 	background-color: #d3beb1;
 	padding: 20px;
-	
 	border-radius: 10px;
 }
 
